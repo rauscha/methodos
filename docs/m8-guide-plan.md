@@ -1,199 +1,208 @@
 # M8 guide: plan
 
-**DRAFT, 2026-10-23.** Written by a Claude session from Andrew's brief (`CLAUDE.md`) and two
-screenshots of oto-style music visualizers he sent as ideas. Nothing here is decided until he
-has read it; the open questions at the end are his.
+**DRAFT, revision 2, 2026-10-23.** Written by a Claude session. Revision 1 was built from
+Andrew's brief and two screenshots of oto-style visualizers. This revision folds in his answers:
+firmware 6.6.3, which views he wants, audio may live in the repo, no computer on his coming trip,
+and Song 1 is slow, lush trip-hop / lo-fi / ambient. Still a draft until he has read it.
 
-M8 facts below come from the operation manual on disk,
-`~/music-library/manuals/md/dirtywave-m8-operation-manual.md` (v6.5.2, 2026-04-21). Every
-instruction that reaches a page gets checked against it and then played on his unit.
+**Sources.** The operation manual on disk is v6.5.2
+(`~/music-library/manuals/md/dirtywave-m8-operation-manual.md`); Dirtywave has not published a
+newer one. His unit runs **6.6.3**, so the firmware changelog
+(`github.com/Dirtywave/M8Firmware`, `changelog.txt`) covers the gap. Every instruction that
+reaches a page is checked against both, then tried on his unit. He has the M8 on the trip, so
+on-device checks can still happen there; only recording and file dumps can't.
 
-## The idea in one paragraph
+## What 6.6 changes for this guide
 
-The M8 shows music as columns of hex. That is fast to type and hard to *see*: a phrase does not
-look like a melody, and a table does not look like an arpeggio. The guide puts a picture next to
-every grid. Each page shows two things side by side: **exactly what to type** (a mirror of the
-M8's own screen) and **what that does to the music** (panels adapted from the screenshots). Next
-to them is a recording from his own M8 to check his result against. This is the same explain loop
-that started Parallax, aimed at the tracker this time.
+From the changelog, 6.6.0 to 6.6.3 F. Only the items that touch the guide:
 
-## What to take from the screenshots
+- **Hypersynth: new SHAPE parameter** (6.6.0): saw, soft saw, dark saw, square soft, triangle,
+  sine, sine 3x, sine fb, sine fold, sine ring, sine half, sine organ. The 6.5.2 manual
+  describes Hypersynth as saws only. This matters most for pads: soft and dark saws and the sine
+  family are where the lush sounds are.
+- **ADSR:** retriggering the same instrument now resumes the attack from the current level
+  (6.6.0), so long-attack pads swell smoothly instead of clicking back to zero.
+- **ARP** no longer stops on note OFF when the instrument uses ADSR (6.6.3).
+- **ModFX: comb filter type** (6.6.0).
+- **EQ view now shows a spectrum** (6.6.0, left and right since 6.6.2), so the mix step can say
+  "look at the EQ view" on the device itself.
+- Table fixes: decay commands at TICFF (6.6.3), RTO (6.6.3 F).
 
-The reel shows six panels. Four of them teach something about the M8; two are decoration.
+## What he wants to see
 
-| Panel | What it shows | What it teaches on the M8 | Verdict |
-|---|---|---|---|
-| **Orbit** | One bar as a clock face; notes as arcs; a hand sweeps round | A **phrase is 16 steps** (manual, Phrase View), so the circle gets 16 ticks labeled 0 to F, matching the row numbers he types. One ring per track. | Core. The best fit of the lot. |
-| **Roll** | Piano roll over several bars, playhead, readouts (bar, tempo, sounding notes) | How chains string phrases into a song: bars across, pitch up. "Sounding: D4 A5 C#5" in words is a channel that works for anyone. | Core. |
-| **Roots** | Notes as nodes, sized by how long each has sounded; lines trace the tune's path | Harmony and melody shape: which notes are home, where the line goes. Good for song pages and the Scale view. | Yes, song pages only. |
-| **Rack** | Waveform with loudness curve, scope, spectrum, stereo vector; LUFS and peak readouts | The *sound*: what a filter sweep does to the spectrum, what a wavsynth shape looks like, why a sample clicks. The M8 has its own Limiter & Mix Scope view; this is the same idea, bigger. | Core for patch cards and sampling. |
-| Sheet | A "printing" mesh drawing | Nothing specific. | Skip. |
-| Fountain | Particle fountain driven by the spectrum | Nothing specific; fun. | Maybe later, as delight. |
+His words: several threads of information at once. He thinks in staff notation, so a piano roll
+is closer to how he reads than the tracker's hex columns. That calls for a page that's a live
+dashboard: three or four panels stacked as in the reel, all driven by one transport, each
+showing one thread.
 
-Plus one panel the reel doesn't have, and the one that matters most:
+| Panel | Shows | What it explains on the M8 |
+|---|---|---|
+| **Roll + chord lane** (the main view) | Piano roll of every track, chord names in a lane above it, the top voice drawn as a connected line, sounding notes as text | What the phrases add up to, read like a score |
+| **Progression strip** | The chords as a row of boxes with Roman numerals. The current box is filled dark, the next is outlined, and each move is labeled ("down a third", "V pulls home") | Where the harmony is going, and why it wants to go there |
+| **Drum grid** | 16 steps per lane. The mark shape gives the drum (disc kick, square snare, cross hat), size gives velocity, and a sideways nudge shows swing, with the groove's tick values printed | A phrase of drums, and what a groove of 07/05 actually does |
+| **Filter over time** | Cutoff as a curve across the bars with a playhead, plus the filter's response curve drawn over a live spectrum | An LFO or envelope on CUTOFF: the "evolving" in an evolving synth |
+| **Envelope** | The AHD or ADSR shape (ticks converted to time at the song tempo), a dot riding it on each note, and the note's gate drawn underneath, so you see release start at OFF | Why an ADSR needs an OFF to release (manual, Modulation Types) and what attack does to a pad |
+| **Loop ring** | A looping part (bassline, arp, table) as a circle; notes are labeled arcs and a hand sweeps round | That a two-bar bassline or a table *is* a loop |
+| **Tracker mirror** | The phrase or table as the M8 draws it: rows 0 to F, columns N, V, I and FX ×3. Rows this step adds carry the word "new" and a bar in the margin | Exactly what to type |
 
-- **Tracker mirror.** The phrase or table as the M8 draws it: rows 0 to F, then the N, V, I and
-  three FX columns, in a monospace grid. The current row is marked by a drawn cursor and bold
-  weight. On a song step, the rows this step adds are marked "new" in words, with a bar in the
-  margin. This is what he copies onto the device.
+Each page shows only the panels its step needs, at most four, plus the tracker mirror.
 
-### The hue problem in the originals
+**Color.** One ink per panel, with luminance for state (dark sounding now, mid already sounded,
+light coming up). Tracks are separated by lane or ring and labeled directly, then by mark shape
+and line style. Readouts in words. Okabe–Ito tints may sit on top, never alone. The reel's
+kick/snare/hat lines differ by hue only; none of that carries over.
 
-The screenshots separate kick, snare and hat by hue alone (one blue line, one orange, one
-yellow), and each panel is a single pink or blue. For him that distinction mostly doesn't exist.
-The guide's versions use:
+**Staff.** If a melody line ever reads better on a staff, Parallax already has a Bravura staff
+renderer to borrow. Not planned for now; the roll comes first.
 
-- **One ink per panel**, with luminance steps (dark for the current note, mid for sounded,
-  light for coming up).
-- **Tracks separated by position first.** Orbit gives each track its own ring, Roll gives each
-  its own lane, and both carry direct labels ("T1 kick").
-- **Then by mark shape.** Filled disc for kick, square for snare, cross for hat, an outlined
-  block for sustained notes. Line style (solid, dashed, dotted) for paths in Roots.
-- **Readouts in words** for anything that matters: bar, row, sounding notes, LUFS.
-- Okabe–Ito tints are allowed on top, never on their own.
+## Where the sound comes from
 
-## How the panels get their data
+He can't record M8 renders on the trip, so the pages play the song **live in the browser from
+the same song spec the panels draw**. The picture and the sound then come from one source, the
+filter panel shows the cutoff that is actually sounding, and he can mute a track or loop one step.
 
-There are two inputs per page. Neither is guessed from the other.
+| M8 instrument | Browser stand-in | How close |
+|---|---|---|
+| Macrosynth | Parallax's macro-oscillator worklet (`braids.wasm`), the open-source firmware the M8's Macrosynth descends from | Close: same family of algorithms |
+| Hypersynth | Six intervals, each a pair of detuned oscillators (swarm), stereo spread (width), and a square sub one or two octaves down, as the manual describes it. Shapes approximated | Fair: same structure, different filter and character |
+| Wavsynth, FM | Web Audio oscillators and a 4-op FM voice | Rough |
+| Sampler | Small CC0 drum and texture samples, a few hundred KB in the repo | Different samples, same idea |
+| Mixer FX | Convolution reverb, a delay, a chorus | Rough |
 
-1. **A song spec (JSON).** The song as M8 data: tempo, groove, the instruments (each one points
-   at a patch card id), and per track its chains, phrases and rows (note, volume, instrument,
-   up to three FX). Each walkthrough step lists the rows it adds. The spec is the single source:
-   the tracker mirror, Orbit, Roll and Roots are all drawn from it, and the step's instructions
-   are written from it.
-2. **A recording per step**, made on his M8 over USB audio (44.1 kHz on Windows; see GEAR.md),
-   as a short loop. The Rack panels analyze it live in the browser with Web Audio. Loudness
-   numbers (LUFS needs K-weighting) are precomputed with ffmpeg's `ebur128` and stored as a
-   small JSON curve, because that is more accurate than doing it in the page.
+Transport and voices use **Tone.js**, pinned and vendored into the kit so it works offline.
+Parallax's worklets are copied in with their MIT notices intact, and the guide follows the
+Parallax trademark rule: factual attribution only, never branding.
 
-The recording is also the check on the spec: if what he hears from his unit doesn't match the
-step's clip, either the spec or the instructions are wrong.
+Every page with sound says it plainly: "demo sound, made in the browser; your M8 will sound
+richer." When he's home, a recording from his unit can go next to each step as an A/B toggle.
 
-Reading `.m8s` song files directly would save transcribing. There are community parsers (a
-Rust crate, `m8-files`, if memory serves). **UNVERIFIED**; worth a look once a song exists,
-not needed to start.
+Why not Strudel or Sonic Pi: both would mean writing the song a second time in another language,
+so the panels and the sound would come from different sources. Sonic Pi also needs a computer
+to render, and Strudel is AGPL, which is awkward to vendor into a site that may go public.
 
-## The kit
+Size is a non-issue: there are no per-step audio files, and the samples and engine come to a
+few MB.
 
-The panels are one shared script in the guide, not copied into each artifact:
+## The kit (unchanged in shape)
 
 ```
 site/guides/m8/
   guide.json
-  pages/            the artifacts
-  kit/scopes.js     Tracker mirror, Orbit, Roll, Roots, Rack; reads a spec + a clip
-  kit/scopes.css
-  songs/<song>.json the song specs
-  audio/<song>/     step clips (Opus, ~100 KB each) + loudness JSON
-  AUTHORING.md      the prompt pack (below)
+  pages/              the artifacts
+  kit/                panels + browser engine (one shared script), vendored Tone.js, worklets
+  songs/<song>.json   song specs: tempo, groove, scale, instruments, chains, phrases, steps
+  samples/            CC0 drums and textures
+  AUTHORING.md        the prompt pack
 ```
 
-A page includes `<script src="../kit/scopes.js">` and declares what to show:
-`<m8-orbit spec="../songs/night-drive.json" step="3" clip="../audio/night-drive/03.opus">`.
-That gives up strict self-containment for consistency: twenty pages drawn by one kit look like
-one guide, and fixing a panel fixes every page. "Open the page on its own" in Methodos still
-works, because the relative paths still resolve.
+A page declares its panels: `<m8-roll spec="../songs/low-tide.json" step="4" tracks="pad,bass">`.
+Methodos itself needs one subject-neutral change: "Save for offline" also caches a guide's
+non-page files. That matters on a trip.
 
-**What the app needs:** almost nothing, and nothing M8-specific. `kit/`, `songs/` and `audio/`
-are plain files Methodos serves already. One small, subject-neutral change: "Save for offline"
-should also cache a guide's non-page files (a `files` list in guide.json, or the tool fills it).
-`check` should confirm every `spec=`/`clip=` a page names exists.
+## Song 1: "Low Tide" (working title; his to rename)
 
-## Guide structure
+The kind of help he asked for is the kind in `music/songs/for-ismely/notes.md`: say why the
+harmony works, count the rhythm in pulses, tie each patch setting to musical time (that song's
+filter bloom was set to one bar), and end each step with something to listen for. Song 1 does
+the same, aimed at what he hasn't done much of: pads and sounds that evolve.
 
-**Start here** (steps)
-1. How to use this guide: the mirror, the panels, the clip, "mark done".
-2. The M8 in one page: song, chain, phrase, instrument, table. Orbit shows a phrase going
-   round; Roll shows chains laid end to end.
+**Feel.** 84 BPM. D minor. Swing 07/05 on drums and bass (the manual's common swing setting);
+pads stay straight, so they float over the groove.
 
-**Songs** (one *steps* section per song, all under the group heading "Songs")
-Each step page has one job ("add the bassline to chain 01"). It shows:
+**Harmony.** An 8-bar loop, two bars per chord, so each chord has time to bloom:
 
-- what this step adds and why, in two or three sentences;
-- the tracker mirror, with the new rows marked;
-- Orbit and Roll, before and after;
-- the clip, with a written description of what to listen for;
-- the instruments used, linked to their patch cards.
+| Bars | 1–2 | 3–4 | 5–6 | 7 | 8 |
+|---|---|---|---|---|---|
+| Chord | Dm9 | B♭maj7 | Gm9 | A7sus4 | A7♭9 |
+| Function | i | ♭VI | iv | V (suspended) | V |
+| Top voice | D, then E in bar 2 | D | D | D | C♯ |
 
-The last page of each song is the full song: Roll across the whole arrangement, Roots, and the
-Rack on the final mix.
+- **i to ♭VI** is the move behind a lot of trip-hop and ambient. Dm and B♭maj7 share D, F
+  and A, so the pad barely moves while the bass drops a major third. The floor shifts and the
+  room stays put.
+- **iv** darkens it. Gm9 still holds D, F and A.
+- **V** is where the tension comes from. A7sus4 keeps the D on top. In bar 8 that D falls to C♯,
+  the only C♯ in the loop and its one bright note, which pulls back home to D. The ♭9 (B♭) is
+  the color of the ♭VI chord coming back.
+- **The top voice orbits one note.** D, E, D, D, D, C♯, then home to D. The chords change
+  underneath a held D. The roll draws this line, so he can see a pedal tone at work.
 
-Three songs, each chosen to exercise a different part of the M8 (his choice of music; see the
-questions):
+**Parts, in the order the walkthrough builds them:**
 
-| Song | Teaches | Instruments |
-|---|---|---|
-| 1, first loop | phrase → chain → song, the mixer | sampler drums, a Macrosynth bass, a Wavsynth lead |
-| 2, table-driven | tables as arps, envelopes and chords | FM or Hypersynth chords driven by tables |
-| 3, sample-built | slicing, recording, resampling | sampler throughout |
+| Track | Part | Instrument | What makes it lush or alive |
+|---|---|---|---|
+| 1 | Drums | Sampler: kick, rim or snare, hats | Kick on 1 and the "and" of 3; snare on 2 and 4; swung 8th hats with velocity accents; one ghost snare at the end of the bar |
+| 2 | Bass | Macrosynth, a round model | Two-bar figure per chord: root held, octave ghost on the "and" of 2, fifth on 4; slides into the next root. The loop ring shows it. |
+| 3 | Pad | Hypersynth, soft or dark saw (new in 6.6) | Slow attack (about a bar) and long release on ADSR. An LFO on cutoff over 8 bars (FREQ is in steps, so 128 steps), which is the "evolving". A trig envelope from track 1 ducks the pad on each kick, the trip-hop breathing. Generous reverb. |
+| 4 | Arp | Macrosynth bell-like model | The ARP command over the song's D minor scale, so the arp follows the chords with no extra programming. CHA (chance) lets notes drop out so it never repeats exactly. Dotted-8th delay. |
+| 5 | Texture | Sampler | A sound he records **on the trip** with the M8's own mic (rain, a café, a train), looped low under everything. This is the sampling tutorial's first step, and it needs no computer. |
 
-**Techniques: Tables** (steps), from the manual's Table View:
-1. What a table is: 16 rows that play alongside an instrument at the instrument's own Table
-   Tic rate, not the song tempo. Orbit is at its best here: the phrase ring and a smaller,
-   faster table ring spinning at their own speeds.
-2. The N column: an arpeggio by transposing each row.
-3. The V column: a volume shape (V multiplies the phrase volume).
-4. FX columns in a table: pitch and filter movement.
-5. Length and speed: TIC modes (per trigger, ticks per row, octave, velocity and note maps,
-   200 Hz) and HOP to shorten a table.
-6. Beyond the instrument's own table: the 128 shared tables and the TBL command.
+**Walkthrough steps** (one page each):
 
-**Techniques: Sampling** (steps), from the manual's Sampler and Sample Editor:
-1. Load a sample; .wav only, mono or stereo; why the high-pitch limit exists (it streams from
-   SD) and how mono or lower bit depth lifts it.
-2. Start, loop and slices, with Rack's waveform showing the markers.
-3. Recording on the M8: sources (line, mic, USB, a track), the arm threshold.
-4. Resampling a track of the song.
-5. His Zoom M4 route for heavy pitch-down: record at 96 kHz float, transpose on the desktop,
-   export at 44.1 kHz for the M8 (from his instruments notes).
+1. Set up the song: tempo, the D minor scale, the swing groove.
+2. The pad: the eight bars of chords.
+3. Make it breathe: the attack and release, then the LFO on cutoff.
+4. The bassline.
+5. Drums and swing.
+6. The duck: a trig envelope from the kick to the pad.
+7. The arp: ARP, chance, delay.
+8. Texture: record a sound where you are.
+9. Arrange in the song view: intro (pad and texture), bass enters, drums enter, the arp, a
+   breakdown with the filter closing, the full loop, outro.
+10. Mix: EQ (with the device's own spectrum), reverb sends, the limiter.
 
-**Patch cards** (cards)
-One card per instrument: the type (Wavsynth, Macrosynth, Sampler, FM, Hypersynth, MIDI Out,
-External), every parameter as the screen shows it, its mods, its table if it has one (with a
-tracker mirror), a clip of a phrase played on it, and the Rack. Tags give type and role (bass,
-lead, pad, drums). "Used in" comes free from Methodos backlinks. Every instrument from the songs,
-then extras worth trying.
+**Open on-device checks** before the pages are final, marked **UNVERIFIED** until he's tried them:
 
-## Making the artifacts
+- How Hypersynth's 16 chord banks change from bar to bar. The safe route is one instrument per
+  chord, switched in the I column. If there's a command or setting that changes the bank, it
+  would be neater.
+- Whether Hypersynth's intervals follow the song scale, since its SCALE parameter suggests
+  they might.
+- Which Macrosynth models give the round bass and the bell, and what their 6.6 names are.
+- What drum and texture samples are on his SD card.
 
-The input is still artifacts made in Claude or ChatGPT. To keep forty of them consistent,
-`AUTHORING.md` is a prompt pack: page templates for a song step, a technique step and a patch
-card; the kit's tags and what each takes; the spec schema; the hue rules above; and the house
-voice. He pastes the pack, the spec and the step into a chat and gets back a page that drops
-straight into `tools/methodos.py add`.
+**Patch cards from Song 1:** the pad, the bass, the drum kit, the arp, the texture.
 
-A Claude Code session in this repo can also draft pages straight from a spec, with Andrew
-curating. Either way, a page isn't done until he has played the step on his unit and it
-matches the clip. Until then it carries an **UNVERIFIED** line, as the OP-XY notes in the
-music repo do.
+## The rest of the guide
 
-## First slice, and what it gates
+Unchanged from revision 1, except that every page plays from the browser engine:
 
-Per the global rule, nothing gets built on top of a piece he hasn't tried.
+- **Start here:** how to use the guide; the M8 in one page (song, chain, phrase, instrument,
+  table).
+- **Techniques: Tables:** what a table is (16 rows at its own tic rate, which the loop ring
+  shows as a second ring spinning at its own speed inside the phrase ring); the N column as an
+  arpeggio; the V column as a volume shape; FX columns; TIC modes and HOP; the 128 shared tables
+  and TBL. Song 1's arp gets a table version here, as the contrast to ARP.
+- **Techniques: Sampling:** load and the pitch limit; start, loop, slices; recording on the M8;
+  resampling a track; his Zoom M4 route for heavy pitch-down.
+- **Patch cards:** one per instrument, with type, parameters as the screen shows them, mods,
+  table, a playable phrase, and the panels that suit it (filter and envelope for most).
+- **Songs 2 and 3:** later, chosen to cover what Song 1 doesn't (FM, table-driven chords,
+  sample-built).
 
-1. **Slice 1.** The kit with the tracker mirror, Orbit and Roll only. Song 1, steps 1 and 2. One
-   patch card (the bass). Clips from his M8. He works through it with the M8 in hand and the
-   Pixel beside it. *Question it answers:* do the panels help him follow along, or are they
-   noise next to the grid?
-2. **Slice 2**, if 1 works: Roots and Rack, the rest of Song 1, its patch cards.
-3. **Slice 3:** the Tables tutorial (phrase and table orbits together).
-4. **Slice 4:** sampling, then Songs 2 and 3.
+## First slice, before the trip
 
-This is also his first real use of Methodos v0.1, so slice 1 tests the app as well.
+The goal is something he can work through on the trip, with the M8 in his hands, the Pixel
+beside it, and the guide saved for offline.
+
+- The kit: tracker mirror, roll with chord lane, progression strip, envelope, filter over time.
+- The browser engine with the pad voice only.
+- Song 1, steps 1 to 3 (setup, the pad chords, making it breathe), plus the pad's patch card.
+- The Methodos change to "Save for offline", so it all works with no signal.
+
+*What it answers:* do the panels help him hear why the progression works and what the LFO is
+doing, while he builds the same thing on the device? His reaction decides slice 2 (bass, drums,
+the duck, the remaining panels) and whether the layout changes.
+
+The tailnet URL works anywhere the Pixel has internet; saving for offline covers flights.
 
 ## Open questions (his)
 
-1. **Which music?** Genre, tempo, mood for Song 1, and whether three songs is the right number.
-   Anything he already has going on the M8 could be Song 1.
-2. **Recording.** Is he up for recording a short clip per step (M8 → USB → crane-desk, or the
-   Zoom)? Without clips the Rack has nothing to show and nothing checks the spec.
-3. **Audio in git.** Small Opus clips in this repo (about 2–5 MB per song) are simplest. If the
-   repo goes public for Pages, they go public too. Alternatively they live in `music-library`
-   and get copied in at deploy.
-4. **Shared kit vs. self-contained pages.** The plan picks the shared kit. The cost: a page
-   saved out of the guide loses its panels.
-5. **Who drafts pages:** him in Claude/ChatGPT with the prompt pack, a Claude Code session here,
-   or both.
-6. **His firmware version**, so instructions match the 6.5.2 manual.
-7. **Which panels he actually liked** in the reel. The verdicts above are a reading of what
-   teaches, not of what he enjoyed watching.
+1. **When does the trip start?** That sets how much of slice 1 can be ready.
+2. **The arps he mentioned.** The `music` repo's for-ismely notes have the triplet stabs, the
+   chord rotation and the filter bloom, but no arp work. If the arps were in a claude.ai chat
+   or on another machine, a pointer would let Song 1 build on them.
+3. **Is D minor at 84 BPM the right mood**, or does he want slower and more ambient (70) or
+   more head-nod (90)?
+4. **Samples on his SD card:** factory packs or his own? It decides how the drum steps name
+   their sounds.
