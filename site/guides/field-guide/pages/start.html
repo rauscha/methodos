@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A guide is a folder</title><style>
+:root { --bg:#fbfaf6; --ink:#1d1b17; --ink2:#4a463e; --rule:#d5cfc2; --code:#efebe1; color-scheme: light dark; }
+@media (prefers-color-scheme: dark) { :root { --bg:#1e1c17; --ink:#ece7dc; --ink2:#c9c2b4; --rule:#3a362e; --code:#2a2721; } }
+body { margin:0; background:var(--bg); color:var(--ink); font:17px/1.6 Georgia, "Iowan Old Style", serif; }
+main { max-width: 680px; margin: 0 auto; padding: 28px 16px 64px; }
+h1 { font-size: 1.9rem; line-height: 1.2; margin: 0 0 8px; }
+h2 { font-size: 1.2rem; margin: 32px 0 8px; }
+p, li { color: var(--ink2); }
+strong { color: var(--ink); }
+code, pre { font: 0.86rem/1.5 ui-monospace, Menlo, Consolas, monospace; background: var(--code); border-radius: 6px; }
+code { padding: 1px 5px; }
+pre { padding: 12px 14px; overflow-x: auto; }
+a { color: inherit; font-weight: 600; text-underline-offset: 3px; }
+.step { border-left: 3px solid var(--ink); padding: 2px 0 2px 14px; margin: 18px 0; }
+.step b { display:block; color: var(--ink); }
+</style></head>
+<body><main>
+<h1>A guide is a folder</h1>
+
+<p>Every guide in Methodos is a folder of HTML pages plus one small file,
+<code>guide.json</code>, that puts them in order. The app itself knows nothing about
+any subject. Adding a guide never changes the app.</p>
+
+<h2>What's in the folder</h2>
+<pre>site/guides/m8/
+  guide.json        title, sections, and the pages in each
+  pages/
+    tables-101.html   one artifact, exactly as Claude or ChatGPT made it
+    acid-bass.html</pre>
+
+<h2>Sections</h2>
+<p>A guide is split into sections. Each section has a <strong>layout</strong>:</p>
+<ul>
+  <li><strong>steps</strong>: a numbered sequence you work through in order. Each step
+  shows its number in an open ring, or a check in a filled disc once you mark it done.</li>
+  <li><strong>cards</strong>: a grid you browse in any order, like a shelf of patch cards.</li>
+</ul>
+<p>Sections can share a <strong>group</strong> heading. A song that takes five artifacts
+can be its own <em>steps</em> section, grouped with the other songs under one heading.</p>
+
+<h2>Working through a page</h2>
+<p>Open a page and use the bar at the bottom to move to the previous or next page in the
+same section (the arrow keys work too). <strong>Mark done</strong> keeps your place, and the
+guide page offers <strong>Continue</strong> back to wherever you left off.</p>
+
+<p>Next: <a href="page:adding">adding an artifact</a>.</p>
+
+</main></body></html>

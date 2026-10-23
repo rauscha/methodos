@@ -1,0 +1,68 @@
+{
+  "title": "How Methodos works",
+  "subtitle": "Start here",
+  "description": "A short guide to the app itself: how guides are put together, how to add an artifact, and how pages link to each other.",
+  "sections": [
+    {
+      "id": "basics",
+      "title": "Start here",
+      "layout": "steps",
+      "pages": [
+        {
+          "id": "start",
+          "title": "A guide is a folder",
+          "file": "pages/start.html",
+          "summary": "Guides, sections, and the two layouts."
+        },
+        {
+          "id": "adding",
+          "title": "Adding an artifact",
+          "file": "pages/adding.html",
+          "summary": "From a downloaded artifact to a page in a guide.",
+          "tags": [
+            "tools"
+          ]
+        },
+        {
+          "id": "linking",
+          "title": "Linking pages",
+          "file": "pages/linking.html",
+          "summary": "Wiki-style links between pages, and backlinks.",
+          "links": [
+            "layouts",
+            "start"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reference",
+      "title": "Reference",
+      "layout": "cards",
+      "pages": [
+        {
+          "id": "layouts",
+          "title": "Layouts: steps and cards",
+          "file": "pages/layouts.html",
+          "summary": "When to use steps, when to use cards.",
+          "tags": [
+            "layout"
+          ]
+        },
+        {
+          "id": "guide-json",
+          "title": "guide.json fields",
+          "file": "pages/guide-json.html",
+          "summary": "Every field a guide file can hold.",
+          "tags": [
+            "reference",
+            "json"
+          ],
+          "links": [
+            "layouts"
+          ]
+        }
+      ]
+    }
+  ]
+}

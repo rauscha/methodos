@@ -5,8 +5,10 @@ Claude or ChatGPT and curated into small "mini wikis" on one subject. Think of i
 between his mfm-media interactive decks and a small Obsidian vault: pages you can browse, link
 between, and work through step by step.
 
-**Status (2026-10-23): idea only.** Nothing is designed, planned, or built yet. This file
-records the idea. Don't start a plan or code until Andrew asks for one.
+**Status (2026-10-23): v0.1 built, not yet tried by Andrew.** A static PWA in `site/`, served on
+the tailnet at https://tikiserv.saiga-wage.ts.net:8450/. The M8 guide has its three sections and
+no pages yet: they wait on his artifacts. **His reaction to it on the Pixel gates anything
+further**; don't add features on top of it before then.
 
 ## The idea (Andrew, 2026-10-23)
 
@@ -24,13 +26,37 @@ records the idea. Don't start a plan or code until Andrew asks for one.
   design decision should assume the M8 or assume music. A guide is something Andrew can add
   ("download") later without changing the app.
 
+## How it is built (2026-10-23)
+
+- **No build step.** `site/` is the app: `index.html`, `app.js` (ES module, hash router),
+  `style.css`, `sw.js`, `manifest.json`. Run with `python3 -m http.server -d site`.
+- **Guides are data.** `site/guides/index.json` lists guide ids in shelf order; each
+  `site/guides/<id>/guide.json` holds sections (`layout`: `steps` or `cards`, optional `group`
+  heading) and pages (`id`, `title`, `file`, `summary`, `tags`, `links`). Backlinks are computed.
+  Nothing in `app.js` may name a guide or a subject.
+- **Artifacts are shown untouched, in a same-origin iframe** (no sandbox), so their scripts and
+  storage work, and the app can catch in-page links: `page:<id>` or a relative `other.html` to a
+  page in the same guide opens it in the app; off-site links open a new tab. They are his own
+  curated files, which is why no sandbox.
+- **Done, last page, search text** live in `localStorage` under `methodos:` keys.
+- **Offline:** the service worker precaches the shell, serves same-site files network-first
+  with a cache fallback, and CDN files cache-first. It only touches caches named `methodos-*`
+  (andrewrausch.com is a shared origin). "Save for offline" on a guide caches all its pages.
+- **Curation:** `tools/methodos.py add|new|list|check` (stdlib). CI runs `check`.
+- **Deploy:** the repo is private and Pages on this account needs a public repo, so
+  `pages.yml` skips itself while private. Going public is Andrew's call; then set Pages source to
+  GitHub Actions and it lands at andrewrausch.com/methodos/. Until then, the tailnet URL.
+  Undo the tailnet serve with `tailscale serve --https=8450 off`.
+- The demo guide `field-guide` ("How Methodos works") documents the app and is non-music on
+  purpose, as a standing test that nothing assumes the M8.
+
 ## Conventions
 
 - Global rules apply (`~/.claude/CLAUDE.md`), especially: **never carry meaning by hue**. Patch
   cards, step states, and any diagrams need a second channel, such as labels, shape, or weight.
 - Git: land on `main` and push. No PRs.
-- If this becomes a PWA, follow the shared-origin manifest rules in the global CLAUDE.md
-  (explicit `id`, relative `start_url`/`scope`).
+- It is a PWA: keep `"id": "./"` and relative `start_url`/`scope` forever (shared-origin rules in
+  the global CLAUDE.md). Check with `python3 ~/tools/pwa-manifest-check.py site/manifest.json`.
 
 ## Remote Control session
 

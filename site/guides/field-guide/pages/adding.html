@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Adding an artifact</title><style>
+:root { --bg:#fbfaf6; --ink:#1d1b17; --ink2:#4a463e; --rule:#d5cfc2; --code:#efebe1; color-scheme: light dark; }
+@media (prefers-color-scheme: dark) { :root { --bg:#1e1c17; --ink:#ece7dc; --ink2:#c9c2b4; --rule:#3a362e; --code:#2a2721; } }
+body { margin:0; background:var(--bg); color:var(--ink); font:17px/1.6 Georgia, "Iowan Old Style", serif; }
+main { max-width: 680px; margin: 0 auto; padding: 28px 16px 64px; }
+h1 { font-size: 1.9rem; line-height: 1.2; margin: 0 0 8px; }
+h2 { font-size: 1.2rem; margin: 32px 0 8px; }
+p, li { color: var(--ink2); }
+strong { color: var(--ink); }
+code, pre { font: 0.86rem/1.5 ui-monospace, Menlo, Consolas, monospace; background: var(--code); border-radius: 6px; }
+code { padding: 1px 5px; }
+pre { padding: 12px 14px; overflow-x: auto; }
+a { color: inherit; font-weight: 600; text-underline-offset: 3px; }
+.step { border-left: 3px solid var(--ink); padding: 2px 0 2px 14px; margin: 18px 0; }
+.step b { display:block; color: var(--ink); }
+</style></head>
+<body><main>
+<h1>Adding an artifact</h1>
+
+<p>Save the artifact as an <code>.html</code> file (in Claude, download it from the artifact
+menu). Then, from the repo:</p>
+
+<div class="step"><b>1. Add it to a section</b>
+<pre>python3 tools/methodos.py add m8 ~/Downloads/tables-101.html \
+  --section techniques --tags tables,beginner</pre>
+It copies the file into the guide and lists it in <code>guide.json</code>. The title comes from
+the page's own <code>&lt;title&gt;</code> unless you pass <code>--title</code>.</div>
+
+<div class="step"><b>2. Check</b>
+<pre>python3 tools/methodos.py check</pre>
+It catches missing files, duplicate ids, and links to pages that don't exist.</div>
+
+<div class="step"><b>3. Push</b>
+<p>Commit and push <code>main</code>. The installed app picks up the change the next time it
+opens online.</p></div>
+
+<h2>A new section, or a new guide</h2>
+<pre>python3 tools/methodos.py add m8 song-1-step-1.html \
+  --section song-1 --section-title "Night drive" --layout steps --group Songs
+
+python3 tools/methodos.py new embroidery --title "Embroidery" \
+  --subtitle "Hand stitching"</pre>
+
+<p>Next: <a href="linking.html">linking pages to each other</a>.</p>
+
+</main></body></html>

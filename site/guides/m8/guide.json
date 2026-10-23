@@ -1,0 +1,28 @@
+{
+  "title": "Dirtywave M8",
+  "subtitle": "Tracker · Model:02",
+  "description": "Songs built step by step, hands-on technique tutorials, and a library of instrument patch cards to load and play.",
+  "sections": [
+    {
+      "id": "songs",
+      "title": "Song walkthroughs",
+      "description": "Complete songs, built one step at a time. Each song's instruments are in the patch cards below.",
+      "layout": "cards",
+      "pages": []
+    },
+    {
+      "id": "techniques",
+      "title": "Techniques",
+      "description": "Hands-on walkthroughs of Tables and sampling.",
+      "layout": "steps",
+      "pages": []
+    },
+    {
+      "id": "patches",
+      "title": "Patch cards",
+      "description": "Every instrument from the songs, plus other good ones to try.",
+      "layout": "cards",
+      "pages": []
+    }
+  ]
+}
