@@ -7,7 +7,7 @@ between, and work through step by step.
 
 **Status (2026-10-23): v0.1 built, not yet tried by Andrew.** A static PWA in `site/`, served on
 the tailnet at https://tikiserv.saiga-wage.ts.net:8450/. The M8 guide has its three sections and
-no pages yet: they wait on his artifacts. **His reaction to it on the Pixel gates anything
+no pages yet: they wait on his artifacts. Plan for that guide: `docs/m8-guide-plan.md` (DRAFT, unreviewed). **His reaction to it on the Pixel gates anything
 further**; don't add features on top of it before then.
 
 ## The idea (Andrew, 2026-10-23)
