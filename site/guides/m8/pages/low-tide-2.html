@@ -31,6 +31,11 @@ held. That's easier to judge on one chord than on eight bars of them.</p>
 <p>Nothing else in the phrase. With no OFF, the note keeps sounding, and because the chain is one
 phrase long, it plays again every bar.</p>
 
+<p class="unverified">Which octave the M8 means by F-3. The pages and the demo assume C-4 is
+middle C (261 Hz). The manual calls C-1 the lowest octave, which could put everything one or two
+octaves lower than the demo plays it. <b>Report back:</b> play C-4 on any instrument against a
+tuner app. Is it middle C?</p>
+
 <h2>Instrument 03: Hypersynth</h2>
 <p><kbd>SHIFT</kbd>+<kbd>RIGHT</kbd> from the phrase into instrument 03 and set <b>TYPE</b> to
 HYPERSYNTH. It's a chord synth: up to six notes per chord, each one a pair of detuned saws, from
@@ -59,9 +64,9 @@ HYPERSYNTH. It's a chord synth: up to six notes per chord, each one a pair of de
 </table>
 
 <p class="unverified">How the CHORD banks are edited on the screen (choosing a bank, then entering
-its intervals), whether the intervals are semitones in hex as written here, and whether SUBOSC
-<code>00</code> is fully off. The manual describes CHORD only as "the chord bank and intervals for
-the selected bank".</p>
+its intervals), and whether the intervals are semitones in hex as written here. The manual
+describes CHORD only as "the chord bank and intervals for the selected bank". <b>Report back:</b>
+one photo of the CHORD field while editing a bank.</p>
 
 <h2>Make it breathe</h2>
 <p><kbd>SHIFT</kbd>+<kbd>UP</kbd> from the instrument opens its four modulation slots.</p>
@@ -85,15 +90,16 @@ matters for step 3, where every chord change is a retrigger.</p>
 
 <h3>MOD 2: the tide</h3>
 <p>An LFO on CUTOFF: <b>OSC SIN</b> for a smooth sweep, <b>TRIG FREE</b> so it keeps running
-across notes instead of restarting on each one, <b>AMT 40</b> for about an octave either side, and
-<b>FREQ 80</b>. FREQ is counted in steps, and 80 in hex is 128 steps: one slow cycle every eight
-bars, the length of the loop.</p>
+across notes instead of restarting on each one, <b>AMT 40</b> for a modest sweep, and <b>FREQ 80</b>,
+meant to be one slow cycle every eight bars.</p>
 
 <m8-filter inst="03"></m8-filter>
 
-<p class="unverified">That FREQ is the length of one cycle in steps. The manual says the value "is
-represented in steps (16th notes)"; if 80 cycles much faster than eight bars, try FF and say what
-you hear.</p>
+<p class="unverified">Which way FREQ goes. The manual calls it "the rate at which the LFO
+cycles, represented in steps", so a higher value may well be <i>faster</i>, not slower, and the
+demo above assumes the opposite. <b>Report back:</b> set FREQ to 04, then 80. Which one sweeps
+faster? Then find the value that takes about eight bars. The octave-wide sweep drawn above is
+the demo's own scale for AMT, not an M8 fact.</p>
 
 <div class="listen">Press PLAY in the phrase view and wait. The first chord takes a full bar to
 arrive. Then, over the next eight bars, the tone darkens until it's almost muffled and slowly opens
@@ -104,8 +110,8 @@ up again. That's the tide. When it's at its darkest, the reverb is most of what 
   <li><b>SWARM 60</b>: more motion. Past about 80 it starts to sound out of tune.</li>
   <li><b>LFO OSC TRI</b>: the sweep turns at the ends instead of lingering.</li>
   <li><b>ATK 30</b>: half a bar. Quicker, less dreamlike.</li>
-  <li>Hold the PLAY in the instrument view and change CUTOFF by hand, to hear what the LFO is doing
-  for you.</li>
+  <li>Press PLAY in the instrument view, then <kbd>EDIT</kbd>+<kbd>LEFT</kbd>/<kbd>RIGHT</kbd> on
+  CUTOFF, to hear by hand what the LFO is doing for you.</li>
 </ul>
 
 <p>The finished sound is written up as a patch card: <a href="page:tide-pad">Tide pad</a>.

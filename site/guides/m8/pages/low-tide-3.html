@@ -30,6 +30,10 @@ chords share one.</p>
 are played on E-3 rather than F-3. Both stay close to the shapes before them, so the voices only
 move by steps.</p>
 
+<p>Bank 02 puts A and B♭ a semitone apart inside detuned saw pairs, which may beat and sound
+sour rather than lush. If it does, try the three-note version <code>00 05 09</code> (F B♭ D,
+same top note) and keep whichever you like.</p>
+
 <h2>Changing banks from the phrase</h2>
 <p>Each chord change is a new phrase with one row: the note, instrument 03, and the chord-bank
 command in FX1. The copies of the M8's screen show that command as <b>···</b>. Its three-letter name
@@ -42,11 +46,22 @@ to 80 for Faded Polaroid.</p>
 
 <p class="unverified">The name of the chord-bank command, and whether it exists. Hypersynth's
 manual entry lists CHORD as a parameter, and the manual says almost every parameter has an FX
-command, but doesn't name this one. If there's none, see the fallback at the end of this page.</p>
+command, but doesn't name this one. <b>Do this first, before entering the phrases:</b> on a
+phrase that uses instrument 03, put the cursor on FX1 and press <kbd>EDIT</kbd>+<kbd>UP</kbd>.
+<b>Report back:</b> a photo of that list. If there's no bank command, see the fallback at the end
+of this page.</p>
+
+<p class="unverified">A cheaper route, if the command is absolute: leave the I column empty on
+phrases 31 to 34. The manual says an empty I column changes the note without retriggering the
+instrument, so the envelope never restarts and the chord just changes. (With no I column,
+relative commands aren't reset either, so if the command turns out to be relative, keep I=03.)
+<b>Report back:</b> does the chord change cleanly with I empty?</p>
 
 <h3>The pad's phrases</h3>
-<p>Phrase 30 from step 2 gets the bank command. Make phrases 31 to 34 (in the chain,
-<kbd>EDIT</kbd> twice on an empty row makes a new empty phrase).</p>
+<p>Phrase 30 from step 2 gets the bank command. For 31 to 34: in the chain, <kbd>EDIT</kbd> on an
+empty row inserts a phrase number, then <kbd>EDIT</kbd>+<kbd>UP</kbd>/<kbd>RIGHT</kbd> dials it to
+31. (<kbd>EDIT</kbd> twice makes a new phrase at the lowest free number instead; that works too,
+if you don't mind different numbers from these pages.)</p>
 <m8-phrase phrase="30"></m8-phrase>
 <m8-phrase phrase="31"></m8-phrase>
 <m8-phrase phrase="32"></m8-phrase>
@@ -82,8 +97,9 @@ into bar 1, where every pad voice steps up at once.</div>
 <p>Clone instrument 03 once per bank (in a phrase's I column, <kbd>SHIFT</kbd>+<kbd>OPTION</kbd>
 then <kbd>EDIT</kbd> copies the current instrument to a new number), set each clone's CHORD to
 its bank, and switch instruments in the I column instead. It works, but each new instrument
-starts its envelope from silence. The 6.6 smooth retrigger only applies within one
-instrument, so every chord change would swell in from nothing. With an attack that long, you'd
+probably starts its envelope from silence (the 6.6 smooth retrigger is described for the same
+instrument; whether it carries across instruments is unverified), so every chord change would
+swell in from nothing. With an attack that long, you'd
 hear a gap. Shortening ATK to about 18 hides most of it.</p>
 </main>
 </body>
