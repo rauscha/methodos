@@ -8,7 +8,7 @@
 // touches caches whose names start with "methodos-".
 
 // Bump SHELL_VERSION with every change to a shell file, or offline users keep the old copy.
-const SHELL_VERSION = '2026-10-24b';
+const SHELL_VERSION = '2026-10-24c';
 const SHELL_CACHE = `methodos-shell-${SHELL_VERSION}`;
 const DATA_CACHE = 'methodos-data';
 const CDN_CACHE = 'methodos-cdn';
@@ -25,6 +25,8 @@ const SHELL = [
   'icons/icon.svg',
   'icons/icon-192.png',
   'icons/icon-512.png',
+  // The shelf list, so the library opens offline even before anything else was fetched.
+  'guides/index.json',
 ];
 
 self.addEventListener('install', (event) => {
@@ -43,18 +45,23 @@ self.addEventListener('activate', (event) => {
 const timeout = (ms) => new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms));
 
 async function networkFirst(request) {
-  try {
-    const response = await Promise.race([fetch(request), timeout(6000)]);
+  const network = fetch(request).then((response) => {
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const copy = response.clone();
     caches.open(DATA_CACHE).then((c) => c.put(request, copy)).catch(() => {});
     return response;
+  });
+  network.catch(() => {}); // handled below; this only silences the unhandled-rejection warning
+  try {
+    return await Promise.race([network, timeout(6000)]);
   } catch {
     // Data first (it holds whatever was fetched most recently), then the shell.
     for (const name of [DATA_CACHE, SHELL_CACHE]) {
       const cached = await (await caches.open(name)).match(request, { ignoreSearch: true });
       if (cached) return cached;
     }
+    // Nothing saved: on a slow connection the network may still answer, so wait for it.
+    try { return await network; } catch {}
     if (request.mode === 'navigate' && request.destination === 'document') {
       return (await (await caches.open(SHELL_CACHE)).match('index.html')) ?? Response.error();
     }

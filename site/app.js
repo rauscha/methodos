@@ -81,12 +81,13 @@ function normalize(id, raw, base = `guides/${id}/`) {
 let library = null;
 
 async function loadLibrary() {
-  // Guides on this device still open when the shelf can't be reached.
-  const local = await localGuides();
-  let index;
+  // Guides on this device, and the button to add one, still work when the shelf can't
+  // be reached (offline, or a bad connection).
+  const local = await localGuides().catch(() => []);
+  let index, shelfError = null;
   try { index = await getJSON('guides/index.json'); } catch (err) {
-    if (!local.length) throw err;
     index = { guides: [] };
+    shelfError = String(err.message ?? err);
   }
   const guides = await Promise.all((index.guides ?? []).map(async (id) => {
     try {
@@ -97,7 +98,7 @@ async function loadLibrary() {
   }));
   const shelf = new Set(guides.map((g) => g.id));
   for (const g of local) if (!shelf.has(g.id)) guides.push(g);
-  library = { guides, byId: new Map(guides.map((g) => [g.id, g])) };
+  library = { guides, shelfError, byId: new Map(guides.map((g) => [g.id, g])) };
 }
 
 // ---- guides added from a file
@@ -271,7 +272,8 @@ function renderLibrary() {
   app.innerHTML = `
     ${bar({ title: 'Methodos', sub: 'Library' })}
     <main class="page-body">
-      <ul class="guide-grid">${cards || '<li class="empty">No guides yet. Add one with <code>tools/methodos.py new</code>.</li>'}</ul>
+      ${library.shelfError ? `<p class="empty">Couldn't reach the shelf (${esc(library.shelfError)}). Check the connection and reload; guides on this device still open.</p>` : ''}
+      <ul class="guide-grid">${cards || (library.shelfError ? '' : '<li class="empty">No guides yet. Add one with <code>tools/methodos.py new</code>.</li>')}</ul>
       ${'caches' in window ? `<div class="guide-tools library-tools">
         <button class="button" type="button" data-add>Add a guide from a file</button>
         <input type="file" accept=".zip,application/zip" hidden data-file>
