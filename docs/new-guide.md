@@ -6,8 +6,8 @@ for a fresh session that has none of that session's context.
 
 ## Where things stand
 
-- **The app is done for now.** v0.1 is live at https://andrewrausch.com/methodos/ and mirrored on
-  the tailnet at https://tikiserv.saiga-wage.ts.net:8450/. Andrew has not tried it on the Pixel
+- **The app is done for now.** v0.1 is live at https://methodos.andrewrausch.com/ (its own origin
+  since 2026-10-24; no tailnet mirror any more). Andrew has not tried it on the Pixel
   yet. Until he has, the app itself gets no new features.
 - **The M8 guide is parked**, waiting on him. Slice 1 (Low Tide steps 1 to 3, the Tide pad card)
   is built and reviewed. The next M8 work is fix plan D in `docs/review-2026-10-23.md`, and it

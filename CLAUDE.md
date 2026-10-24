@@ -6,8 +6,8 @@ between his mfm-media interactive decks and a small Obsidian vault: pages you ca
 between, and work through step by step.
 
 **Status (2026-10-23): v0.1 built, not yet tried by Andrew.** A static PWA in `site/`, live at
-https://andrewrausch.com/methodos/ (public repo, Pages via Actions, since 2026-10-24; unlisted, no
-card on the apps page) and on the tailnet at https://tikiserv.saiga-wage.ts.net:8450/. The M8 guide has its first pages. Plan for that guide: `docs/m8-guide-plan.md` (rev 3, approved). Slice 1 (Low Tide steps 1–3, Tide pad, the `kit/` panels and browser demo engine) built 2026-10-23, waiting on his try with the M8 on his trip. Reviewed the same evening: `docs/review-2026-10-23.md` holds the findings, his decisions (it's a "show me how" app: no more work on making the browser sound like the M8) and the fix plan, in order. **His reaction to it on the Pixel gates anything
+https://methodos.andrewrausch.com/ (its own origin since 2026-10-24; public repo, Pages via
+Actions; unlisted, no card on the apps page). The old andrewrausch.com/methodos/ redirects there. The M8 guide has its first pages. Plan for that guide: `docs/m8-guide-plan.md` (rev 3, approved). Slice 1 (Low Tide steps 1–3, Tide pad, the `kit/` panels and browser demo engine) built 2026-10-23, waiting on his try with the M8 on his trip. Reviewed the same evening: `docs/review-2026-10-23.md` holds the findings, his decisions (it's a "show me how" app: no more work on making the browser sound like the M8) and the fix plan, in order. **His reaction to it on the Pixel gates anything
 further**; don't add features on top of it before then.
 
 **Starting another guide: read `docs/new-guide.md` first** (2026-10-24). It is the handoff for a
@@ -45,7 +45,7 @@ sources on tikiserv, and the mechanics. A new guide is data and is not blocked b
 - **Done, last page, search text** live in `localStorage` under `methodos:` keys.
 - **Offline:** the service worker precaches the shell, serves same-site files network-first
   with a cache fallback, and CDN files cache-first. It only touches caches named `methodos-*`
-  (andrewrausch.com is a shared origin). "Save for offline" on a guide caches all its pages.
+  (it lived on the shared andrewrausch.com origin until 2026-10-24; the rule stays). "Save for offline" on a guide caches all its pages.
 - **Guides from a file** (2026-10-24): "Add a guide from a file" on the library takes a `.zip`
   of a guide folder (`tools/methodos.py pack <dir>` makes one) and keeps it on that device only:
   files go into the `methodos-local` cache at `local/<id>/...`, and `sw.js` answers `local/`
@@ -53,10 +53,11 @@ sources on tikiserv, and the mechanics. A new guide is data and is not blocked b
   the Elden Ring guide in the git-excluded `private/` folder) reach the Pixel: pack, Taildrop,
   add. Never put a private guide under `site/` or in git.
 - **Curation:** `tools/methodos.py add|new|list|files|check|pack` (stdlib). CI runs `check`.
-- **Deploy:** every push to `main` runs `pages.yml` and lands at andrewrausch.com/methodos/
-  (repo public since 2026-10-24). The tailnet serve at :8450 still mirrors `site/` straight from
-  the checkout, handy for trying a change before pushing; `tailscale serve --https=8450 off`
-  removes it. `docs/sources/` (chat exports, screen photos) is gitignored and stays on tikiserv.
+- **Deploy:** every push to `main` runs `pages.yml` and lands at methodos.andrewrausch.com (Pages
+  custom domain; Cloudflare's wildcard `*.andrewrausch.com` CNAME does the DNS). Try changes
+  locally with `python3 -m http.server -d site`; there is **no tailnet mirror** any more (it let
+  the phone install a second copy, 2026-10-24). `docs/sources/` (chat exports, screen photos) is
+  gitignored and stays on tikiserv. Private guides live in the git-excluded `private/` folder.
 - The demo guide `field-guide` ("How Methodos works") documents the app and is non-music on
   purpose, as a standing test that nothing assumes the M8.
 
@@ -65,8 +66,11 @@ sources on tikiserv, and the mechanics. A new guide is data and is not blocked b
 - Global rules apply (`~/.claude/CLAUDE.md`), especially: **never carry meaning by hue**. Patch
   cards, step states, and any diagrams need a second channel, such as labels, shape, or weight.
 - Git: land on `main` and push. No PRs.
-- It is a PWA: keep `"id": "./"` and relative `start_url`/`scope` forever (shared-origin rules in
-  the global CLAUDE.md). Check with `python3 ~/tools/pwa-manifest-check.py site/manifest.json`.
+- It is a PWA on its own origin: keep `"id": "./"` (= https://methodos.andrewrausch.com/) and
+  relative `start_url`/`scope` forever. Check with `python3 ~/tools/pwa-manifest-check.py
+  site/manifest.json --url https://methodos.andrewrausch.com/manifest.json --own-origin`.
+  The handover block at the end of `app.js` (old andrewrausch.com/methodos/ → new origin) can go
+  once no device has the old copy; it's harmless until then.
 
 ## Remote Control session
 
