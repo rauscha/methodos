@@ -18,8 +18,11 @@
 rootless shapes, as in Faded Polaroid. Only four shapes cover all six chords, because two
 chords share one.</p>
 
-<m8-progression></m8-progression>
 <m8-roll tracks="2,3"></m8-roll>
+<m8-progression list></m8-progression>
+
+<div class="listen">Press Play and watch the NOW mark move down the list. Bars 1 and 3 have the
+same pad notes in the roll, but the root under them changes, and so does the chord.</div>
 
 <h2>Four more chord banks</h2>
 <p>Back in instrument 03, fill banks 01 to 04. Bank 00 is already F A C E from step 2.</p>
@@ -36,7 +39,7 @@ same top note) and keep whichever you like.</p>
 
 <h2>Changing banks from the phrase</h2>
 <p>Each chord change is a new phrase with one row: the note, instrument 03, and the chord-bank
-command in FX1. The copies of the M8's screen show that command as <b>···</b>. Its three-letter name
+command in FX1. The copies of the M8's screen show that command as <b>???</b>. Its three-letter name
 is in the FX help list: put the cursor on FX1 and press <kbd>EDIT</kbd>+<kbd>UP</kbd>.</p>
 
 <p>You found in Faded Polaroid that <code>COL</code> is relative. The chord-bank command might be
@@ -62,17 +65,14 @@ relative commands aren't reset either, so if the command turns out to be relativ
 empty row inserts a phrase number, then <kbd>EDIT</kbd>+<kbd>UP</kbd>/<kbd>RIGHT</kbd> dials it to
 31. (<kbd>EDIT</kbd> twice makes a new phrase at the lowest free number instead; that works too,
 if you don't mind different numbers from these pages.)</p>
-<m8-phrase phrase="30"></m8-phrase>
-<m8-phrase phrase="31"></m8-phrase>
-<m8-phrase phrase="32"></m8-phrase>
-<m8-phrase phrase="33"></m8-phrase>
-<m8-phrase phrase="34"></m8-phrase>
+<m8-phrase phrase="30" compact></m8-phrase>
+<m8-phrase phrase="31,32,33,34"></m8-phrase>
 
 <h3>The pad's chain</h3>
 <p>Phrase 30 appears twice (bars 1 and 3), and phrase 3F, an empty phrase, fills the bars where the
 chord holds. An empty phrase has no notes and no OFF, so the chord before it keeps sounding. An
 empty <i>row</i> in the chain would be different: it ends the chain.</p>
-<m8-chain chain="03"></m8-chain>
+<m8-chain chain="03" compact></m8-chain>
 
 <h2>The roots: track 2</h2>
 <p>A round, plain bass that just holds each root. Step 4 turns it into a real bassline.</p>
@@ -83,8 +83,8 @@ empty <i>row</i> in the chain would be different: it ends the chain.</p>
   <li>Instrument 02: TYPE MACROSYN, SHAPE SINE TRIANGLE. A sine and a triangle into a wavefolder;
   COLOR balances the two, TIMBRE folds them. Kept low, it's a soft, round tone.</li>
 </ol>
-<m8-chain chain="02"></m8-chain>
-<m8-phrase phrase="20"></m8-phrase>
+<m8-chain chain="02" compact></m8-chain>
+<m8-phrase phrase="20,21,22,23"></m8-phrase>
 <m8-instrument inst="02" show="params"></m8-instrument>
 
 <p>The M8 spells every flat as a sharp, so B♭1 is entered as <code>A#1</code>.</p>

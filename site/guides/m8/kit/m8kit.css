@@ -119,12 +119,12 @@ m8-player {
 .m8-current th, .m8-current td { font-weight: 800; }
 .m8-current td:not(.m8-newcol) { background: var(--m8-faint); }
 .m8-row-new th { box-shadow: inset 4px 0 0 var(--m8-ink); }
-.m8-is-new { font-weight: 800; text-decoration: underline; text-underline-offset: 3px; }
+.m8-is-new { font-weight: 800; }
 .m8-new {
   font: 700 0.7rem/1 system-ui, sans-serif; letter-spacing: 0.05em; text-transform: uppercase;
   border: 1.5px solid var(--m8-ink); border-radius: 4px; padding: 1px 4px; color: var(--m8-ink);
 }
-.m8-unknown { text-decoration: underline dotted; cursor: help; font-weight: 800; }
+.m8-unknown { text-decoration: none; cursor: help; font-weight: 800; }
 
 .m8-params { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0 16px; margin: 4px 0; font-size: 0.85rem; }
 .m8-params div { display: flex; justify-content: space-between; gap: 8px; border-bottom: 1px solid var(--m8-faint); padding: 2px 0; }
@@ -154,3 +154,16 @@ m8-player {
 .m8-prog li.m8-next { border: 3px solid var(--m8-ink); padding: 8.5px 10.5px; }
 .m8-nowrap { white-space: nowrap; }
 .m8-screen figcaption .m8-new { margin-left: 4px; }
+
+/* progression as a list: one line per chord, the state word first */
+.m8-prog-list { grid-template-columns: 1fr; gap: 4px; }
+.m8-prog-list li {
+  display: grid; grid-template-columns: 3.2em 2em 1fr; grid-template-areas: "state roman chord" "state roman sub" "state roman move";
+  align-items: baseline; column-gap: 8px; row-gap: 0; padding: 6px 10px;
+}
+.m8-prog-list .m8-state { position: static; grid-area: state; }
+.m8-prog-list .m8-roman { grid-area: roman; }
+.m8-prog-list .m8-chord { grid-area: chord; font-size: 1rem; }
+.m8-prog-list .m8-sub { grid-area: sub; }
+.m8-prog-list .m8-move { grid-area: move; margin: 0; }
+.m8-prog-list li.m8-next { padding: 4.5px 8.5px; }

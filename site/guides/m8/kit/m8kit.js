@@ -555,57 +555,90 @@ class Panel extends HTMLElement {
 
 function newTag() { return '<span class="m8-new" title="Added in this step">new</span>'; }
 
+const UNKNOWN_CMD = '<abbr class="m8-unknown" title="Hypersynth\'s chord-bank command: look up its name in the FX help list">???</abbr>';
+
 class M8Phrase extends Panel {
+  // One phrase row as the M8 draws it. `head` is the row-number cell (or a phrase number in
+  // the combined view).
+  cells(c, head, dataAttr) {
+    const shown = c && this.model.on(c);
+    const fx = [0, 1, 2].map((k) => {
+      const f = shown ? (c.fx ?? []).filter(this.model.on)[k] : null;
+      if (!f) return '<td class="m8-dim">--- 00</td>';
+      const nu = this.isNew(f) ? 'm8-is-new' : '';
+      return f.bank ? `<td class="${nu}">${UNKNOWN_CMD} ${f.bank}</td>` : `<td class="${nu}">${f.cmd} ${f.val}</td>`;
+    }).join('');
+    const isNew = shown && (this.isNew(c) || (c.fx ?? []).some((f) => this.isNew(f)));
+    return `<tr ${dataAttr} class="${isNew ? 'm8-row-new' : ''}">
+      <th scope="row"><span class="m8-cursor" aria-hidden="true">▶</span>${head}</th>
+      <td class="${shown ? (this.isNew(c) ? 'm8-is-new' : '') : 'm8-dim'}">${shown ? c.n : '---'}</td>
+      <td class="${shown ? '' : 'm8-dim'}">${shown ? c.v : '--'}</td>
+      <td class="${shown ? '' : 'm8-dim'}">${shown ? c.i : '--'}</td>
+      ${fx}
+      <td class="m8-newcol">${isNew ? newTag() : ''}</td></tr>`;
+  }
+  usesOf(id) {
+    return Object.values(this.model.spec.chains).flat().filter((c) => c.ph === id && this.model.on(c)).length;
+  }
+  hasBank(ph) {
+    return Object.values(ph.rows).some((c) => (c.fx ?? []).some((f) => f.bank && this.model.on(f)));
+  }
   setup() {
     if (this._built) return; this._built = true;
-    const id = this.getAttribute('phrase');
-    const ph = this.model.spec.phrases[id] ?? { rows: {} };
-    const uses = Object.values(this.model.spec.chains).flat()
-      .filter((c) => c.ph === id && this.model.on(c)).length;
-    const rows = [];
-    for (let r = 0; r < 16; r++) {
-      const c = ph.rows[String(r)];
-      const shown = c && this.model.on(c);
-      const fx = [0, 1, 2].map((k) => {
-        const f = shown ? (c.fx ?? []).filter(this.model.on)[k] : null;
-        if (!f) return '<td class="m8-dim">--- 00</td>';
-        if (f.bank) {
-          return `<td class="${this.isNew(f) ? 'm8-is-new' : ''}"><abbr class="m8-unknown" title="Hypersynth's chord-bank command: look up its name in the FX help list">···</abbr> ${f.bank}</td>`;
-        }
-        return `<td class="${this.isNew(f) ? 'm8-is-new' : ''}">${f.cmd} ${f.val}</td>`;
-      }).join('');
-      const isNew = shown && (this.isNew(c) || (c.fx ?? []).some((f) => this.isNew(f)));
-      rows.push(`<tr data-row="${r}" class="${isNew ? 'm8-row-new' : ''}">
-        <th scope="row"><span class="m8-cursor" aria-hidden="true">▶</span>${r.toString(16).toUpperCase()}</th>
-        <td class="${shown ? (this.isNew(c) ? 'm8-is-new' : '') : 'm8-dim'}">${shown ? c.n : '---'}</td>
-        <td class="${shown ? '' : 'm8-dim'}">${shown ? c.v : '--'}</td>
-        <td class="${shown ? '' : 'm8-dim'}">${shown ? c.i : '--'}</td>
-        ${fx}
-        <td class="m8-newcol">${isNew ? newTag() : ''}</td></tr>`);
+    this.ids = this.getAttribute('phrase').split(',').map((x) => x.trim());
+    const phs = this.ids.map((id) => this.model.spec.phrases[id] ?? { rows: {} });
+    const head = '<thead><tr><th>PH</th><th>N</th><th>V</th><th>I</th><th>FX1</th><th>FX2</th><th>FX3</th><th></th></tr></thead>';
+    const bankNote = phs.some((ph) => this.hasBank(ph))
+      ? `<p class="m8-note">${UNKNOWN_CMD} is the chord-bank command. Its name is in the FX help list: <kbd>EDIT</kbd>+<kbd>UP</kbd> on the FX1 column.</p>` : '';
+    if (this.ids.length > 1) {
+      // Combined view: one line per phrase, each phrase's row 0. For phrases that are a
+      // single row, which is most of them in a slow song.
+      const rows = this.ids.map((id, i) => this.cells(phs[i].rows['0'], id, `data-ph="${id}"`)).join('');
+      this.innerHTML = `<figure class="m8-screen">
+        <figcaption><span class="m8-title">PHRASES ${this.ids[0]}–${this.ids[this.ids.length - 1]}</span>
+          <span class="m8-note">row 0 of each; rows 1–F stay empty</span></figcaption>
+        <table class="m8-grid">${head.replace('<th>PH</th>', '<th>PH</th>')}<tbody>${rows}</tbody></table>${bankNote}</figure>`;
+      return;
     }
+    const id = this.ids[0], ph = phs[0];
+    const uses = this.usesOf(id);
+    const compact = this.hasAttribute('compact');
+    const last = Math.max(0, ...Object.keys(ph.rows).map(Number).filter((r) => this.model.on(ph.rows[String(r)])));
+    const shownRows = compact ? last + 1 : 16;
+    const rows = [];
+    for (let r = 0; r < shownRows; r++) {
+      rows.push(this.cells(ph.rows[String(r)], r.toString(16).toUpperCase(), `data-row="${r}"`));
+    }
+    const rest = compact && shownRows < 16
+      ? `<p class="m8-note">rows ${shownRows.toString(16).toUpperCase()}–F empty</p>` : '';
     this.innerHTML = `<figure class="m8-screen">
       <figcaption><span class="m8-title">PHRASE ${id}${uses > 1 ? '*' : ''}</span>
         ${uses > 1 ? `<span class="m8-note">* used ${uses} times in the chain</span>` : ''}</figcaption>
-      <table class="m8-grid"><thead><tr><th></th><th>N</th><th>V</th><th>I</th><th>FX1</th><th>FX2</th><th>FX3</th><th></th></tr></thead>
-      <tbody>${rows.join('')}</tbody></table>
-      ${ph.about ? `<p class="m8-note">${ph.about}</p>` : ''}
-      ${Object.values(ph.rows).some((c) => (c.fx ?? []).some((f) => f.bank && this.model.on(f)))
-        ? '<p class="m8-note"><span class="m8-unknown">···</span> is the chord-bank command. Its name is in the FX help list: <kbd>EDIT</kbd>+<kbd>UP</kbd> on the FX1 column.</p>' : ''}
+      <table class="m8-grid">${head.replace('<th>PH</th>', '<th></th>')}<tbody>${rows.join('')}</tbody></table>
+      ${rest}${ph.about ? `<p class="m8-note">${ph.about}</p>` : ''}${bankNote}
     </figure>`;
   }
-  frame(s) {
-    const id = this.getAttribute('phrase');
-    let row = -1;
-    if (s.pos != null && s.playing) {
-      for (const tr of this.model.tracks) {
-        const local = Math.floor(s.pos) % tr.len;
-        const chain = this.model.spec.chains[tr.chainId].filter(this.model.on);
-        if (chain[Math.floor(local / 16)]?.ph === id) row = local % 16;
-      }
+  // Which phrase and row is the M8 on? Returns { ph, row } or null.
+  playing(s) {
+    if (s.pos == null || !s.playing) return null;
+    for (const tr of this.model.tracks) {
+      const local = Math.floor(s.pos) % tr.len;
+      const chain = this.model.spec.chains[tr.chainId].filter(this.model.on);
+      const ph = chain[Math.floor(local / 16)]?.ph;
+      if (ph && this.ids.includes(ph)) return { ph, row: local % 16 };
     }
-    if (row === this._row) return;
-    this._row = row;
-    this.querySelectorAll('tr[data-row]').forEach((tr) => tr.classList.toggle('m8-current', Number(tr.dataset.row) === row));
+    return null;
+  }
+  frame(s) {
+    const at = this.playing(s);
+    const key = at ? `${at.ph}:${at.row}` : '';
+    if (key === this._key) return;
+    this._key = key;
+    if (this.ids.length > 1) {
+      this.querySelectorAll('tr[data-ph]').forEach((tr) => tr.classList.toggle('m8-current', !!at && tr.dataset.ph === at.ph));
+    } else {
+      this.querySelectorAll('tr[data-row]').forEach((tr) => tr.classList.toggle('m8-current', !!at && Number(tr.dataset.row) === at.row));
+    }
   }
 }
 
@@ -613,20 +646,34 @@ class M8Chain extends Panel {
   setup() {
     if (this._built) return; this._built = true;
     const id = this.getAttribute('chain');
-    const chain = this.model.spec.chains[id] ?? [];
+    const chain = (this.model.spec.chains[id] ?? []).map((c) => (this.model.on(c) ? c : null));
+    const used = chain.filter(Boolean).length;
+    const compact = this.hasAttribute('compact');
+    const shownRows = compact ? Math.min(16, used + 1) : 16;
     const rows = [];
-    for (let r = 0; r < 16; r++) {
+    let prevNew = false;
+    const newRows = [];
+    for (let r = 0; r < shownRows; r++) {
       const c = chain[r];
-      const shown = c && this.model.on(c);
-      const nu = shown && this.isNew(c);
+      const nu = !!c && this.isNew(c);
+      if (nu) newRows.push(r);
       rows.push(`<tr data-row="${r}" class="${nu ? 'm8-row-new' : ''}">
         <th scope="row"><span class="m8-cursor" aria-hidden="true">▶</span>${r.toString(16).toUpperCase()}</th>
-        <td class="${shown ? (nu ? 'm8-is-new' : '') : 'm8-dim'}">${shown ? c.ph : '--'}</td>
-        <td class="m8-dim">${shown ? (c.tsp ?? '00') : '00'}</td>
-        <td class="m8-newcol">${nu ? newTag() : ''}</td></tr>`);
+        <td class="${c ? (nu ? 'm8-is-new' : '') : 'm8-dim'}">${c ? c.ph : '--'}</td>
+        <td class="m8-dim">${c ? (c.tsp ?? '00') : '00'}</td>
+        <td class="m8-newcol">${nu && !prevNew ? newTag() : ''}</td></tr>`);
+      prevNew = nu;
     }
-    this.innerHTML = `<figure class="m8-screen"><figcaption><span class="m8-title">CHAIN ${id}</span></figcaption>
-      <table class="m8-grid"><thead><tr><th></th><th>PH</th><th>TSP</th><th></th></tr></thead><tbody>${rows.join('')}</tbody></table></figure>`;
+    const runs = [];
+    for (const r of newRows) {
+      const last = runs[runs.length - 1];
+      if (last && last[1] === r - 1) last[1] = r; else runs.push([r, r]);
+    }
+    const hx = (r) => r.toString(16).toUpperCase();
+    const newNote = runs.length ? `<span class="m8-note">new: row${newRows.length > 1 ? 's' : ''} ${runs.map(([a, b]) => a === b ? hx(a) : `${hx(a)}–${hx(b)}`).join(', ')}</span>` : '';
+    const rest = compact && shownRows < 16 ? `<p class="m8-note">rows ${hx(shownRows)}–F empty: the chain ends at the first empty row</p>` : '';
+    this.innerHTML = `<figure class="m8-screen"><figcaption><span class="m8-title">CHAIN ${id}</span>${newNote}</figcaption>
+      <table class="m8-grid"><thead><tr><th></th><th>PH</th><th>TSP</th><th></th></tr></thead><tbody>${rows.join('')}</tbody></table>${rest}</figure>`;
   }
   frame(s) {
     const id = this.getAttribute('chain');
@@ -818,7 +865,7 @@ class M8Progression extends Panel {
   setup() {
     if (this._built) return; this._built = true;
     const hs = this.model.spec.harmony;
-    this.innerHTML = `<ol class="m8-prog">${hs.map((h, i) => `
+    this.innerHTML = `<ol class="m8-prog ${this.hasAttribute('list') ? 'm8-prog-list' : ''}">${hs.map((h, i) => `
       <li data-i="${i}">
         <span class="m8-roman">${h.roman}</span>
         <span class="m8-chord">${h.chord}</span>
