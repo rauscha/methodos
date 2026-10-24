@@ -32,6 +32,18 @@
             "layouts",
             "start"
           ]
+        },
+        {
+          "id": "from-a-file",
+          "title": "Adding a guide from a file",
+          "file": "pages/from-a-file.html",
+          "summary": "A guide that lives on one device only, from a .zip.",
+          "tags": [
+            "tools"
+          ],
+          "links": [
+            "adding"
+          ]
         }
       ]
     },

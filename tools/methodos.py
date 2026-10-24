@@ -8,6 +8,7 @@
                     [--section-title ...] [--layout steps|cards] [--group ...]
     methodos.py files GUIDE
     methodos.py check
+    methodos.py pack DIR [-o OUT.zip]
 
 `add` copies an artifact into site/guides/GUIDE/pages/ and registers it in that
 guide's guide.json. The title defaults to the artifact's <title>. A section that
@@ -15,6 +16,8 @@ does not exist yet is created (use --section-title/--layout/--group to shape it)
 `files` lists a guide's other files (scripts, styles, song data, samples) in guide.json, so
 "Save for offline" can fetch them; run it after adding any. Run `check` before pushing; CI
 runs it too.
+`pack` zips a guide folder (anywhere, not only under site/guides/) after checking it, for
+"Add a guide from a file" in the app. A packed guide stays on the device it is added to.
 """
 
 import argparse
@@ -22,6 +25,7 @@ import json
 import re
 import shutil
 import sys
+import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -154,9 +158,9 @@ def cmd_add(args):
         print(f"warning: {p}")
 
 
-def check_guide(gid, guide):
+def check_guide(gid, guide, gdir=None):
     problems = []
-    gdir = GUIDES / gid
+    gdir = gdir or GUIDES / gid
     if not guide.get("title"):
         problems.append(f"{gid}: missing title")
     ids, files = set(), set()
@@ -250,6 +254,31 @@ def cmd_check(_args):
     sys.exit(1 if problems else 0)
 
 
+def cmd_pack(args):
+    gdir = Path(args.dir).expanduser().resolve()
+    gpath = gdir / "guide.json"
+    if not gpath.is_file():
+        die(f"no guide.json in {gdir}")
+    gid = slugify(gdir.name)
+    guide = load(gpath)
+    listed = set(guide.get("files", []))
+    if set(other_files(gdir)) != listed:
+        guide["files"] = other_files(gdir)
+        save(gpath, guide)
+        print(f"{gid}: files list updated ({len(guide['files'])} files)")
+    problems = check_guide(gid, guide, gdir)
+    if problems:
+        for p in problems:
+            print(p)
+        die(f"{len(problems)} problem(s); not packed")
+    out = Path(args.out).expanduser() if args.out else gdir.parent / f"{gid}.zip"
+    names = ["guide.json"] + [p["file"] for _, p in all_pages(guide)] + guide.get("files", [])
+    with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
+        for rel in dict.fromkeys(names):
+            z.write(gdir / rel, f"{gid}/{rel}")
+    print(f"packed '{gid}': {len(set(names))} files, {out.stat().st_size / 1e6:.1f} MB -> {out}")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -285,6 +314,11 @@ def main():
 
     p = sub.add_parser("check", help="validate every guide")
     p.set_defaults(fn=cmd_check)
+
+    p = sub.add_parser("pack", help="zip a guide folder for 'Add a guide from a file'")
+    p.add_argument("dir", help="the guide folder (holds guide.json)")
+    p.add_argument("-o", "--out", help="output .zip (default: <folder>.zip beside it)")
+    p.set_defaults(fn=cmd_pack)
 
     args = ap.parse_args()
     args.fn(args)

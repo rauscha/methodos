@@ -8,11 +8,13 @@
 // touches caches whose names start with "methodos-".
 
 // Bump SHELL_VERSION with every change to a shell file, or offline users keep the old copy.
-const SHELL_VERSION = '2026-10-24a';
+const SHELL_VERSION = '2026-10-24b';
 const SHELL_CACHE = `methodos-shell-${SHELL_VERSION}`;
 const DATA_CACHE = 'methodos-data';
 const CDN_CACHE = 'methodos-cdn';
-const KEEP = [SHELL_CACHE, DATA_CACHE, CDN_CACHE];
+// Guides added from a file (app.js). Never fetched, never deleted here.
+const LOCAL_CACHE = 'methodos-local';
+const KEEP = [SHELL_CACHE, DATA_CACHE, CDN_CACHE, LOCAL_CACHE];
 
 const SHELL = [
   './',
@@ -60,6 +62,13 @@ async function networkFirst(request) {
   }
 }
 
+// A guide added from a file exists only in LOCAL_CACHE, so its URLs never go to
+// the network: what isn't there is a 404.
+async function fromLocal(request) {
+  const cached = await (await caches.open(LOCAL_CACHE)).match(request, { ignoreSearch: true });
+  return cached ?? new Response('Not in this guide', { status: 404, headers: { 'Content-Type': 'text/plain' } });
+}
+
 const CDN_KINDS = new Set(['script', 'style', 'font', 'image']);
 
 async function cacheFirst(request) {
@@ -83,6 +92,10 @@ self.addEventListener('fetch', (event) => {
   if (url.protocol !== 'http:' && url.protocol !== 'https:') return;
   if (url.origin === self.location.origin) {
     if (!url.pathname.startsWith(new URL('./', self.location).pathname)) return;
+    if (url.pathname.startsWith(new URL('local/', self.location).pathname)) {
+      event.respondWith(fromLocal(request));
+      return;
+    }
     event.respondWith(networkFirst(request));
   } else if (CDN_KINDS.has(request.destination)) {
     event.respondWith(cacheFirst(request));

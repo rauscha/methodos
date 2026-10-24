@@ -6,10 +6,16 @@
 //   #/                    library
 //   #/<guide>             a guide's contents
 //   #/<guide>/<page>      one page, shown in a frame
+//
+// Guides come from two places: the shelf on the server (guides/index.json), and
+// guides added from a file on this device, which never touch the server.
 
 const app = document.getElementById('app');
 const LAYOUTS = new Set(['steps', 'cards']);
 export const DATA_CACHE = 'methodos-data';
+// Guides added from a file live here at local/<id>/..., and the service worker
+// answers those URLs from this cache alone (sw.js).
+export const LOCAL_CACHE = 'methodos-local';
 
 // ---- storage (wrapped: private windows and blocked storage must not break the app)
 
@@ -45,7 +51,7 @@ async function getJSON(path) {
 
 // Turn a raw guide.json into something the views can walk: every page gets its
 // section, its position, its resolved URL, and the pages that link to it.
-function normalize(id, raw) {
+function normalize(id, raw, base = `guides/${id}/`) {
   const pages = [];
   const byId = new Map();
   const sections = (raw.sections ?? []).map((s) => {
@@ -58,7 +64,7 @@ function normalize(id, raw) {
         backlinks: [],
         section,
         index: section.items.length,
-        url: `guides/${id}/${p.file}`,
+        url: `${base}${p.file}`,
       };
       section.items.push(page);
       pages.push(page);
@@ -75,7 +81,13 @@ function normalize(id, raw) {
 let library = null;
 
 async function loadLibrary() {
-  const index = await getJSON('guides/index.json');
+  // Guides on this device still open when the shelf can't be reached.
+  const local = await localGuides();
+  let index;
+  try { index = await getJSON('guides/index.json'); } catch (err) {
+    if (!local.length) throw err;
+    index = { guides: [] };
+  }
   const guides = await Promise.all((index.guides ?? []).map(async (id) => {
     try {
       return normalize(id, await getJSON(`guides/${id}/guide.json`));
@@ -83,8 +95,129 @@ async function loadLibrary() {
       return { ...normalize(id, {}), title: id, error: String(err.message ?? err) };
     }
   }));
+  const shelf = new Set(guides.map((g) => g.id));
+  for (const g of local) if (!shelf.has(g.id)) guides.push(g);
   library = { guides, byId: new Map(guides.map((g) => [g.id, g])) };
 }
+
+// ---- guides added from a file
+//
+// The file is a .zip of a guide folder (tools/methodos.py pack makes one): guide.json
+// and pages/ at the top, or inside one folder named for the guide. Each file goes into
+// LOCAL_CACHE, so the guide works offline at once and is only ever on this device.
+
+const localURL = (id, rel = '') => new URL(`local/${id}/${rel}`, location.href).href;
+
+async function localGuides() {
+  if (!('caches' in window)) return [];
+  const cache = await caches.open(LOCAL_CACHE);
+  const out = [];
+  for (const req of await cache.keys()) {
+    const m = req.url.match(/\/local\/([^/]+)\/guide\.json$/);
+    if (!m || req.url !== localURL(m[1], 'guide.json')) continue;
+    const id = decodeURIComponent(m[1]);
+    try {
+      const g = normalize(id, await (await cache.match(req)).json(), `local/${id}/`);
+      out.push({ ...g, local: store.get(`local:${id}`, null) ?? {} });
+    } catch {}
+  }
+  return out.sort((a, b) => (a.local.added ?? '').localeCompare(b.local.added ?? ''));
+}
+
+const MIME = {
+  html: 'text/html', htm: 'text/html', css: 'text/css', js: 'text/javascript', mjs: 'text/javascript',
+  json: 'application/json', txt: 'text/plain', md: 'text/plain', svg: 'image/svg+xml',
+  png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp', gif: 'image/gif',
+  avif: 'image/avif', mp3: 'audio/mpeg', wav: 'audio/wav', ogg: 'audio/ogg', m4a: 'audio/mp4',
+  mp4: 'video/mp4', webm: 'video/webm', woff2: 'font/woff2', woff: 'font/woff', pdf: 'application/pdf',
+};
+const mimeOf = (name) => {
+  const type = MIME[name.split('.').pop().toLowerCase()] ?? 'application/octet-stream';
+  return type.startsWith('text/') || type.endsWith('json') || type.endsWith('javascript') ? `${type}; charset=utf-8` : type;
+};
+
+// A small zip reader: the central directory, then each entry stored or deflated.
+// Zip64 and encrypted archives are refused.
+function readZip(buf) {
+  const v = new DataView(buf);
+  let eocd = -1;
+  for (let i = buf.byteLength - 22; i >= Math.max(0, buf.byteLength - 22 - 0xffff); i--) {
+    if (v.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+  }
+  if (eocd < 0) throw new Error('this is not a zip file');
+  const count = v.getUint16(eocd + 10, true);
+  let p = v.getUint32(eocd + 16, true);
+  if (count === 0xffff || p === 0xffffffff) throw new Error('this zip is too large (zip64)');
+  const text = new TextDecoder();
+  const entries = [];
+  for (let n = 0; n < count; n++) {
+    if (v.getUint32(p, true) !== 0x02014b50) throw new Error('the zip file is damaged');
+    const flags = v.getUint16(p + 8, true);
+    const method = v.getUint16(p + 10, true);
+    const size = v.getUint32(p + 20, true);
+    const nameLen = v.getUint16(p + 28, true);
+    const at = v.getUint32(p + 42, true);
+    const name = text.decode(new Uint8Array(buf, p + 46, nameLen));
+    if (flags & 1) throw new Error('the zip is encrypted');
+    if (method !== 0 && method !== 8) throw new Error(`${name}: unsupported compression`);
+    const start = at + 30 + v.getUint16(at + 26, true) + v.getUint16(at + 28, true);
+    entries.push({ name, method, data: new Uint8Array(buf, start, size) });
+    p += 46 + nameLen + v.getUint16(p + 30, true) + v.getUint16(p + 32, true);
+  }
+  return entries;
+}
+
+async function unpack({ method, data }) {
+  if (method === 0) return data;
+  const stream = new Blob([data]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+  return new Uint8Array(await new Response(stream).arrayBuffer());
+}
+
+const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+async function addFromFile(file, say) {
+  const entries = readZip(await file.arrayBuffer())
+    .filter((e) => !e.name.endsWith('/') && !e.name.startsWith('__MACOSX/'));
+  const manifest = entries.find((e) => e.name === 'guide.json')
+    ?? entries.find((e) => /^[^/]+\/guide\.json$/.test(e.name));
+  if (!manifest) throw new Error('there is no guide.json in this file');
+  const prefix = manifest.name.slice(0, -'guide.json'.length);
+  const id = slug(prefix ? prefix.slice(0, -1) : file.name.replace(/\.zip$/i, ''));
+  if (!id) throw new Error('could not tell the guide’s name from the file');
+  if (library.byId.has(id) && !library.byId.get(id).local) {
+    throw new Error(`a guide called “${id}” is already on the shelf`);
+  }
+  let raw;
+  try { raw = JSON.parse(new TextDecoder().decode(await unpack(manifest))); } catch {
+    throw new Error('guide.json is not valid JSON');
+  }
+  const files = entries.filter((e) => e.name.startsWith(prefix)).map((e) => ({ ...e, rel: e.name.slice(prefix.length) }));
+  const unsafe = files.find((f) => f.rel.startsWith('/') || f.rel.split('/').includes('..'));
+  if (unsafe) throw new Error(`${unsafe.name}: unsafe path`);
+
+  const cache = await caches.open(LOCAL_CACHE);
+  await removeLocal(id);
+  let bytes = 0;
+  for (const [i, f] of files.entries()) {
+    const body = await unpack(f);
+    bytes += body.byteLength;
+    await cache.put(localURL(id, f.rel.split('/').map(encodeURIComponent).join('/')),
+      new Response(body, { headers: { 'Content-Type': mimeOf(f.rel), 'Content-Length': String(body.byteLength) } }));
+    say(`Adding “${raw.title ?? id}”: ${i + 1} of ${files.length} files…`);
+  }
+  store.set(`local:${id}`, { added: new Date().toISOString(), bytes, file: file.name });
+  // Ask the browser not to clear these files when space runs low.
+  const kept = await navigator.storage?.persist?.().catch(() => false);
+  return { id, title: raw.title ?? id, files: files.length, bytes, kept };
+}
+
+async function removeLocal(id) {
+  const cache = await caches.open(LOCAL_CACHE);
+  const base = localURL(id);
+  for (const req of await cache.keys()) if (req.url.startsWith(base)) await cache.delete(req);
+}
+
+const megabytes = (n) => n < 1e5 ? `${Math.max(1, Math.round(n / 1e3))} KB` : `${(n / 1e6).toFixed(n < 1e7 ? 1 : 0)} MB`;
 
 // ---- small view helpers
 
@@ -122,9 +255,9 @@ function renderLibrary() {
     const done = doneSet(g.id);
     const meta = g.error
       ? `Could not load: ${esc(g.error)}`
-      : g.pages.length
+      : (g.local ? 'On this device only · ' : '') + (g.pages.length
         ? `${g.pages.length} page${g.pages.length === 1 ? '' : 's'} · ${countLine(g.pages, done)}`
-        : 'No pages yet';
+        : 'No pages yet');
     return `
       <li>
         <a class="guide-card" href="#/${encodeURIComponent(g.id)}">
@@ -139,7 +272,34 @@ function renderLibrary() {
     ${bar({ title: 'Methodos', sub: 'Library' })}
     <main class="page-body">
       <ul class="guide-grid">${cards || '<li class="empty">No guides yet. Add one with <code>tools/methodos.py new</code>.</li>'}</ul>
+      ${'caches' in window ? `<div class="guide-tools library-tools">
+        <button class="button" type="button" data-add>Add a guide from a file</button>
+        <input type="file" accept=".zip,application/zip" hidden data-file>
+        <span class="add-status meta" role="status"></span>
+      </div>` : ''}
     </main>`;
+
+  const input = app.querySelector('[data-file]');
+  const status = app.querySelector('.add-status');
+  app.querySelector('[data-add]')?.addEventListener('click', () => input.click());
+  input?.addEventListener('change', async () => {
+    const file = input.files[0];
+    if (!file) return;
+    const button = app.querySelector('[data-add]');
+    button.disabled = true;
+    try {
+      const r = await addFromFile(file, (msg) => { status.textContent = msg; });
+      library = null;
+      await loadLibrary();
+      renderLibrary();
+      app.querySelector('.add-status').textContent = `Added “${r.title}”: ${r.files} files, ${megabytes(r.bytes)}. ` +
+        (r.kept ? 'The browser will keep it.' : 'The browser may clear it if the device runs low on space.');
+    } catch (err) {
+      status.textContent = `Could not add ${file.name}: ${err.message ?? err}.`;
+      button.disabled = false;
+    }
+    input.value = '';
+  });
 }
 
 // ---- guide view
@@ -227,11 +387,14 @@ function renderGuide(g) {
     ${bar({ back: { href: '#/', label: 'Library' }, title: g.title ?? g.id, sub: g.subtitle })}
     <main class="page-body">
       ${g.description ? `<p class="lede">${esc(g.description)}</p>` : ''}
+      ${g.local ? `<p class="meta">On this device only, added from ${esc(g.local.file ?? 'a file')}${g.local.bytes ? ` (${megabytes(g.local.bytes)})` : ''}. It works offline.</p>` : ''}
       <div class="guide-tools">
         ${last ? `<a class="button primary" href="#/${encodeURIComponent(g.id)}/${encodeURIComponent(last.id)}">Continue: ${esc(last.title)}</a>` : ''}
         ${g.pages.length ? `<label class="search"><span class="visually-hidden">Search this guide</span>
           <input type="search" placeholder="Search ${g.pages.length} pages" value="${esc(q)}" autocomplete="off"></label>` : ''}
-        ${g.pages.length && 'caches' in window ? `<button class="button" type="button" data-save>Save for offline</button>` : ''}
+        ${g.local
+          ? `<button class="button" type="button" data-remove>Remove from this device</button>`
+          : g.pages.length && 'caches' in window ? `<button class="button" type="button" data-save>Save for offline</button>` : ''}
         <span class="save-status meta" role="status"></span>
       </div>
       <div class="guide-body">${renderGuideBody(g, q.trim().toLowerCase())}</div>
@@ -243,6 +406,13 @@ function renderGuide(g) {
     app.querySelector('.guide-body').innerHTML = renderGuideBody(g, input.value.trim().toLowerCase());
   });
   app.querySelector('[data-save]')?.addEventListener('click', (e) => saveOffline(g, e.currentTarget));
+  app.querySelector('[data-remove]')?.addEventListener('click', async () => {
+    if (!confirm(`Remove “${g.title ?? g.id}” from this device? Its pages are deleted; add the file again to bring it back.`)) return;
+    await removeLocal(g.id);
+    store.set(`local:${g.id}`, null);
+    library = null;
+    location.hash = '#/';
+  });
 }
 
 // Fetch every page of a guide into the cache the service worker reads from.

@@ -46,7 +46,13 @@ sources on tikiserv, and the mechanics. A new guide is data and is not blocked b
 - **Offline:** the service worker precaches the shell, serves same-site files network-first
   with a cache fallback, and CDN files cache-first. It only touches caches named `methodos-*`
   (andrewrausch.com is a shared origin). "Save for offline" on a guide caches all its pages.
-- **Curation:** `tools/methodos.py add|new|list|check` (stdlib). CI runs `check`.
+- **Guides from a file** (2026-10-24): "Add a guide from a file" on the library takes a `.zip`
+  of a guide folder (`tools/methodos.py pack <dir>` makes one) and keeps it on that device only:
+  files go into the `methodos-local` cache at `local/<id>/...`, and `sw.js` answers `local/`
+  from that cache alone, never the network. This is how private guides (commercial IP, such as
+  the Elden Ring guide in the git-excluded `private/` folder) reach the Pixel: pack, Taildrop,
+  add. Never put a private guide under `site/` or in git.
+- **Curation:** `tools/methodos.py add|new|list|files|check|pack` (stdlib). CI runs `check`.
 - **Deploy:** every push to `main` runs `pages.yml` and lands at andrewrausch.com/methodos/
   (repo public since 2026-10-24). The tailnet serve at :8450 still mirrors `site/` straight from
   the checkout, handy for trying a change before pushing; `tailscale serve --https=8450 off`
