@@ -21,7 +21,7 @@ Tide steps 1 to 3, the Tide pad card.
 - **Screen labels from his 6.6.3 photos:** the mixer row is DRY, MFX, DEL, REV (not CHO), and
   PAN 80 is center.
 - **No SCALE on Low Tide:** the C♯ in bar 8 isn't in D minor and would be quantized away.
-- **Song 2 candidate: Faded Polaroid**, the song he started with ChatGPT (`docs/sources/`).
+- **Song 2 candidate: Faded Polaroid**, the song he started with ChatGPT (kept on tikiserv in `docs/sources/`, not in git).
   It already has a hand-written arp, a Paraphonic chord patch with on-device COL findings, and a
   bass. Its patch values need re-checking (the chat used CHO and PAN 00).
 

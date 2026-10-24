@@ -7,3 +7,6 @@ dist/
 __pycache__/
 .claude/
 .DS_Store
+
+# Private sources kept on tikiserv only (chat exports, photos of his screens)
+docs/sources/
