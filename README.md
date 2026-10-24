@@ -7,13 +7,14 @@ else, are added as data without changing the app.
 
 ## Run it
 
+Live at **https://andrewrausch.com/methodos/** (every push to `main` deploys). Locally:
+
 ```
 python3 -m http.server 8000 -d site      # then open http://localhost:8000/
 ```
 
-On the tailnet it is served from tikiserv at **https://tikiserv.saiga-wage.ts.net:8450/**
-(`tailscale serve`, straight from `site/`, so a push isn't needed to see a change there).
-That URL is HTTPS, so the Pixel can install it as an app.
+On the tailnet, tikiserv also serves `site/` straight from the checkout at
+https://tikiserv.saiga-wage.ts.net:8450/, so a change can be tried there before pushing.
 
 ## Add an artifact
 

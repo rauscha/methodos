@@ -5,8 +5,9 @@ Claude or ChatGPT and curated into small "mini wikis" on one subject. Think of i
 between his mfm-media interactive decks and a small Obsidian vault: pages you can browse, link
 between, and work through step by step.
 
-**Status (2026-10-23): v0.1 built, not yet tried by Andrew.** A static PWA in `site/`, served on
-the tailnet at https://tikiserv.saiga-wage.ts.net:8450/. The M8 guide has its first pages. Plan for that guide: `docs/m8-guide-plan.md` (rev 3, approved). Slice 1 (Low Tide steps 1–3, Tide pad, the `kit/` panels and browser demo engine) built 2026-10-23, waiting on his try with the M8 on his trip. Reviewed the same evening: `docs/review-2026-10-23.md` holds the findings, his decisions (it's a "show me how" app: no more work on making the browser sound like the M8) and the fix plan, in order. **His reaction to it on the Pixel gates anything
+**Status (2026-10-23): v0.1 built, not yet tried by Andrew.** A static PWA in `site/`, live at
+https://andrewrausch.com/methodos/ (public repo, Pages via Actions, since 2026-10-24; unlisted, no
+card on the apps page) and on the tailnet at https://tikiserv.saiga-wage.ts.net:8450/. The M8 guide has its first pages. Plan for that guide: `docs/m8-guide-plan.md` (rev 3, approved). Slice 1 (Low Tide steps 1–3, Tide pad, the `kit/` panels and browser demo engine) built 2026-10-23, waiting on his try with the M8 on his trip. Reviewed the same evening: `docs/review-2026-10-23.md` holds the findings, his decisions (it's a "show me how" app: no more work on making the browser sound like the M8) and the fix plan, in order. **His reaction to it on the Pixel gates anything
 further**; don't add features on top of it before then.
 
 ## The idea (Andrew, 2026-10-23)
@@ -42,10 +43,10 @@ further**; don't add features on top of it before then.
   with a cache fallback, and CDN files cache-first. It only touches caches named `methodos-*`
   (andrewrausch.com is a shared origin). "Save for offline" on a guide caches all its pages.
 - **Curation:** `tools/methodos.py add|new|list|check` (stdlib). CI runs `check`.
-- **Deploy:** the repo is private and Pages on this account needs a public repo, so
-  `pages.yml` skips itself while private. Going public is Andrew's call; then set Pages source to
-  GitHub Actions and it lands at andrewrausch.com/methodos/. Until then, the tailnet URL.
-  Undo the tailnet serve with `tailscale serve --https=8450 off`.
+- **Deploy:** every push to `main` runs `pages.yml` and lands at andrewrausch.com/methodos/
+  (repo public since 2026-10-24). The tailnet serve at :8450 still mirrors `site/` straight from
+  the checkout, handy for trying a change before pushing; `tailscale serve --https=8450 off`
+  removes it. `docs/sources/` (chat exports, screen photos) is gitignored and stays on tikiserv.
 - The demo guide `field-guide` ("How Methodos works") documents the app and is non-music on
   purpose, as a standing test that nothing assumes the M8.
 
