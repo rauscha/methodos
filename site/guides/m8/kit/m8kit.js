@@ -474,18 +474,20 @@ class M8Player extends HTMLElement {
     const spec = await (await fetch(this.getAttribute('src'))).json();
     this.model = build(spec, this.step);
     const label = this.getAttribute('label');
-    this.querySelector('.m8-where').textContent =
-      `${label ? label + ' · ' : ''}${spec.tempo} BPM · ${this.model.len / 16} bar${this.model.len > 16 ? 's' : ''} · stopped`;
+    const where = this.querySelector('.m8-where');
+    this.idle = `${spec.tempo} BPM · ${this.model.len / 16} bar${this.model.len > 16 ? 's' : ''}`;
+    where.textContent = this.idle;
+    if (label) { where.title = label; this.querySelector('.m8-play').setAttribute('aria-label', `Play: ${label}`); }
     const mutes = this.querySelector('.m8-mutes');
     for (const tr of this.model.tracks) {
       const b = document.createElement('button');
       b.type = 'button'; b.className = 'm8-mute'; b.setAttribute('aria-pressed', 'false');
-      b.textContent = `T${tr.n} ${tr.name}`;
-      b.title = 'Mute or unmute this track';
+      b.textContent = `T${tr.n}`;
+      b.setAttribute('aria-label', `Mute track ${tr.n}, ${tr.name}`);
+      b.title = `Mute T${tr.n} ${tr.name}`;
       b.addEventListener('click', () => {
         const on = b.getAttribute('aria-pressed') !== 'true';
         b.setAttribute('aria-pressed', String(on));
-        b.textContent = `T${tr.n} ${tr.name}${on ? ' (muted)' : ''}`;
         this.engine?.mute(tr.n, on);
         this.muted = { ...this.muted, [tr.n]: on };
       });
@@ -523,9 +525,11 @@ class M8Player extends HTMLElement {
     const where = this.querySelector('.m8-where');
     if (s.playing) {
       const p = Math.floor(s.pos) % this.model.len;
-      where.textContent = `Bar ${Math.floor(p / 16) + 1} · row ${(p % 16).toString(16).toUpperCase()} · ${this.model.spec.tempo} BPM`;
+      where.textContent = `Bar ${Math.floor(p / 16) + 1} · row ${(p % 16).toString(16).toUpperCase()}`;
     } else if (s.engine) {
-      where.textContent = 'Stopped: the release is ringing out';
+      where.textContent = 'Stopped · release ringing';
+    } else if (this.idle && where.textContent !== this.idle && this.model) {
+      where.textContent = this.idle;
     }
     for (const panel of pages.panels) panel.frame?.(s);
     requestAnimationFrame(() => this.loop());
@@ -703,7 +707,7 @@ class M8Roll extends Panel {
     this.draw(s.playing ? p : null);
   }
   draw(p) {
-    const lane = 34, left = 34, rowH = Math.max(5, Math.min(9, 260 / (this.hi - this.lo)));
+    const lane = 26, left = 36, rowH = Math.max(5, Math.min(9, 260 / (this.hi - this.lo)));
     const H = lane + (this.hi - this.lo) * rowH + 18;
     const { g, w, h } = canvasFor(this, H);
     const ink = css(this, '--m8-ink'), mid = css(this, '--m8-mid'), faint = css(this, '--m8-faint'), paper = css(this, '--m8-paper');
@@ -712,7 +716,7 @@ class M8Roll extends Panel {
     const x = (t) => left + (t / L) * W;
     const y = (n) => lane + (this.hi - n) * rowH;
     g.clearRect(0, 0, w, h);
-    g.font = '11px ui-monospace, Menlo, monospace';
+    g.font = '12px ui-monospace, Menlo, monospace';
     g.textBaseline = 'middle';
     // pitch grid: a light band on every C, labels on C
     for (let n = this.lo; n <= this.hi; n++) {
@@ -730,18 +734,28 @@ class M8Roll extends Panel {
     const harmony = this.model.step >= 3 || this.hasAttribute('chords') ? this.model.spec.harmony : [];
     const bars = L / 16;
     g.textBaseline = 'alphabetic';
-    let lastEnd = [-1, -1];
+    // Each name sits inside its own bars. A name too long for its bars is left out, unless it
+    // is the chord sounding now, which is drawn bold on a paper backing so it stays legible.
+    let current = null;
     for (const hm of harmony) {
       if (hm.bar > bars) continue;
-      const cur = p != null && Math.floor(p / 16) + 1 >= hm.bar && Math.floor(p / 16) + 1 < hm.bar + (hm.hold ?? 1);
-      g.font = `${cur ? 700 : 500} 12px system-ui, sans-serif`;
-      g.fillStyle = cur ? ink : mid;
-      const x0 = x((hm.bar - 1) * 16) + 3;
-      const r = x0 > lastEnd[0] + 4 ? 0 : 1; // second row when the first is still occupied
-      g.fillText(hm.chord, x0, r ? 26 : 12);
-      lastEnd[r] = x0 + g.measureText(hm.chord).width;
+      const bar = p == null ? -1 : Math.floor(p / 16) + 1;
+      const cur = bar >= hm.bar && bar < hm.bar + (hm.hold ?? 1);
+      const x0 = x((hm.bar - 1) * 16) + 3, span = x((hm.bar - 1 + (hm.hold ?? 1)) * 16) - x0 - 4;
+      g.font = `${cur ? 700 : 500} 13px system-ui, sans-serif`;
+      if (cur) { current = { hm, x0 }; continue; }
+      if (g.measureText(hm.chord).width > span) continue;
+      g.fillStyle = mid;
+      g.fillText(hm.chord, x0, 17);
     }
-    g.font = '10px ui-monospace, Menlo, monospace';
+    if (current) {
+      g.font = '700 13px system-ui, sans-serif';
+      const tw = g.measureText(current.hm.chord).width;
+      const x0 = Math.min(current.x0, w - tw - 4);
+      g.fillStyle = paper; g.fillRect(x0 - 3, 2, tw + 6, 20);
+      g.fillStyle = ink; g.fillText(current.hm.chord, x0, 17);
+    }
+    g.font = '12px ui-monospace, Menlo, monospace';
     g.fillStyle = mid;
     for (let b = 0; b < bars; b++) g.fillText(String(b + 1), x(b * 16) + 3, h - 3);
     // notes
@@ -754,7 +768,7 @@ class M8Roll extends Panel {
         g.fillStyle = on ? mid : paper;
         g.fillRect(x0, yy, x1 - x0, hh);
         g.save(); g.beginPath(); g.rect(x0, yy, x1 - x0, hh); g.clip();
-        g.strokeStyle = on ? ink : faint; g.lineWidth = 1;
+        g.strokeStyle = on ? ink : mid; g.lineWidth = 1;
         for (let k = x0 - hh; k < x1; k += 5) { g.beginPath(); g.moveTo(k, yy + hh); g.lineTo(k + hh, yy); g.stroke(); }
         g.restore();
         g.strokeStyle = ink; g.lineWidth = on ? 2 : 1;
@@ -767,14 +781,18 @@ class M8Roll extends Panel {
     // top voice line
     const tops = this.notes.filter((nt) => nt.top && nt.inst === 'HYPERSYNTH').sort((a, b) => a.t0 - b.t0);
     if (tops.length) {
-      g.strokeStyle = ink; g.lineWidth = 3; g.lineJoin = 'round';
-      g.beginPath();
-      tops.forEach((nt, i) => {
-        const yy = y(nt.n) - rowH / 2 - 3;
-        if (i) g.lineTo(x(nt.t0), yy); else g.moveTo(x(nt.t0), yy);
-        g.lineTo(x(nt.t1), yy);
-      });
-      g.stroke();
+      // Through the middle of the top notes, on a paper halo, so it reads as its own line.
+      const path = () => {
+        g.beginPath();
+        tops.forEach((nt, i) => {
+          const yy = y(nt.n);
+          if (i) g.lineTo(x(nt.t0), yy); else g.moveTo(x(nt.t0), yy);
+          g.lineTo(x(nt.t1), yy);
+        });
+      };
+      g.lineJoin = 'round'; g.lineCap = 'round';
+      path(); g.strokeStyle = paper; g.lineWidth = 7; g.stroke();
+      path(); g.strokeStyle = ink; g.lineWidth = 3; g.stroke();
     }
     // playhead
     if (p != null) { g.fillStyle = ink; g.fillRect(x(p) - 1, lane - 6, 2, h - lane - 10); }
@@ -854,12 +872,13 @@ class M8Envelope extends Panel {
     this.draw(v?.env ? { env: v.env, t: s.t } : null);
   }
   draw(live) {
-    const { g, w, h } = canvasFor(this, 150);
+    const { g, w, h } = canvasFor(this, 176);
     const ink = css(this, '--m8-ink'), mid = css(this, '--m8-mid'), faint = css(this, '--m8-faint');
     const e = this.env;
+    const barSec = 240 / this.model.spec.tempo;
     const holdShown = Math.max(e.atk * 0.6, 0.8);
     const total = e.atk + e.dec + holdShown + e.rel;
-    const L = 8, R = w - 8, T = 14, B = h - 34;
+    const L = 8, R = w - 8, T = 8, B = h - 64;
     const x = (t) => L + (t / total) * (R - L);
     const y = (lv) => B - lv * (B - T);
     g.clearRect(0, 0, w, h);
@@ -869,17 +888,24 @@ class M8Envelope extends Panel {
     g.lineTo(x(e.atk + e.dec), y(e.amt * e.sus));
     g.lineTo(x(e.atk + e.dec + holdShown), y(e.amt * e.sus));
     g.lineTo(x(total), y(0)); g.stroke();
-    g.fillStyle = faint; g.fillRect(L, B, R - L, 1);
-    // gate bar: held from 0 to OFF
+    g.fillStyle = mid; g.fillRect(L, B, R - L, 1);
+    // a tick per bar along the time axis
+    for (let t = 0, i = 0; t <= total + 1e-6; t += barSec, i++) {
+      g.fillStyle = mid; g.fillRect(x(t) - 0.5, B, 1.5, 6);
+    }
     const off = e.atk + e.dec + holdShown;
-    g.fillStyle = mid; g.fillRect(x(0), B + 10, x(off) - x(0), 6);
-    g.font = '11px system-ui, sans-serif'; g.fillStyle = mid; g.textBaseline = 'top';
-    g.fillText('note held', x(0), B + 19);
-    g.fillStyle = ink; g.fillRect(x(off) - 1, B + 4, 2, 18);
-    g.fillText('OFF', x(off) + 4, B + 19);
-    g.textBaseline = 'alphabetic';
+    g.font = '12px system-ui, sans-serif'; g.textBaseline = 'top';
+    // stage names under the baseline, out of the dot's way
     const labels = [['ATK', e.atk / 2], ['SUS', e.atk + e.dec + holdShown / 2], ['REL', off + e.rel / 2]];
-    for (const [k, t] of labels) { g.fillStyle = mid; g.fillText(k, x(t) - 10, T - 2); }
+    for (const [k, t] of labels) { g.fillStyle = mid; g.fillText(k, x(t) - 11, B + 9); }
+    // gate bar: held from 0 to OFF
+    g.fillStyle = mid; g.fillRect(x(0), B + 30, x(off) - x(0), 6);
+    g.fillText('note held', x(0), B + 40);
+    g.fillStyle = ink; g.fillRect(x(off) - 1, B + 24, 2, 18);
+    g.fillText('OFF', x(off) + 5, B + 40);
+    g.fillStyle = mid; g.textAlign = 'right';
+    g.fillText('ticks: one bar each', R, B + 40);
+    g.textAlign = 'left'; g.textBaseline = 'alphabetic';
     // the dot
     const ro = this.querySelector('.m8-readout');
     if (live) {
@@ -918,7 +944,7 @@ class M8Filter extends Panel {
     this.draw(v && s.playing ? { v, t: s.t, an: s.engine.trackOut.get(v.track).analyser, sr: s.engine.ctx.sampleRate } : null);
   }
   draw(live) {
-    const { g, w, h } = canvasFor(this, 230);
+    const { g, w, h } = canvasFor(this, 248);
     const ink = css(this, '--m8-ink'), mid = css(this, '--m8-mid'), faint = css(this, '--m8-faint');
     g.clearRect(0, 0, w, h);
     const base = cutoffHz(hex(this.inst.params.CUTOFF ?? 'FF'));
@@ -926,7 +952,7 @@ class M8Filter extends Panel {
     const cents = this.lfo ? lfoCents(hex(this.lfo.p.AMT)) : 0;
     const now = live ? live.v.cutoffAt(live.t) : base;
     const fy = (f, top, bot) => bot - (Math.log2(f / 20) / 10) * (bot - top);
-    g.font = '11px system-ui, sans-serif';
+    g.font = '12px system-ui, sans-serif';
     // top: cutoff over one LFO cycle
     const L = 40, R = w - 8, T1 = 14, B1 = 92;
     g.fillStyle = mid; g.fillText(this.lfo ? `Cutoff over one LFO cycle (${(period / (240 / this.model.spec.tempo)).toFixed(0)} bars)` : 'Cutoff (no LFO yet: it stays put)', L, 10);
@@ -942,19 +968,29 @@ class M8Filter extends Panel {
       i ? g.lineTo(xx, yy) : g.moveTo(xx, yy);
     }
     g.stroke();
+    // a tick and number per bar of the cycle, to match the transport's "Bar n"
+    const cycleBars = Math.round(period / (240 / this.model.spec.tempo));
+    if (this.lfo && cycleBars > 1 && cycleBars <= 32) {
+      g.fillStyle = mid;
+      for (let b = 0; b < cycleBars; b++) {
+        const xx = L + (b / cycleBars) * (R - L);
+        g.fillRect(xx, B1 - 4, 1.5, 8);
+        g.fillText(String(b + 1), xx + 3, B1 + 14);
+      }
+    }
     if (live && this.lfo) {
       const ph = (((live.t - live.v.lfo.start) / period) % 1 + 1) % 1;
       g.fillStyle = ink; g.beginPath(); g.arc(L + ph * (R - L), fy(now, T1, B1), 6, 0, Math.PI * 2); g.fill();
     }
     // bottom: spectrum + response
-    const T2 = 118, B2 = h - 16;
+    const T2 = 132, B2 = h - 18;
     g.fillStyle = mid; g.fillText('Filter curve (line) over the sound of this track (bars)', L, T2 - 6);
     const xf = (f) => L + (Math.log2(f / 20) / 10) * (R - L);
     if (live) {
       const an = live.an;
       const bins = new Float32Array(an.frequencyBinCount);
       an.getFloatFrequencyData(bins);
-      g.fillStyle = faint;
+      g.fillStyle = mid;
       const cols = 90;
       for (let c = 0; c < cols; c++) {
         const f0 = 20 * 2 ** (c / cols * 10), f1 = 20 * 2 ** ((c + 1) / cols * 10);

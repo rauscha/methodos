@@ -6,7 +6,7 @@
   --m8-card: #f1eee6;
   --m8-ink: #1d1b17;
   --m8-ink-2: #4a463e;
-  --m8-mid: #7d776b;
+  --m8-mid: #6b665a;
   --m8-faint: #cfc9bc;
   --m8-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   color-scheme: light;
@@ -77,17 +77,17 @@ m8-player {
   background: var(--m8-paper);
   border-bottom: 1px solid var(--m8-faint);
 }
-.m8-transport { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; font: 0.85rem/1.3 system-ui, sans-serif; }
+.m8-transport { display: flex; flex-wrap: nowrap; align-items: center; gap: 8px; font: 0.85rem/1.3 system-ui, sans-serif; }
 .m8-transport button {
-  min-height: 36px; padding: 0 14px; border-radius: 999px;
+  min-height: 44px; min-width: 44px; padding: 0 12px; border-radius: 999px;
   border: 1.5px solid var(--m8-ink); background: transparent; color: var(--m8-ink);
   font: 600 0.85rem/1 system-ui, sans-serif; cursor: pointer;
 }
 .m8-play { min-width: 78px; }
 .m8-play[aria-pressed="true"] { background: var(--m8-ink); color: var(--m8-paper); }
 .m8-mute[aria-pressed="true"] { border-style: dashed; color: var(--m8-mid); text-decoration: line-through; }
-.m8-where { font-family: var(--m8-mono); color: var(--m8-ink-2); flex: 1 1 160px; }
-.m8-mutes { display: flex; gap: 6px; flex-wrap: wrap; }
+.m8-where { font-family: var(--m8-mono); color: var(--m8-ink-2); flex: 1 1 0; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.m8-mutes { display: flex; gap: 6px; flex-shrink: 0; }
 
 /* ---- panels */
 
@@ -113,7 +113,7 @@ m8-player {
 .m8-grid th, .m8-grid td { padding: 1px 8px 1px 0; text-align: left; white-space: nowrap; color: var(--m8-ink); }
 .m8-grid thead th { color: var(--m8-mid); font-weight: 600; }
 .m8-grid tbody th { color: var(--m8-mid); font-weight: 500; width: 2.6em; }
-.m8-dim { color: var(--m8-mid) !important; opacity: 0.75; }
+.m8-dim { color: var(--m8-mid) !important; }
 .m8-cursor { visibility: hidden; margin-right: 3px; }
 .m8-current .m8-cursor { visibility: visible; color: var(--m8-ink); }
 .m8-current th, .m8-current td { font-weight: 800; }
