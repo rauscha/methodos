@@ -81,7 +81,10 @@ function build(spec, step) {
       banks: (inst.banks ?? []).filter(on),
     };
   }
-  return { spec, step, tracks, len, insts, on };
+  // Harmony entries show once their own step is reached (default: with the first chord
+  // change, i.e. when the song is longer than one bar), and only inside the song's length.
+  const harmony = (spec.harmony ?? []).filter((h) => (h.step ?? (len > 16 ? 0 : 99)) <= step && (h.bar - 1) * 16 < len);
+  return { spec, step, tracks, len, insts, on, harmony };
 }
 
 // The notes a Hypersynth event actually sounds: the played note plus its bank's intervals.
@@ -91,13 +94,6 @@ function chordOf(model, ev) {
   const bankId = ev.fx.find((f) => f.bank)?.bank ?? inst.params.CHORD ?? '00';
   const bank = inst.banks.find((b) => b.bank === bankId) ?? inst.banks[0];
   return bank ? bank.iv.map((i) => ev.note + hex(i)) : [ev.note];
-}
-
-function eventAt(track, pos) {
-  const local = ((pos % track.len) + track.len) % track.len;
-  let hit = null;
-  for (const e of track.events) if (e.t <= local) hit = e;
-  return hit ?? track.events[track.events.length - 1] ?? null;
 }
 
 // ---------------------------------------------------------------- envelope model
@@ -200,13 +196,14 @@ class Voice {
     const lfoMod = inst.mods.find((m) => m.type === 'LFO' && m.dest === 'CUTOFF');
     if (lfoMod) {
       const period = hex(lfoMod.p.FREQ) * (60 / engine.tempo / 4); // FREQ in steps (demo reading)
-      this.lfo = { period, cents: lfoCents(hex(lfoMod.p.AMT)), start: engine.t0 };
+      const start = Math.max(engine.t0, ctx.currentTime);
+      this.lfo = { period, cents: lfoCents(hex(lfoMod.p.AMT)), start };
       const osc = ctx.createOscillator();
       osc.frequency.value = 1 / period;
       const depth = ctx.createGain();
       depth.gain.value = this.lfo.cents;
       osc.connect(depth).connect(this.filter.detune);
-      osc.start(engine.t0);
+      osc.start(start);
       this.nodes = [osc];
     } else {
       this.nodes = [];
@@ -236,7 +233,7 @@ class Voice {
   }
   stop() {
     const t = this.engine.ctx.currentTime;
-    for (const o of [...this.nodes, ...this.oscs.flat()]) try { o.stop(t + 0.05); } catch {}
+    for (const o of [...this.nodes, ...this.oscs.flat(), this.sub].filter(Boolean)) try { o.stop(t + 0.05); } catch {}
   }
 }
 
@@ -278,7 +275,6 @@ class HyperVoice extends Voice {
       if (!this.sub) {
         this.sub = ctx.createOscillator(); this.sub.type = 'square';
         this.subG = ctx.createGain(); this.sub.connect(this.subG).connect(this.filter); this.sub.start(t);
-        this.oscs.push([this.sub]);
       }
       this.sub.frequency.setValueAtTime(hz(notes[0] - (sub >= 0x80 ? 12 : 24)), t);
       this.subG.gain.setTargetAtTime(0.12 * vel, t, 0.01);
@@ -336,6 +332,9 @@ class Engine {
     this.model = model;
     this.tempo = model.spec.tempo;
     this.stepDur = 60 / this.tempo / 4;
+    this.voices = new Map();   // "track:inst" -> voice
+    this.trackOut = new Map(); // track -> { gain, rev, del, analyser }
+    this.starting = true;
   }
   async start() {
     const ctx = this.ctx = new AudioContext({ latencyHint: 'playback' });
@@ -357,29 +356,31 @@ class Engine {
     const dlp = ctx.createBiquadFilter(); dlp.frequency.value = 2500;
     this.delay.connect(dlp).connect(fb).connect(this.delay);
     dlp.connect(master);
-    this.voices = new Map();   // "track:inst" -> voice
-    this.trackOut = new Map(); // track -> { gain, analyser }
     for (const tr of this.model.tracks) {
-      const g = ctx.createGain();
+      const g = ctx.createGain();           // the track's mute point; dry signal through here
       const a = ctx.createAnalyser(); a.fftSize = 4096;
-      g.connect(a);
-      this.trackOut.set(tr.n, { gain: g, analyser: a, muted: false });
+      g.connect(a); g.connect(master);
+      const rev = ctx.createGain(); rev.connect(this.reverb); // sends, also muted with the track
+      const del = ctx.createGain(); del.connect(this.delay);
+      this.trackOut.set(tr.n, { gain: g, rev, del, analyser: a, muted: false });
     }
     this.next = this.t0;
     this.stepIndex = 0;
+    this.starting = false;
     this.timer = setInterval(() => this.pump(), 25);
     this.pump();
   }
+  // A voice's dry level and sends sit before the track gain, so muting the track mutes
+  // its reverb and delay too (as muting a track does on the M8).
   route(out, p) {
     const { ctx } = this;
     const tr = this._routing;
-    out.connect(tr.gain);
     const dry = ctx.createGain(); dry.gain.value = hex(p.DRY ?? 'C0') / 255;
-    tr.gain.connect(dry).connect(this.master);
+    out.connect(dry).connect(tr.gain);
     const rev = ctx.createGain(); rev.gain.value = hex(p.REV ?? '00') / 255 * 0.6;
-    out.connect(rev).connect(this.reverb);
+    out.connect(rev).connect(tr.rev);
     const del = ctx.createGain(); del.gain.value = hex(p.DEL ?? '00') / 255 * 0.5;
-    out.connect(del).connect(this.delay);
+    out.connect(del).connect(tr.del);
   }
   voiceFor(track, instId) {
     const key = `${track.n}:${instId}`;
@@ -396,7 +397,14 @@ class Engine {
   }
   pump() {
     const { ctx } = this;
-    while (this.next < ctx.currentTime + 0.15) {
+    // After a stall (screen lock, hidden tab) skip to the first future step rather than
+    // firing the whole backlog at once.
+    if (this.next < ctx.currentTime) {
+      const behind = Math.ceil((ctx.currentTime - this.next) / this.stepDur);
+      this.next += behind * this.stepDur;
+      this.stepIndex += behind;
+    }
+    while (this.next < ctx.currentTime + 0.3) {
       for (const tr of this.model.tracks) {
         const local = this.stepIndex % tr.len;
         for (const ev of tr.events) {
@@ -420,10 +428,11 @@ class Engine {
     const t = this.trackOut.get(n);
     if (!t) return;
     t.muted = on;
-    t.gain.gain.setTargetAtTime(on ? 0 : 1, this.ctx.currentTime, 0.02);
+    for (const g of [t.gain, t.rev, t.del]) g.gain.setTargetAtTime(on ? 0 : 1, this.ctx.currentTime, 0.02);
   }
   // Stop sends every voice an OFF, then lets the release ring before closing.
   async stop() {
+    if (this.starting || this.stoppedAt) return;
     clearInterval(this.timer);
     const t = this.ctx.currentTime;
     let ring = 0.1;
@@ -500,14 +509,15 @@ class M8Player extends HTMLElement {
   }
   async toggle() {
     const btn = this.querySelector('.m8-play');
+    if (this.engine?.starting) return;
     if (this.engine && !this.engine.stoppedAt) {
       await this.engine.stop();
-      this.last = this.engine;
       btn.textContent = 'Play'; btn.setAttribute('aria-pressed', 'false');
       return;
     }
     this.engine = new Engine(this.model);
-    await this.engine.start();
+    btn.disabled = true;
+    try { await this.engine.start(); } finally { btn.disabled = false; }
     for (const [n, on] of Object.entries(this.muted)) if (on) this.engine.mute(Number(n), true);
     btn.textContent = 'Stop'; btn.setAttribute('aria-pressed', 'true');
   }
@@ -546,7 +556,7 @@ class Panel extends HTMLElement {
     this.model = player.model;
     this.setup?.();
     pages.panels.add(this);
-    new ResizeObserver(() => this.setup?.()).observe(this);
+    new ResizeObserver(() => (this.resized ?? this.setup)?.call(this)).observe(this);
   }
   isNew(x) { return (x?.step ?? 0) === this.model.step; }
 }
@@ -739,6 +749,7 @@ class M8Roll extends Panel {
     }
     const ns = this.notes.map((x) => x.n);
     this.lo = Math.min(...ns) - 2; this.hi = Math.max(...ns) + 2;
+    this.resized = () => { this._p = undefined; this.draw(this._lastP ?? null); };
     if (!this.querySelector('.m8-readout')) {
       this.innerHTML = `<p class="m8-legend">${this.tracks.map((t) => {
         const kind = this.notes.find((x) => x.track === t.n)?.inst === 'HYPERSYNTH' ? 'outlined, hatched blocks; the top voice is the thick line' : 'solid blocks';
@@ -751,7 +762,8 @@ class M8Roll extends Panel {
     const p = s.pos == null ? null : s.pos % this.model.len;
     if (p === this._p) return;
     this._p = p;
-    this.draw(s.playing ? p : null);
+    this._lastP = s.playing ? p : null;
+    this.draw(this._lastP);
   }
   draw(p) {
     const lane = 26, left = 36, rowH = Math.max(5, Math.min(9, 260 / (this.hi - this.lo)));
@@ -778,7 +790,7 @@ class M8Roll extends Panel {
       g.fillRect(x(t), lane - 4, t % 16 === 0 ? 1.5 : 1, h - lane - 14);
     }
     // chord lane
-    const harmony = this.model.step >= 3 || this.hasAttribute('chords') ? this.model.spec.harmony : [];
+    const harmony = this.model.harmony;
     const bars = L / 16;
     g.textBaseline = 'alphabetic';
     // Each name sits inside its own bars. A name too long for its bars is left out, unless it
@@ -864,7 +876,7 @@ class M8Roll extends Panel {
 class M8Progression extends Panel {
   setup() {
     if (this._built) return; this._built = true;
-    const hs = this.model.spec.harmony;
+    const hs = this.model.harmony;
     this.innerHTML = `<ol class="m8-prog ${this.hasAttribute('list') ? 'm8-prog-list' : ''}">${hs.map((h, i) => `
       <li data-i="${i}">
         <span class="m8-roman">${h.roman}</span>
@@ -875,12 +887,11 @@ class M8Progression extends Panel {
       </li>`).join('')}</ol>`;
   }
   frame(s) {
-    const hs = this.model.spec.harmony;
+    const hs = this.model.harmony;
     let cur = -1;
     if (s.playing && s.pos != null) {
       const bar = Math.floor((s.pos % this.model.len) / 16) + 1;
       hs.forEach((h, i) => { if (bar >= h.bar) cur = i; });
-      if (this.model.len < 128) cur = -1;
     }
     if (cur === this._cur) return;
     this._cur = cur;
@@ -902,6 +913,7 @@ class M8Envelope extends Panel {
     this.mod = inst?.mods.find((m) => m.slot === slot);
     if (!this.mod) { this.textContent = 'This envelope arrives in a later step.'; return; }
     this.env = new Env(this.mod.p, this.model.spec.tempo);
+    this.resized = () => this.draw(this._live ?? null);
     if (!this.querySelector('.m8-readout')) {
       const tk = ticks(this.model.spec.tempo);
       const p = this.mod.p;
@@ -916,7 +928,8 @@ class M8Envelope extends Panel {
   frame(s) {
     if (!this.mod) return;
     const v = s.engine && [...s.engine.voices.values()].find((x) => x.inst.id === this.getAttribute('inst'));
-    this.draw(v?.env ? { env: v.env, t: s.t } : null);
+    this._live = v?.env ? { env: v.env, t: s.t } : null;
+    this.draw(this._live);
   }
   draw(live) {
     const { g, w, h } = canvasFor(this, 176);
@@ -976,6 +989,7 @@ class M8Filter extends Panel {
     this.inst = this.model.insts[this.getAttribute('inst')];
     if (!this.inst) { this.textContent = 'This instrument arrives in a later step.'; return; }
     this.lfo = this.inst.mods.find((m) => m.type === 'LFO' && m.dest === 'CUTOFF');
+    this.resized = () => this.draw(this._live ?? null);
     if (!this.querySelector('.m8-readout')) this.insertAdjacentHTML('beforeend', '<p class="m8-readout" aria-live="off"></p>');
     const off = new OfflineAudioContext(1, 128, 44100);
     this.bq = off.createBiquadFilter();
@@ -988,7 +1002,8 @@ class M8Filter extends Panel {
   frame(s) {
     if (!this.inst) return;
     const v = s.engine && [...s.engine.voices.values()].find((x) => x.inst.id === this.inst.id);
-    this.draw(v && s.playing ? { v, t: s.t, an: s.engine.trackOut.get(v.track).analyser, sr: s.engine.ctx.sampleRate } : null);
+    this._live = v && s.playing ? { v, t: s.t, an: s.engine.trackOut.get(v.track).analyser, sr: s.engine.ctx.sampleRate } : null;
+    this.draw(this._live);
   }
   draw(live) {
     const { g, w, h } = canvasFor(this, 248);

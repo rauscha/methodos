@@ -7,7 +7,9 @@
 // andrewrausch.com is one origin shared by many apps, so this worker only ever
 // touches caches whose names start with "methodos-".
 
-const SHELL_CACHE = 'methodos-shell-v1';
+// Bump SHELL_VERSION with every change to a shell file, or offline users keep the old copy.
+const SHELL_VERSION = '2026-10-24a';
+const SHELL_CACHE = `methodos-shell-${SHELL_VERSION}`;
 const DATA_CACHE = 'methodos-data';
 const CDN_CACHE = 'methodos-cdn';
 const KEEP = [SHELL_CACHE, DATA_CACHE, CDN_CACHE];
@@ -41,28 +43,35 @@ const timeout = (ms) => new Promise((_, reject) => setTimeout(() => reject(new E
 async function networkFirst(request) {
   try {
     const response = await Promise.race([fetch(request), timeout(6000)]);
-    if (response.ok) {
-      const copy = response.clone();
-      caches.open(DATA_CACHE).then((c) => c.put(request, copy));
-    }
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const copy = response.clone();
+    caches.open(DATA_CACHE).then((c) => c.put(request, copy)).catch(() => {});
     return response;
   } catch {
-    const cached = await caches.match(request, { ignoreSearch: true });
-    if (cached) return cached;
+    // Data first (it holds whatever was fetched most recently), then the shell.
+    for (const name of [DATA_CACHE, SHELL_CACHE]) {
+      const cached = await (await caches.open(name)).match(request, { ignoreSearch: true });
+      if (cached) return cached;
+    }
     if (request.mode === 'navigate' && request.destination === 'document') {
-      return (await caches.match('index.html')) ?? Response.error();
+      return (await (await caches.open(SHELL_CACHE)).match('index.html')) ?? Response.error();
     }
     return Response.error();
   }
 }
 
+const CDN_KINDS = new Set(['script', 'style', 'font', 'image']);
+
 async function cacheFirst(request) {
-  const cached = await caches.match(request);
+  const cache = await caches.open(CDN_CACHE);
+  const cached = await cache.match(request);
   if (cached) return cached;
   const response = await fetch(request);
-  if (response.ok || response.type === 'opaque') {
+  // Only versioned assets, and only readable responses: an opaque one costs several MB of
+  // quota on a shared origin and can't be checked.
+  if (response.ok && CDN_KINDS.has(request.destination)) {
     const copy = response.clone();
-    caches.open(CDN_CACHE).then((c) => c.put(request, copy));
+    cache.put(request, copy).catch(() => {});
   }
   return response;
 }
@@ -75,7 +84,7 @@ self.addEventListener('fetch', (event) => {
   if (url.origin === self.location.origin) {
     if (!url.pathname.startsWith(new URL('./', self.location).pathname)) return;
     event.respondWith(networkFirst(request));
-  } else {
+  } else if (CDN_KINDS.has(request.destination)) {
     event.respondWith(cacheFirst(request));
   }
 });

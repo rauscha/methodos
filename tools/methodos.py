@@ -213,7 +213,8 @@ def other_files(gdir):
     out = []
     for f in sorted(gdir.rglob("*")):
         rel = f.relative_to(gdir).as_posix()
-        if f.is_file() and rel != "guide.json" and not rel.startswith("pages/") and not f.name.startswith("."):
+        is_page = rel.startswith("pages/") and "/" not in rel[6:] and rel.endswith(".html")
+        if f.is_file() and rel != "guide.json" and not is_page and not f.name.startswith("."):
             out.append(rel)
     return out
 
