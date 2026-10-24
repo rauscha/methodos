@@ -6,6 +6,17 @@ stands; samples are the factory sets plus a couple of Red Means Recording bundle
 started (no computer, the M8 is with him). **Slice 1 is built:** "How these pages work", Low
 Tide steps 1 to 3, the Tide pad card.
 
+### His note, 2026-10-24 (after slice 1)
+
+> "We're supposed to have a list/storage of instruments in 'card' form I can page through."
+
+The **Patch cards** section exists, but it holds one card (the Tide pad). Planned and not yet
+built: a card for every instrument in each song (Song 1: pad, bass, drum kit, arp, texture), plus
+other good example instruments. "Page through" means moving card to card. The app's next and
+previous links already step through the pages of one section, so filling the section may be
+enough; check on the Pixel before planning any app change. This comes after fix plan D in
+`docs/review-2026-10-23.md`.
+
 ### Changes in revision 3
 
 - **The arp is written by hand** (step 7), not made with the ARP command. ARP is a fast

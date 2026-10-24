@@ -47,7 +47,17 @@ for a fresh session that has none of that session's context.
 
 ## Candidate guides
 
-Nothing is chosen. His brief (CLAUDE.md, "The idea") names other synths, such as the OP-XY and the
+**Next game guide, named by him (2026-10-24): Cyberpunk 2077 on Switch 2.** Two parts:
+1. The best secret items and the most fun side quests.
+2. A few absolutely mad, powerful character builds, each a guide of its own.
+
+Commercial IP, so it is private like the Elden Ring and Talos guides: its own folder under
+`private/`, packed and Taildropped, never in `site/` or git. Start with research and a DRAFT plan,
+the same pattern; `private/talos-principle/prior-art.md` covers guide best practice. Settle
+with him before planning: the edition and patch on his Switch 2 (whether it has Phantom Liberty),
+and how spoiler-shy he is about the main story.
+
+Beyond that, nothing is chosen. His brief (CLAUDE.md, "The idea") names other synths, such as the OP-XY and the
 CZ-1, and things unrelated to music, such as embroidery. Confirm the subject with him if the
 request doesn't name it.
 
