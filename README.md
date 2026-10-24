@@ -24,7 +24,8 @@ python3 tools/methodos.py check
 ```
 
 `python3 tools/methodos.py --help` covers the rest (`new`, `list`, links, tags, groups). The
-in-app guide "How Methodos works" explains the same things with examples.
+in-app guide "How Methodos works" explains the same things with examples. Starting a whole new guide:
+`docs/new-guide.md`.
 
 ## Layout
 

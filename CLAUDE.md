@@ -10,6 +10,10 @@ https://andrewrausch.com/methodos/ (public repo, Pages via Actions, since 2026-1
 card on the apps page) and on the tailnet at https://tikiserv.saiga-wage.ts.net:8450/. The M8 guide has its first pages. Plan for that guide: `docs/m8-guide-plan.md` (rev 3, approved). Slice 1 (Low Tide steps 1–3, Tide pad, the `kit/` panels and browser demo engine) built 2026-10-23, waiting on his try with the M8 on his trip. Reviewed the same evening: `docs/review-2026-10-23.md` holds the findings, his decisions (it's a "show me how" app: no more work on making the browser sound like the M8) and the fix plan, in order. **His reaction to it on the Pixel gates anything
 further**; don't add features on top of it before then.
 
+**Starting another guide: read `docs/new-guide.md` first** (2026-10-24). It is the handoff for a
+fresh session: what is parked, the research-then-DRAFT-plan pattern the M8 guide followed, the
+sources on tikiserv, and the mechanics. A new guide is data and is not blocked by the M8 wait.
+
 ## The idea (Andrew, 2026-10-23)
 
 - **The input is HTML artifacts** made in Claude or OpenAI tools, each one a self-contained page.
