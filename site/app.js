@@ -578,6 +578,23 @@ addEventListener('keydown', (e) => {
   if (link) location.hash = link.getAttribute('href');
 });
 
+// Methodos moved to its own origin on 2026-10-24: one app per origin keeps Chrome's install
+// records and the browser storage apart from the other apps on andrewrausch.com. A copy opened
+// at the old address hands over once the new one answers: it removes its service worker and
+// its methodos-* caches there, then goes to the new address.
+const NEW_HOME = 'https://methodos.andrewrausch.com/';
+if (location.hostname === 'andrewrausch.com') {
+  fetch(NEW_HOME + 'manifest.json', { cache: 'no-store' }).then(async (r) => {
+    if (!r.ok) return;
+    const here = new URL('./', location.href).href;
+    for (const reg of (await navigator.serviceWorker?.getRegistrations?.()) ?? []) {
+      if (reg.scope.startsWith(here)) await reg.unregister();
+    }
+    for (const name of await caches.keys()) if (name.startsWith('methodos-')) await caches.delete(name);
+    location.replace(NEW_HOME + location.hash);
+  }).catch(() => {});
+}
+
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }

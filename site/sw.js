@@ -8,7 +8,7 @@
 // touches caches whose names start with "methodos-".
 
 // Bump SHELL_VERSION with every change to a shell file, or offline users keep the old copy.
-const SHELL_VERSION = '2026-10-24c';
+const SHELL_VERSION = '2026-10-24d';
 const SHELL_CACHE = `methodos-shell-${SHELL_VERSION}`;
 const DATA_CACHE = 'methodos-data';
 const CDN_CACHE = 'methodos-cdn';
