@@ -6,12 +6,15 @@
     methodos.py add GUIDE FILE.html --section SECTION [--title ...] [--id ...]
                     [--summary ...] [--tags a,b] [--links id1,id2]
                     [--section-title ...] [--layout steps|cards] [--group ...]
+    methodos.py files GUIDE
     methodos.py check
 
 `add` copies an artifact into site/guides/GUIDE/pages/ and registers it in that
 guide's guide.json. The title defaults to the artifact's <title>. A section that
 does not exist yet is created (use --section-title/--layout/--group to shape it).
-Run `check` before pushing; CI runs it too.
+`files` lists a guide's other files (scripts, styles, song data, samples) in guide.json, so
+"Save for offline" can fetch them; run it after adding any. Run `check` before pushing; CI
+runs it too.
 """
 
 import argparse
@@ -187,7 +190,40 @@ def check_guide(gid, guide):
         for f in sorted(pages_dir.glob("*.html")):
             if f"pages/{f.name}" not in files:
                 problems.append(f"{gid}: {f.relative_to(ROOT)} is not listed in guide.json")
+    listed = set(guide.get("files", []))
+    for f in sorted(listed):
+        if not (gdir / f).is_file():
+            problems.append(f"{gid}: files lists {f}, which does not exist")
+    for f in other_files(gdir):
+        if f not in listed:
+            problems.append(f"{gid}: {f} is not in guide.json files (run: methodos.py files {gid})")
+    for page in sorted(files):
+        path = gdir / page
+        if not path.is_file():
+            continue
+        text = path.read_text(encoding="utf-8", errors="replace")
+        for ref in re.findall(r'<[a-zA-Z][^>]*?\s(?:src|href)="([^"#:]+)"', text):
+            if not (path.parent / ref).resolve().exists():
+                problems.append(f"{gid}/{page}: refers to {ref}, which does not exist")
     return problems
+
+
+def other_files(gdir):
+    """Every file in a guide folder that isn't guide.json or a page."""
+    out = []
+    for f in sorted(gdir.rglob("*")):
+        rel = f.relative_to(gdir).as_posix()
+        if f.is_file() and rel != "guide.json" and not rel.startswith("pages/") and not f.name.startswith("."):
+            out.append(rel)
+    return out
+
+
+def cmd_files(args):
+    gpath = guide_path(args.guide)
+    guide = load(gpath)
+    guide["files"] = other_files(gpath.parent)
+    save(gpath, guide)
+    print(f"{args.guide}: {len(guide['files'])} files listed")
 
 
 def cmd_check(_args):
@@ -241,6 +277,10 @@ def main():
     p.add_argument("--layout", choices=LAYOUTS)
     p.add_argument("--group", help="heading shared by several sections, e.g. Songs")
     p.set_defaults(fn=cmd_add)
+
+    p = sub.add_parser("files", help="list a guide's non-page files for offline saving")
+    p.add_argument("guide")
+    p.set_defaults(fn=cmd_files)
 
     p = sub.add_parser("check", help="validate every guide")
     p.set_defaults(fn=cmd_check)

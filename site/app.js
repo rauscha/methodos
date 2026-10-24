@@ -252,17 +252,20 @@ async function saveOffline(g, button) {
   const status = app.querySelector('.save-status');
   button.disabled = true;
   const cache = await caches.open(DATA_CACHE);
+  // Pages, plus the guide's own scripts, styles and data (its "files" list).
+  const urls = [...g.pages.map((p) => p.url), ...(g.files ?? []).map((f) => `guides/${g.id}/${f}`)];
   let ok = 0;
-  for (const p of g.pages) {
+  for (const url of urls) {
     try {
-      const r = await fetch(p.url, { cache: 'no-cache' });
-      if (r.ok) { await cache.put(p.url, r); ok++; }
+      const r = await fetch(url, { cache: 'no-cache' });
+      if (r.ok) { await cache.put(url, r); ok++; }
     } catch {}
-    status.textContent = `Saving ${ok} of ${g.pages.length}…`;
+    status.textContent = `Saving ${ok} of ${urls.length}…`;
   }
-  status.textContent = ok === g.pages.length
-    ? `Saved all ${ok} pages.`
-    : `Saved ${ok} of ${g.pages.length} pages; the rest failed to load.`;
+  const extra = urls.length - g.pages.length;
+  status.textContent = ok === urls.length
+    ? `Saved all ${g.pages.length} pages${extra ? ` and ${extra} supporting files` : ''}.`
+    : `Saved ${ok} of ${urls.length} files; the rest failed to load.`;
   button.disabled = false;
 }
 

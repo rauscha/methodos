@@ -1,14 +1,68 @@
 {
   "title": "Dirtywave M8",
-  "subtitle": "Tracker · Model:02",
+  "subtitle": "Tracker · Model:02 · firmware 6.6.3",
   "description": "Songs built step by step, hands-on technique tutorials, and a library of instrument patch cards to load and play.",
   "sections": [
     {
-      "id": "songs",
-      "title": "Song walkthroughs",
-      "description": "Complete songs, built one step at a time. Each song's instruments are in the patch cards below.",
-      "layout": "cards",
-      "pages": []
+      "id": "start",
+      "title": "Start here",
+      "layout": "steps",
+      "pages": [
+        {
+          "id": "how-these-pages-work",
+          "title": "How these pages work",
+          "file": "pages/how-these-pages-work.html",
+          "summary": "The play strip, the pictures, and what a dashed box means."
+        }
+      ]
+    },
+    {
+      "id": "low-tide",
+      "group": "Songs",
+      "title": "Low Tide",
+      "description": "Slow, wide trip-hop in D minor at 84 BPM. Pads that swell and darken, a round bass, swung drums, a hand-written arp, and a sound you record on the road.",
+      "layout": "steps",
+      "pages": [
+        {
+          "id": "low-tide-1",
+          "title": "The plan and the setup",
+          "file": "pages/low-tide-1.html",
+          "summary": "Where the harmony is going, and why. A new song at 84 BPM.",
+          "tags": [
+            "harmony",
+            "setup"
+          ]
+        },
+        {
+          "id": "low-tide-2",
+          "title": "The pad sound",
+          "file": "pages/low-tide-2.html",
+          "summary": "Hypersynth on one held chord: a bar-long swell and an eight-bar filter tide.",
+          "tags": [
+            "hypersynth",
+            "envelope",
+            "lfo",
+            "filter"
+          ],
+          "links": [
+            "tide-pad"
+          ]
+        },
+        {
+          "id": "low-tide-3",
+          "title": "The chords",
+          "file": "pages/low-tide-3.html",
+          "summary": "Rootless chord banks over a roots track, eight bars that resolve home.",
+          "tags": [
+            "harmony",
+            "hypersynth",
+            "chains"
+          ],
+          "links": [
+            "tide-pad"
+          ]
+        }
+      ]
     },
     {
       "id": "techniques",
@@ -22,7 +76,24 @@
       "title": "Patch cards",
       "description": "Every instrument from the songs, plus other good ones to try.",
       "layout": "cards",
-      "pages": []
+      "pages": [
+        {
+          "id": "tide-pad",
+          "title": "Tide pad",
+          "file": "pages/tide-pad.html",
+          "summary": "Warm, wide Hypersynth pad: one-bar swell, two-bar fade, eight-bar filter tide.",
+          "tags": [
+            "hypersynth",
+            "pad",
+            "low tide"
+          ]
+        }
+      ]
     }
+  ],
+  "files": [
+    "kit/m8kit.css",
+    "kit/m8kit.js",
+    "songs/low-tide.json"
   ]
 }

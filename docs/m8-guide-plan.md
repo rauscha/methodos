@@ -1,6 +1,35 @@
 # M8 guide: plan
 
-**DRAFT, revision 2, 2026-10-23.** Written by a Claude session. Revision 1 was built from
+**Revision 3, 2026-10-23. Approved by Andrew** ("yes this sounds good"), with these changes
+from his answers: pages are text first, with panels only where they help; 84 BPM in D minor
+stands; samples are the factory sets plus a couple of Red Means Recording bundles; the trip has
+started (no computer, the M8 is with him). **Slice 1 is built:** "How these pages work", Low
+Tide steps 1 to 3, the Tide pad card.
+
+### Changes in revision 3
+
+- **The arp is written by hand** (step 7), not made with the ARP command. ARP is a fast
+  three-note figure with fixed intervals (manual, Sequencer FX), so it can't follow chords.
+  The method is his Faded Polaroid one: eighth notes on even rows, moving through the chord's
+  extensions rather than up a triad. CHA (chance) adds the dropouts.
+- **Step order:** step 2 is the pad sound on one held chord (swell and LFO included), step 3
+  is the chords. Shaping a pad is easier on one chord.
+- **Rootless voicings, his way:** the pad plays upper structures over a roots track, as in
+  Faded Polaroid. Four Hypersynth banks cover six chords (bank 01 is Dm7 over D and B♭maj9 over
+  B♭). Base CHORD 00 with every target above it makes the bank command's relative-or-absolute
+  question moot, the same trick as his COLOR 80.
+- **Screen labels from his 6.6.3 photos:** the mixer row is DRY, MFX, DEL, REV (not CHO), and
+  PAN 80 is center.
+- **No SCALE on Low Tide:** the C♯ in bar 8 isn't in D minor and would be quantized away.
+- **Song 2 candidate: Faded Polaroid**, the song he started with ChatGPT (`docs/sources/`).
+  It already has a hand-written arp, a Paraphonic chord patch with on-device COL findings, and a
+  bass. Its patch values need re-checking (the chat used CHO and PAN 00).
+
+Revision 2 follows unchanged below, apart from the arp row.
+
+---
+
+**Revision 2, 2026-10-23.** Written by a Claude session. Revision 1 was built from
 Andrew's brief and two screenshots of oto-style visualizers. This revision folds in his answers:
 firmware 6.6.3, which views he wants, audio may live in the repo, no computer on his coming trip,
 and Song 1 is slow, lush trip-hop / lo-fi / ambient. Still a draft until he has read it.
@@ -134,7 +163,7 @@ pads stay straight, so they float over the groove.
 | 1 | Drums | Sampler: kick, rim or snare, hats | Kick on 1 and the "and" of 3; snare on 2 and 4; swung 8th hats with velocity accents; one ghost snare at the end of the bar |
 | 2 | Bass | Macrosynth, a round model | Two-bar figure per chord: root held, octave ghost on the "and" of 2, fifth on 4; slides into the next root. The loop ring shows it. |
 | 3 | Pad | Hypersynth, soft or dark saw (new in 6.6) | Slow attack (about a bar) and long release on ADSR. An LFO on cutoff over 8 bars (FREQ is in steps, so 128 steps), which is the "evolving". A trig envelope from track 1 ducks the pad on each kick, the trip-hop breathing. Generous reverb. |
-| 4 | Arp | Macrosynth bell-like model | The ARP command over the song's D minor scale, so the arp follows the chords with no extra programming. CHA (chance) lets notes drop out so it never repeats exactly. Dotted-8th delay. |
+| 4 | Arp | Macrosynth bell-like model | Written by hand on even rows through each chord's upper notes (revision 3; ARP can't follow chords). CHA (chance) lets notes drop out so it never repeats exactly. Dotted-8th delay. |
 | 5 | Texture | Sampler | A sound he records **on the trip** with the M8's own mic (rain, a café, a train), looped low under everything. This is the sampling tutorial's first step, and it needs no computer. |
 
 **Walkthrough steps** (one page each):
@@ -145,7 +174,7 @@ pads stay straight, so they float over the groove.
 4. The bassline.
 5. Drums and swing.
 6. The duck: a trig envelope from the kick to the pad.
-7. The arp: ARP, chance, delay.
+7. The arp: written by hand, then chance and delay.
 8. Texture: record a sound where you are.
 9. Arrange in the song view: intro (pad and texture), bass enters, drums enter, the arp, a
    breakdown with the filter closing, the full loop, outro.

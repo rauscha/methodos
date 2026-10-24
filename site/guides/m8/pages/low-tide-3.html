@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Low Tide 3: the chords</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../songs/low-tide.json" step="3" label="Pad and roots"></m8-player>
+
+<p class="kicker">Low Tide · step 3 of 10</p>
+<h1>The chords</h1>
+
+<p>Now the pad gets its eight bars, and a second track holds the roots underneath. The pad plays
+rootless shapes, as in Faded Polaroid. Only four shapes cover all six chords, because two
+chords share one.</p>
+
+<m8-progression></m8-progression>
+<m8-roll tracks="2,3"></m8-roll>
+
+<h2>Four more chord banks</h2>
+<p>Back in instrument 03, fill banks 01 to 04. Bank 00 is already F A C E from step 2.</p>
+
+<m8-instrument inst="03" show="banks"></m8-instrument>
+
+<p>Bank 01 does double duty: F A C D is Dm7 over a D root and B♭maj9 over a B♭. Banks 03 and 04
+are played on E-3 rather than F-3. Both stay close to the shapes before them, so the voices only
+move by steps.</p>
+
+<h2>Changing banks from the phrase</h2>
+<p>Each chord change is a new phrase with one row: the note, instrument 03, and the chord-bank
+command in FX1. The copies of the M8's screen show that command as <b>···</b>. Its three-letter name
+is in the FX help list: put the cursor on FX1 and press <kbd>EDIT</kbd>+<kbd>UP</kbd>.</p>
+
+<p>You found in Faded Polaroid that <code>COL</code> is relative. The chord-bank command might be
+too, and here it doesn't matter. The instrument's own CHORD is bank 00, and every bank used is
+above it, so "set to 03" and "add 03" land in the same place. It's the same trick as setting COLOR
+to 80 for Faded Polaroid.</p>
+
+<p class="unverified">The name of the chord-bank command, and whether it exists. Hypersynth's
+manual entry lists CHORD as a parameter, and the manual says almost every parameter has an FX
+command, but doesn't name this one. If there's none, see the fallback at the end of this page.</p>
+
+<h3>The pad's phrases</h3>
+<p>Phrase 30 from step 2 gets the bank command. Make phrases 31 to 34 (in the chain,
+<kbd>EDIT</kbd> twice on an empty row makes a new empty phrase).</p>
+<m8-phrase phrase="30"></m8-phrase>
+<m8-phrase phrase="31"></m8-phrase>
+<m8-phrase phrase="32"></m8-phrase>
+<m8-phrase phrase="33"></m8-phrase>
+<m8-phrase phrase="34"></m8-phrase>
+
+<h3>The pad's chain</h3>
+<p>Phrase 30 appears twice (bars 1 and 3), and phrase 3F, an empty phrase, fills the bars where the
+chord holds. An empty phrase has no notes and no OFF, so the chord before it keeps sounding. An
+empty <i>row</i> in the chain would be different: it ends the chain.</p>
+<m8-chain chain="03"></m8-chain>
+
+<h2>The roots: track 2</h2>
+<p>A round, plain bass that just holds each root. Step 4 turns it into a real bassline.</p>
+<ol class="do">
+  <li>In the Song view, track 2, row 00: chain <code>02</code>.</li>
+  <li>In the chain: phrases 20, 2F, 21, 2F, 22, 2F, 23, 2F. Phrase 2F stays empty, like 3F.</li>
+  <li>In phrases 20 to 23, one note on row 0, instrument <code>02</code>.</li>
+  <li>Instrument 02: TYPE MACROSYN, SHAPE SINE TRIANGLE. A sine and a triangle into a wavefolder;
+  COLOR balances the two, TIMBRE folds them. Kept low, it's a soft, round tone.</li>
+</ol>
+<m8-chain chain="02"></m8-chain>
+<m8-phrase phrase="20"></m8-phrase>
+<m8-instrument inst="02" show="params"></m8-instrument>
+
+<p>The M8 spells every flat as a sharp, so B♭1 is entered as <code>A#1</code>.</p>
+
+<div class="listen">Mute T2 on the strip and listen to bars 1 and 3: the same pad notes, which
+sound like the same chord. Unmute it and they're different chords. Then listen to the end of bar 8
+into bar 1, where every pad voice steps up at once.</div>
+
+<h2>If there's no chord-bank command</h2>
+<p>Clone instrument 03 once per bank (in a phrase's I column, <kbd>SHIFT</kbd>+<kbd>OPTION</kbd>
+then <kbd>EDIT</kbd> copies the current instrument to a new number), set each clone's CHORD to
+its bank, and switch instruments in the I column instead. It works, but each new instrument
+starts its envelope from silence. The 6.6 smooth retrigger only applies within one
+instrument, so every chord change would swell in from nothing. With an attack that long, you'd
+hear a gap. Shortening ATK to about 18 hides most of it.</p>
+</main>
+</body>
+</html>

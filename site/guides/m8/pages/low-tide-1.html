@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Low Tide 1: the plan and the setup</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../songs/low-tide.json" step="3" label="Preview: the chords after step 3"></m8-player>
+
+<p class="kicker">Low Tide · step 1 of 10</p>
+<h1>The plan and the setup</h1>
+
+<p>Low Tide is slow and wide: 84 BPM in D minor, with a pad that swells and darkens like water
+going out, a round bass, swung drums, an arp you write by hand, and a sound you record wherever
+you are. It takes ten steps. This one shows where the harmony is going and sets up the song.</p>
+
+<p>Press <b>Play</b> above to hear the chords as they'll be after step 3: the pad and the roots,
+nothing else yet.</p>
+
+<h2>Where we're going</h2>
+<m8-progression></m8-progression>
+<m8-roll tracks="2,3"></m8-roll>
+
+<p>Eight bars, two per chord except at the end, where the last chord splits in two. Three ideas do
+most of the work.</p>
+
+<h3>The floor moves, the room stays</h3>
+<p>D minor to B♭ major (i to ♭VI) is one of the most used moves in trip-hop and ambient music,
+and the reason is in the notes. Dm is D F A; B♭maj7 is B♭ D F A. They share three notes, so the
+pad barely changes while the bass falls a major third underneath it. In bar 3 the pad plays exactly
+the notes it played in bar 1, and the chord still changes because the root did.</p>
+
+<h3>Rootless chords</h3>
+<p>This is the same trick as Faded Polaroid: the pad never plays the root. It plays the
+<i>upper structure</i>, the notes above the root, and a separate track holds the root down low.
+F A C E over a D is Dm9. F A B♭ D over a G is Gm9. That keeps the pad floating and the bottom
+clean, and it means one pad shape can serve two chords.</p>
+
+<h3>A top voice that orbits one note</h3>
+<p>Follow the thick line in the roll. The pad's top note is D, rises to E in bar 2, comes back to D
+and stays there for five bars while the chords change underneath it. In bar 8 it slips down to
+C♯, the only C♯ in the loop and its one bright note, which pulls straight back to D at the top.
+At that moment every voice in the pad moves up a step at once (E to F, G to A, B♭ to C, C♯ to D),
+which is why the loop feels like it comes home.</p>
+
+<div class="listen">Bar 3, where nothing in the pad moves but the chord changes anyway. Then the end
+of bar 8 into bar 1: the C♯ resolving.</div>
+
+<h2>Five tracks</h2>
+<table class="values">
+  <thead><tr><th>Track</th><th>Part</th><th>Instrument</th><th>Step</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>Drums: kick, rim, swung hats</td><td>Sampler</td><td>5</td></tr>
+    <tr><td>2</td><td>Roots now, the bassline later</td><td>Macrosynth</td><td>3, then 4</td></tr>
+    <tr><td>3</td><td>The pad</td><td>Hypersynth</td><td>2 and 3</td></tr>
+    <tr><td>4</td><td>The arp, written by hand</td><td>Macrosynth</td><td>7</td></tr>
+    <tr><td>5</td><td>A sound you record on the trip</td><td>Sampler</td><td>8</td></tr>
+  </tbody>
+</table>
+
+<h2>Set up the song</h2>
+<ol class="do">
+  <li>Save whatever you're working on. Then go to the <b>Project</b> view (it sits above the Song
+  view; <kbd>SHIFT</kbd>+arrows move between views, and the mini-map at the bottom right shows where
+  you are) and choose <b>NEW</b>.</li>
+  <li>Set <b>TEMPO</b> to <code>084</code>.</li>
+  <li>Set <b>NAME</b> to LOW TIDE and <b>SAVE</b>.</li>
+  <li>Leave <b>SCALE</b> alone. A scale would quantize notes to D minor, and the C♯ in bar 8 isn't in
+  D minor: it would get bent to C or D, and the loop would lose its pull home.</li>
+  <li>Leave <b>GROOVE</b> on the default for now. Swing arrives with the drums in step 5, and it
+  can't be heard on chords that only move on row 0.</li>
+</ol>
+
+<p>Next: <a href="page:low-tide-2">step 2, the pad sound</a>.</p>
+</main>
+</body>
+</html>

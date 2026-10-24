@@ -1,0 +1,99 @@
+{
+  "title": "Low Tide",
+  "tempo": 84,
+  "key": "D minor",
+  "firmware": "6.6.3",
+  "notes": "Every element carries the walkthrough step that introduces it. A page at step N plays and draws everything with step <= N, and marks step == N as new.",
+
+  "tracks": [
+    { "n": 2, "name": "Roots", "step": 3 },
+    { "n": 3, "name": "Pad", "step": 2 }
+  ],
+
+  "song": [
+    { "row": "00", "chains": { "2": "02", "3": "03" } }
+  ],
+
+  "chains": {
+    "02": [
+      { "ph": "20", "step": 3 }, { "ph": "2F", "step": 3 },
+      { "ph": "21", "step": 3 }, { "ph": "2F", "step": 3 },
+      { "ph": "22", "step": 3 }, { "ph": "2F", "step": 3 },
+      { "ph": "23", "step": 3 }, { "ph": "2F", "step": 3 }
+    ],
+    "03": [
+      { "ph": "30", "step": 2 }, { "ph": "31", "step": 3 },
+      { "ph": "30", "step": 3 }, { "ph": "3F", "step": 3 },
+      { "ph": "32", "step": 3 }, { "ph": "3F", "step": 3 },
+      { "ph": "33", "step": 3 }, { "ph": "34", "step": 3 }
+    ]
+  },
+
+  "phrases": {
+    "20": { "rows": { "0": { "n": "D-2", "v": "64", "i": "02", "step": 3 } } },
+    "21": { "rows": { "0": { "n": "A#1", "v": "64", "i": "02", "step": 3 } } },
+    "22": { "rows": { "0": { "n": "G-1", "v": "64", "i": "02", "step": 3 } } },
+    "23": { "rows": { "0": { "n": "A-1", "v": "64", "i": "02", "step": 3 } } },
+    "2F": { "rows": {}, "about": "Empty on purpose: the root keeps sounding through this bar." },
+
+    "30": { "rows": { "0": { "n": "F-3", "v": "64", "i": "03", "step": 2,
+                             "fx": [ { "bank": "01", "step": 3 } ] } } },
+    "31": { "rows": { "0": { "n": "F-3", "v": "64", "i": "03", "step": 3, "fx": [ { "bank": "00", "step": 3 } ] } } },
+    "32": { "rows": { "0": { "n": "F-3", "v": "64", "i": "03", "step": 3, "fx": [ { "bank": "02", "step": 3 } ] } } },
+    "33": { "rows": { "0": { "n": "E-3", "v": "64", "i": "03", "step": 3, "fx": [ { "bank": "03", "step": 3 } ] } } },
+    "34": { "rows": { "0": { "n": "E-3", "v": "64", "i": "03", "step": 3, "fx": [ { "bank": "04", "step": 3 } ] } } },
+    "3F": { "rows": {}, "about": "Empty on purpose: the chord keeps sounding through this bar." }
+  },
+
+  "instruments": {
+    "02": {
+      "type": "MACROSYN", "name": "ROOTS", "step": 3,
+      "params": [
+        ["SHAPE", "SINE TRIANGLE"], ["TIMBRE", "18"], ["COLOR", "20"],
+        ["DEGRADE", "00"], ["REDUX", "00"],
+        ["FILTER", "LOWPASS"], ["CUTOFF", "70"], ["RES", "10"],
+        ["AMP", "10"], ["LIM", "CLIP"], ["PAN", "80"],
+        ["DRY", "C0"], ["MFX", "00"], ["DEL", "00"], ["REV", "10"]
+      ],
+      "mods": []
+    },
+    "03": {
+      "type": "HYPERSYNTH", "name": "TIDE PAD", "step": 2,
+      "params": [
+        ["SHAPE", "SOFT SAW"], ["SCALE", "00"], ["CHORD", "00"],
+        ["SHIFT", "00"], ["SWARM", "30"], ["WIDTH", "C0"], ["SUBOSC", "00"],
+        ["FILTER", "LOWPASS"], ["CUTOFF", "80"], ["RES", "20"],
+        ["AMP", "00"], ["LIM", "CLIP"], ["PAN", "80"],
+        ["DRY", "B0"], ["MFX", "20"], ["DEL", "10"], ["REV", "90"]
+      ],
+      "banks": [
+        { "bank": "00", "iv": ["00", "04", "07", "0B"], "step": 2, "shape": "F A C E", "use": "Dm9 over a D root" },
+        { "bank": "01", "iv": ["00", "04", "07", "09"], "step": 3, "shape": "F A C D", "use": "Dm7 over D, B♭maj9 over B♭" },
+        { "bank": "02", "iv": ["00", "04", "05", "09"], "step": 3, "shape": "F A B♭ D", "use": "Gm9 over G" },
+        { "bank": "03", "iv": ["00", "03", "06", "0A"], "step": 3, "shape": "E G B♭ D", "use": "A7sus4♭9 over A" },
+        { "bank": "04", "iv": ["00", "03", "06", "09"], "step": 3, "shape": "E G B♭ C♯", "use": "A7♭9 over A" }
+      ],
+      "mods": [
+        { "slot": 1, "type": "ADSR ENV", "dest": "VOLUME", "step": 2,
+          "p": { "AMT": "FF", "ATK": "60", "DEC": "00", "SUS": "FF", "REL": "C0" } },
+        { "slot": 2, "type": "LFO", "dest": "CUTOFF", "step": 2,
+          "p": { "OSC": "SIN", "TRIG": "FREE", "AMT": "40", "FREQ": "80" } }
+      ]
+    }
+  },
+
+  "harmony": [
+    { "bar": 1, "chord": "Dm7", "roman": "i", "bass": "D", "upper": "F A C D",
+      "move": "The 9th opens on top" },
+    { "bar": 2, "chord": "Dm9", "roman": "i", "bass": "D", "upper": "F A C E",
+      "move": "Top voice back to D; the bass drops a major third" },
+    { "bar": 3, "chord": "B♭maj9", "roman": "♭VI", "bass": "B♭", "upper": "F A C D",
+      "hold": 2, "move": "One voice steps down, C to B♭" },
+    { "bar": 5, "chord": "Gm9", "roman": "iv", "bass": "G", "upper": "F A B♭ D",
+      "hold": 2, "move": "Two voices step down" },
+    { "bar": 7, "chord": "A7sus4♭9", "roman": "V", "bass": "A", "upper": "E G B♭ D",
+      "move": "The top D falls a half step" },
+    { "bar": 8, "chord": "A7♭9", "roman": "V", "bass": "A", "upper": "E G B♭ C♯",
+      "move": "Every voice steps up: home" }
+  ]
+}
