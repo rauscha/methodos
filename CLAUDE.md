@@ -6,7 +6,7 @@ between his mfm-media interactive decks and a small Obsidian vault: pages you ca
 between, and work through step by step.
 
 **Status (2026-10-23): v0.1 built, not yet tried by Andrew.** A static PWA in `site/`, served on
-the tailnet at https://tikiserv.saiga-wage.ts.net:8450/. The M8 guide has its first pages. Plan for that guide: `docs/m8-guide-plan.md` (rev 3, approved). Slice 1 (Low Tide steps 1–3, Tide pad, the `kit/` panels and browser demo engine) built 2026-10-23, waiting on his try with the M8 on his trip. **His reaction to it on the Pixel gates anything
+the tailnet at https://tikiserv.saiga-wage.ts.net:8450/. The M8 guide has its first pages. Plan for that guide: `docs/m8-guide-plan.md` (rev 3, approved). Slice 1 (Low Tide steps 1–3, Tide pad, the `kit/` panels and browser demo engine) built 2026-10-23, waiting on his try with the M8 on his trip. Reviewed the same evening: `docs/review-2026-10-23.md` holds the findings, his decisions (it's a "show me how" app: no more work on making the browser sound like the M8) and the fix plan, in order. **His reaction to it on the Pixel gates anything
 further**; don't add features on top of it before then.
 
 ## The idea (Andrew, 2026-10-23)
