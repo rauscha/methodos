@@ -8,7 +8,7 @@
 // touches caches whose names start with "methodos-".
 
 // Bump SHELL_VERSION with every change to a shell file, or offline users keep the old copy.
-const SHELL_VERSION = '2026-10-25b';
+const SHELL_VERSION = '2026-10-25c';
 const SHELL_CACHE = `methodos-shell-${SHELL_VERSION}`;
 const DATA_CACHE = 'methodos-data';
 const CDN_CACHE = 'methodos-cdn';
@@ -30,7 +30,10 @@ const SHELL = [
 ];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(SHELL_CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
+  // cache: 'reload' skips the browser's HTTP cache (Pages sends max-age=600), so a new
+  // version never precaches the previous version's files.
+  const fresh = SHELL.map((u) => new Request(u, { cache: 'reload' }));
+  event.waitUntil(caches.open(SHELL_CACHE).then((c) => c.addAll(fresh)).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', (event) => {
@@ -45,7 +48,10 @@ self.addEventListener('activate', (event) => {
 const timeout = (ms) => new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms));
 
 async function networkFirst(request) {
-  const network = fetch(request).then((response) => {
+  // no-cache: always ask the server (a cheap 304 when nothing changed) instead of reusing the
+  // browser's copy for up to 10 minutes. A navigation request can't take options; it's
+  // index.html, which is tiny and rarely changes.
+  const network = fetch(request, request.mode === 'navigate' ? undefined : { cache: 'no-cache' }).then((response) => {
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const copy = response.clone();
     caches.open(DATA_CACHE).then((c) => c.put(request, copy)).catch(() => {});

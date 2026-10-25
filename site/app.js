@@ -671,7 +671,25 @@ if (location.hostname === 'andrewrausch.com') {
 }
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').catch(() => {});
+  // Ask for a new version on every open and every return to the screen; the browser's own
+  // check is lazy, and an installed app is rarely navigated fresh.
+  const hadWorker = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.register('sw.js').then((reg) => {
+    reg.update().catch(() => {});
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') reg.update().catch(() => {});
+    });
+  }).catch(() => {});
+  // A new version took over: this page still runs the old code. Reload now on the library
+  // or a guide's contents; inside a page, wait for the next move so nothing is interrupted.
+  let reloading = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadWorker || reloading) return;
+    const inPage = location.hash.split('/').length > 2;
+    const go = () => { reloading = true; location.reload(); };
+    if (!inPage) go();
+    else window.addEventListener('hashchange', go, { once: true });
+  });
 }
 
 route();
