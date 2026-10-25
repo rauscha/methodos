@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Polaroid chords</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../patches/faded-polaroid.json" label="Faded Polaroid, four bars"></m8-player>
+
+<p class="kicker">Patch card · Macrosynth · four-voice chords</p>
+<h1>Polaroid chords</h1>
+
+<p>A wonky, slightly smeared four-note chord from one Macrosynth. COLOR picks the chord shape,
+so one instrument plays a whole progression with a <code>COL</code> command per bar. Your own
+patch from the Faded Polaroid session: the values on this screen come from your photo of
+instrument 10.</p>
+
+<p class="demo-note">The browser plays only the note you type, not the four-voice chord. The
+table under the phrase says what each bar actually sounds.</p>
+
+<m8-instrument inst="10" show="params mods"></m8-instrument>
+
+<h2>Play it</h2>
+<p>One note per bar on row 0, and a <code>COL</code> beside it that moves COLOR to that bar's
+chord shape.</p>
+<m8-phrase phrase="30,31,32,33"></m8-phrase>
+
+<table class="m8-banks">
+  <caption>What each bar sounds</caption>
+  <thead><tr><th>Bar</th><th>Note</th><th>COLOR lands on</th><th>Shape</th><th>Notes</th><th>Over the bass</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>F♯4</td><td>34</td><td>minor 7</td><td class="m8-nowrap">F♯ A C♯ E</td><td>Dmaj9 over D</td></tr>
+    <tr><td>2</td><td>A3</td><td>A4</td><td>major add 9</td><td class="m8-nowrap">A C♯ E B</td><td>Aadd9 over A</td></tr>
+    <tr><td>3</td><td>D4</td><td>C4</td><td>major 7</td><td class="m8-nowrap">D F♯ A C♯</td><td>Bm9 over B</td></tr>
+    <tr><td>4</td><td>B3</td><td>34</td><td>minor 7</td><td class="m8-nowrap">B D F♯ A</td><td>Gmaj9 over G</td></tr>
+  </tbody>
+</table>
+
+<h2>Why these values</h2>
+<ul>
+  <li><b>SHAPE 28 WAV PARAPHONIC</b>: four wavetable voices. <b>TIMBRE</b> moves through the
+  waveforms; <b>COLOR</b> chooses one of 16 chord shapes, one per first hex digit (00–0F,
+  10–1F, and so on up to F0–FF).</li>
+  <li><b>COLOR 80 as the base.</b> <code>COL</code> is relative: it adds to COLOR, and every new
+  note with an instrument number resets COLOR to 80 first. So each bar's command is "80 plus
+  this": <code>COL B4</code> takes 4C off (80 → 34), <code>COL 24</code> adds 24 (80 → A4),
+  <code>COL 44</code> adds 44 (80 → C4).</li>
+  <li><b>Land on x4, not x8.</b> Inside each region the shape morphs toward the next one. You
+  found x0–x4 clean and x8 "gnarly". 34, A4 and C4 sit in the clean part.</li>
+  <li><b>Rootless.</b> Four voices can't hold a five-note ninth chord, so the chord leaves out
+  the root and <a href="page:velvet-bass">Velvet bass</a> plays it. F♯ minor 7 over a D is
+  Dmaj9.</li>
+  <li><b>AHD on volume: ATK 02, HOLD 60, DEC 60.</b> 60 is 96 ticks, one bar. The chord holds at
+  full for exactly a bar, so each one stays full until the next takes over, and the last chord
+  of a section fades out over a bar.</li>
+</ul>
+
+<h2>Try</h2>
+<ul>
+  <li>Swap bar 2 for the softer iii: <b>Imaj9, iii7, vi9, IVmaj9</b> (Dmaj9, F♯m7, Bm9, Gmaj9).
+  F♯m7 is the same shape as bar 1, so bar 2 becomes A3 with <code>COL B4</code>, over an F♯ bass.</li>
+  <li>An x8 value on purpose, on the last bar only, for a smeared turnaround.</li>
+  <li>A slow LFO on TIMBRE so the chord's tone drifts while its shape stays put.</li>
+</ul>
+
+<p class="unverified">From your session: the photo of instrument 10, and your test that
+COLOR 80 plus <code>COL B4</code> sounds the same as COLOR 34. Not yet confirmed: the shape
+names in the table come from the Braids source code, and A4 and C4 weren't tried one by one.
+Does bar 3 sound like a major 7? Your photo shows COLOR 00, from before you set it to 80, and
+it doesn't show the AHD page: the AHD values come from the chat's recipe.</p>
+</main>
+</body>
+</html>

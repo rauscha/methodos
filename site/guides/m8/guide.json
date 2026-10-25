@@ -74,7 +74,7 @@
     {
       "id": "patches",
       "title": "Patch cards",
-      "description": "Every instrument from the songs, plus other good ones to try.",
+      "description": "Every instrument from the songs, plus other good ones to try. Use next and previous to page through them.",
       "layout": "cards",
       "pages": [
         {
@@ -87,6 +87,113 @@
             "pad",
             "low tide"
           ]
+        },
+        {
+          "id": "roots",
+          "title": "Roots",
+          "file": "pages/roots.html",
+          "summary": "Soft, round sine-triangle roots under a rootless pad. Low Tide, track 2.",
+          "tags": [
+            "macrosynth",
+            "bass",
+            "low tide"
+          ],
+          "links": [
+            "low-tide-3",
+            "tide-pad"
+          ]
+        },
+        {
+          "id": "polaroid-chords",
+          "title": "Polaroid chords",
+          "file": "pages/polaroid-chords.html",
+          "summary": "WAV PARAPHONIC chords picked by COLOR, one COL per bar. From your M8.",
+          "tags": [
+            "macrosynth",
+            "chords",
+            "faded polaroid"
+          ],
+          "links": [
+            "velvet-bass"
+          ]
+        },
+        {
+          "id": "polaroid-arp",
+          "title": "Polaroid arp",
+          "file": "pages/polaroid-arp.html",
+          "summary": "Hollow triangle pluck with a tape wobble. Faded Polaroid's arp.",
+          "tags": [
+            "wavsynth",
+            "arp",
+            "faded polaroid"
+          ]
+        },
+        {
+          "id": "velvet-bass",
+          "title": "Velvet bass",
+          "file": "pages/velvet-bass.html",
+          "summary": "Warm, filtered saw that breathes under rootless chords.",
+          "tags": [
+            "wavsynth",
+            "bass",
+            "faded polaroid"
+          ],
+          "links": [
+            "polaroid-chords"
+          ]
+        },
+        {
+          "id": "struck-bell",
+          "title": "Struck bell",
+          "file": "pages/struck-bell.html",
+          "summary": "A small pitched bell with a dotted-eighth echo. Candidate for Low Tide's arp.",
+          "tags": [
+            "macrosynth",
+            "arp",
+            "bell"
+          ]
+        },
+        {
+          "id": "drum-kit",
+          "title": "No-sample drum kit",
+          "file": "pages/drum-kit.html",
+          "summary": "808-style kick, snare and hats from Macrosynth models. No samples needed.",
+          "tags": [
+            "macrosynth",
+            "drums"
+          ]
+        },
+        {
+          "id": "acid-bass",
+          "title": "Acid bass",
+          "file": "pages/acid-bass.html",
+          "summary": "Squelchy resonant saw: filter envelope, velocity accents, slides.",
+          "tags": [
+            "wavsynth",
+            "bass",
+            "modulation"
+          ]
+        },
+        {
+          "id": "glass-keys",
+          "title": "Glass keys",
+          "file": "pages/glass-keys.html",
+          "summary": "FM electric piano with a glassy tine. Glass Garden's second chance.",
+          "tags": [
+            "fm",
+            "keys"
+          ]
+        },
+        {
+          "id": "field-loop",
+          "title": "Field recording loop",
+          "file": "pages/field-loop.html",
+          "summary": "A sound recorded on the M8's mic, looped low under everything.",
+          "tags": [
+            "sampler",
+            "texture",
+            "recording"
+          ]
         }
       ]
     }
@@ -94,6 +201,12 @@
   "files": [
     "kit/m8kit.css",
     "kit/m8kit.js",
+    "patches/acid-bass.json",
+    "patches/drum-kit.json",
+    "patches/faded-polaroid.json",
+    "patches/field-loop.json",
+    "patches/glass-keys.json",
+    "patches/struck-bell.json",
     "songs/low-tide.json"
   ]
 }

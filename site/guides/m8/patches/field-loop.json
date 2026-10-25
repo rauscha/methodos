@@ -1,0 +1,144 @@
+{
+ "title": "Field recording loop",
+ "tempo": 84,
+ "key": "any",
+ "firmware": "6.6.3",
+ "notes": "A patch card's demo: every element is on from the start.",
+ "tracks": [
+  {
+   "n": 5,
+   "name": "Texture"
+  }
+ ],
+ "song": [
+  {
+   "row": "00",
+   "chains": {
+    "5": "05"
+   }
+  }
+ ],
+ "chains": {
+  "05": [
+   {
+    "ph": "50"
+   },
+   {
+    "ph": "5F"
+   },
+   {
+    "ph": "5F"
+   },
+   {
+    "ph": "5F"
+   },
+   {
+    "ph": "5F"
+   },
+   {
+    "ph": "5F"
+   },
+   {
+    "ph": "5F"
+   },
+   {
+    "ph": "5F"
+   }
+  ]
+ },
+ "phrases": {
+  "50": {
+   "rows": {
+    "0": {
+     "n": "C-4",
+     "v": "50",
+     "i": "0B"
+    }
+   }
+  },
+  "5F": {
+   "rows": {}
+  }
+ },
+ "instruments": {
+  "0B": {
+   "type": "SAMPLER",
+   "name": "FIELD",
+   "params": [
+    [
+     "SAMPLE",
+     "(your recording)"
+    ],
+    [
+     "SLICE",
+     "00"
+    ],
+    [
+     "PLAY",
+     "FWDLOOP"
+    ],
+    [
+     "START",
+     "00"
+    ],
+    [
+     "LOOP ST.",
+     "00"
+    ],
+    [
+     "LEN",
+     "FF"
+    ],
+    [
+     "DETUNE",
+     "80"
+    ],
+    [
+     "DEGRADE",
+     "00"
+    ],
+    [
+     "FILTER",
+     "HIGHPASS"
+    ],
+    [
+     "CUTOFF",
+     "30"
+    ],
+    [
+     "RES",
+     "00"
+    ],
+    [
+     "AMP",
+     "00"
+    ],
+    [
+     "LIM",
+     "CLIP"
+    ],
+    [
+     "PAN",
+     "80"
+    ],
+    [
+     "DRY",
+     "60"
+    ],
+    [
+     "MFX",
+     "00"
+    ],
+    [
+     "DEL",
+     "00"
+    ],
+    [
+     "REV",
+     "40"
+    ]
+   ],
+   "mods": []
+  }
+ }
+}

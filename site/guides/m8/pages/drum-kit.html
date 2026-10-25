@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>No-sample drum kit</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../patches/drum-kit.json" silent="No demo sound for drums: a browser tone can't stand in for them. The phrases below show the beat."></m8-player>
+
+<p class="kicker">Patch card · Macrosynth × 3 · drums</p>
+<h1>No-sample drum kit</h1>
+
+<p>Kick, snare and hats from three Macrosynth drum models, so a beat needs no SD card and no
+samples. The pattern is the one planned for Low Tide: kick on 1 and the "and" of 3, snare on 2
+and 4 with a ghost at the end of the bar, eighth-note hats with the beat accented.</p>
+
+<h2>The kick (track 1)</h2>
+<m8-instrument inst="06" show="params"></m8-instrument>
+<m8-phrase phrase="11" compact></m8-phrase>
+<ul>
+  <li><b>SHAPE 22 KICK</b>: an 808 bass drum circuit. <b>TIMBRE</b> is the decay, <b>COLOR</b> the
+  tone (brightness). The note you type tunes it.</li>
+  <li><b>AMP 20, LIM CLIP</b>: a little drive for punch.</li>
+</ul>
+
+<h2>The snare (track 2)</h2>
+<m8-instrument inst="07" show="params"></m8-instrument>
+<m8-phrase phrase="12" compact></m8-phrase>
+<ul>
+  <li><b>SHAPE 24 SNARE</b>: the 808 snare. <b>TIMBRE</b> balances its two tones, <b>COLOR</b> is
+  the noise ("snappy").</li>
+  <li>Row F, velocity 20: the ghost note. Quiet on purpose; it leads into the next bar.</li>
+</ul>
+
+<h2>The hats (track 3)</h2>
+<m8-instrument inst="08" show="params mods"></m8-instrument>
+<m8-phrase phrase="13" compact></m8-phrase>
+<ul>
+  <li><b>SHAPE 23 CYMBAL</b>: raw cymbal material. <b>COLOR</b> balances metallic squares
+  against noise; <b>TIMBRE</b> sets a band-pass filter's cutoff.</li>
+  <li><b>AHD on volume, DEC 06.</b> The cymbal model drones, so the envelope makes the hit.
+  06 is six ticks, one row: a closed hat. Try 18 (a beat) for an open one.</li>
+  <li><b>HIGHPASS at 80</b>: keeps the hats out of the kick's way.</li>
+  <li>Velocity 60 on the beat, 30 off it: the accents are the groove.</li>
+</ul>
+
+<h2>Swing</h2>
+<p>Low Tide swings its drums and bass but not its pad. Groove 00 is every track's default, so
+leave it alone and use groove 01. In the groove view (<kbd>SHIFT</kbd>+<kbd>UP</kbd> from the
+phrase), on groove 01, set rows 0 and 1 to <b>07</b> and <b>05</b>: the first of each pair of
+rows gets 7 ticks, the second 5, still 12 together. Then put <code>GRV 01</code> on row 0 of each
+drum phrase.</p>
+
+<p class="unverified">Values are a starting point, not tried on an M8. Do KICK and SNARE decay on
+their own, or do they need a volume envelope like the hats? Which note sounds right for the kick
+(D-2 here is a guess)?</p>
+</main>
+</body>
+</html>

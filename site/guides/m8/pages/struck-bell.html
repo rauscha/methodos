@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Struck bell</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../patches/struck-bell.json" label="Bell arp over Dm9"></m8-player>
+
+<p class="kicker">Patch card · Macrosynth · bell arp</p>
+<h1>Struck bell</h1>
+
+<p>A small, pitched bell that rings and decays on its own, no envelope needed. The candidate
+voice for Low Tide's hand-written arp (step 7, not written yet): eighth notes through Dm9's
+upper notes, with a dotted-eighth echo and a couple of notes left to chance.</p>
+
+<p class="demo-note">The browser plays the notes on a plain tone; the bell's ring is the M8's.</p>
+
+<m8-instrument inst="05" show="params"></m8-instrument>
+
+<h2>Play it</h2>
+<p>One bar of Dm9 at 84 BPM. Rows 6 and C carry <code>CHA 8F</code>: the note plays about half
+the time, so the figure never repeats exactly.</p>
+<m8-phrase phrase="40"></m8-phrase>
+
+<h2>Why these values</h2>
+<ul>
+  <li><b>SHAPE 20 STRUCK BELL</b>: an additive bell model. <b>TIMBRE</b> sets the damping (how
+  long it rings), <b>COLOR</b> the inharmonicity. COLOR 30 keeps it close to a pitched note, so
+  it sits in a chord instead of clanging against it.</li>
+  <li><b>No volume envelope.</b> A struck model makes its own decay; each note is a strike.</li>
+  <li><b>CUTOFF C0</b>: just softens the highest partials.</li>
+  <li><b>DEL 50, REV 60</b>: the echo is half the effect. In the effect settings (mixer, then
+  delay), set TIME to a dotted eighth so the echoes land between the notes.</li>
+  <li><b>CHA 8F</b>: in a phrase, X is the note's chance and Y the other FX's, from 0 (never) to F
+  (always). 8 is about half.</li>
+</ul>
+
+<h2>Try</h2>
+<ul>
+  <li>TIMBRE both ways: one end rings like a glass, the other is a dull clink.</li>
+  <li><b>COLOR 80</b> and up for a gamelan-like, out-of-tune bell. Lovely alone, sour in chords.</li>
+  <li><b>SHAPE 21 STRUCK DRUM</b> for a metallic drum on the same figure.</li>
+</ul>
+
+<p class="unverified">Values are a starting point, not tried on an M8. Delay TIME's "first digit
+in beats, second in fractions of a beat" suggests <b>0C</b> for a dotted eighth if the second
+digit counts sixteenths; what does the help text at the bottom of the screen say for 0C?</p>
+</main>
+</body>
+</html>

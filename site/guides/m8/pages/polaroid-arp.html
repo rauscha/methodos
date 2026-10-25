@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Polaroid arp</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../patches/faded-polaroid.json" label="Faded Polaroid, four bars"></m8-player>
+
+<p class="kicker">Patch card · Wavsynth · arp</p>
+<h1>Polaroid arp</h1>
+
+<p>A hollow triangle pluck: a rounded "doong" that fades to an almost wooden tone, like a music
+box heard through a wall, with a tape wobble you feel more than hear. From the Faded Polaroid
+session, where it replaced the Glass Garden FM voice.</p>
+
+<p class="demo-note">The browser plays the notes on a plain tone with no pluck. Mute <b>T2</b> and
+<b>T3</b> to hear the arp alone.</p>
+
+<m8-instrument inst="01" show="params mods"></m8-instrument>
+
+<h2>Play it</h2>
+<p>Eighth notes on the even rows, moving through each chord's upper notes rather than up a triad.
+Bar 1 is Dmaj9; the other three bars are phrases 11, 12 and 13.</p>
+<m8-phrase phrase="10"></m8-phrase>
+
+<h2>Why these values</h2>
+<ul>
+  <li><b>SHAPE TRIANGLE, WARP 18</b>: a soft fundamental, pushed slightly to one side for a
+  little asymmetry.</li>
+  <li><b>CUTOFF A0, RES 12</b>: takes the top off; the bit of resonance adds the nasal edge.</li>
+  <li><b>AHD on volume: ATK 01, HOLD 01, DEC 18.</b> At 90 BPM a tick is about 28 ms, so the
+  attack is one tick and 18 (24 ticks) is one beat. The next note arrives after half a beat and
+  takes over the track, so you hear the first half of each fade: a pluck, not a drone.</li>
+  <li><b>AHD on cutoff: AMT 20, DEC 10.</b> A small brightness at the start of each note that
+  closes in two-thirds of a beat. That's the "doong".</li>
+  <li><b>LFO on pitch: SIN, FREE, AMT 01, FREQ 80.</b> FREQ counts steps, so 80 (128 steps) is
+  one wobble every eight bars. AMT 01 is the smallest step; any more and it's seasick.</li>
+  <li><b>MFX 30, DEL 28, REV 48</b>: the haze. Get it sounding right dry first.</li>
+</ul>
+
+<h2>Try</h2>
+<ul>
+  <li><b>SHAPE SINE</b> for something purer.</li>
+  <li><b>SIZE</b> from 20 toward 50 for more grain.</li>
+  <li>A little more <b>WARP</b>.</li>
+</ul>
+
+<p class="unverified">This patch is the chat's recipe. Two values are fixed from it: CHO became
+<b>MFX</b> and PAN 00 became <b>80</b>, which is center on 6.6.3. Is the parameter after WARP
+labeled SCAN or MIRROR on your screen?</p>
+</main>
+</body>
+</html>

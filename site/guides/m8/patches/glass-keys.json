@@ -1,0 +1,166 @@
+{
+ "title": "Glass keys",
+ "tempo": 92,
+ "key": "D major",
+ "firmware": "6.6.3",
+ "notes": "A patch card's demo: every element is on from the start.",
+ "tracks": [
+  {
+   "n": 1,
+   "name": "Keys"
+  }
+ ],
+ "song": [
+  {
+   "row": "00",
+   "chains": {
+    "1": "01"
+   }
+  }
+ ],
+ "chains": {
+  "01": [
+   {
+    "ph": "14"
+   }
+  ]
+ },
+ "phrases": {
+  "14": {
+   "rows": {
+    "0": {
+     "n": "D-4",
+     "v": "60",
+     "i": "0A"
+    },
+    "2": {
+     "n": "A-4",
+     "v": "48",
+     "i": "0A"
+    },
+    "4": {
+     "n": "E-5",
+     "v": "60",
+     "i": "0A"
+    },
+    "6": {
+     "n": "F#4",
+     "v": "48",
+     "i": "0A"
+    },
+    "8": {
+     "n": "C#5",
+     "v": "60",
+     "i": "0A"
+    },
+    "10": {
+     "n": "A-4",
+     "v": "48",
+     "i": "0A"
+    },
+    "12": {
+     "n": "F#4",
+     "v": "60",
+     "i": "0A"
+    },
+    "14": {
+     "n": "E-5",
+     "v": "48",
+     "i": "0A"
+    }
+   }
+  }
+ },
+ "instruments": {
+  "0A": {
+   "type": "FMSYNTH",
+   "name": "GLASS KEYS",
+   "params": [
+    [
+     "ALGO",
+     "07 [A>B]+[C>D]"
+    ],
+    [
+     "MOD1",
+     "FF"
+    ],
+    [
+     "MOD2",
+     "00"
+    ],
+    [
+     "MOD3",
+     "00"
+    ],
+    [
+     "MOD4",
+     "00"
+    ],
+    [
+     "FILTER",
+     "LOWPASS"
+    ],
+    [
+     "CUTOFF",
+     "FF"
+    ],
+    [
+     "RES",
+     "00"
+    ],
+    [
+     "AMP",
+     "00"
+    ],
+    [
+     "LIM",
+     "CLIP"
+    ],
+    [
+     "PAN",
+     "80"
+    ],
+    [
+     "DRY",
+     "C0"
+    ],
+    [
+     "MFX",
+     "10"
+    ],
+    [
+     "DEL",
+     "30"
+    ],
+    [
+     "REV",
+     "40"
+    ]
+   ],
+   "mods": [
+    {
+     "slot": 1,
+     "type": "AHD ENV",
+     "dest": "VOLUME",
+     "p": {
+      "AMT": "FF",
+      "ATK": "00",
+      "HOLD": "00",
+      "DEC": "60"
+     }
+    },
+    {
+     "slot": 2,
+     "type": "AHD ENV",
+     "dest": "MOD1",
+     "p": {
+      "AMT": "FF",
+      "ATK": "00",
+      "HOLD": "00",
+      "DEC": "0C"
+     }
+    }
+   ]
+  }
+ }
+}

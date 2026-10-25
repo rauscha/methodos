@@ -475,6 +475,18 @@ class M8Player extends HTMLElement {
   async connectedCallback() {
     pages.player = this;
     this.step = Number(this.getAttribute('step') ?? 99);
+    // silent: the panels still read the spec, but there is no Play. For sounds a plain
+    // browser tone would only misrepresent (drums, a recording).
+    if (this.hasAttribute('silent')) {
+      this.model = build(await (await fetch(this.getAttribute('src'))).json(), this.step);
+      const note = document.createElement('p');
+      note.className = 'demo-note';
+      note.textContent = this.getAttribute('silent') || 'No demo sound for this one: the browser can\'t stand in for it.';
+      this.replaceChildren(note);
+      pages.resolve(this);
+      this.loop();
+      return;
+    }
     this.innerHTML = `<div class="m8-transport">
       <button type="button" class="m8-play" aria-pressed="false">Play</button>
       <span class="m8-where" aria-live="off">Loading…</span>

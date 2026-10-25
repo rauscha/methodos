@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Acid bass</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../patches/acid-bass.json" label="One bar of acid"></m8-player>
+
+<p class="kicker">Patch card · Wavsynth · acid bass</p>
+<h1>Acid bass</h1>
+
+<p>A squelchy, resonant saw line in the 303 manner: every note opens the filter and snaps it
+shut, loud notes open it further, and a couple of notes slide into the next. A card about
+modulation: three mod slots doing three jobs.</p>
+
+<p class="demo-note">The browser plays the notes on a plain tone, without the squelch or the
+slides.</p>
+
+<m8-instrument inst="09" show="params mods"></m8-instrument>
+
+<h2>Play it</h2>
+<p>One bar at 120 BPM in A minor. Loud notes (70) are the accents; <code>PSL 06</code> on rows 6
+and B glides into those notes.</p>
+<m8-phrase phrase="21"></m8-phrase>
+
+<h2>Why these values</h2>
+<ul>
+  <li><b>CUTOFF 30, RES C0</b>: a nearly closed filter, ringing hard. On its own it's a dull hum;
+  the envelope is what opens it.</li>
+  <li><b>MOD 1, AHD on CUTOFF: AMT 70, DEC 0C.</b> Each note opens the filter and closes it over
+  12 ticks, an eighth note at any tempo. That's the "wow".</li>
+  <li><b>MOD 2, AHD on VOLUME: HOLD 04, DEC 08.</b> Short notes with gaps between them, so the line
+  bounces instead of droning.</li>
+  <li><b>MOD 3, TRACKING: SRC VELOCITY, DEST CUTOFF, LVAL 00, HVAL 40.</b> Velocity also opens the
+  filter, so the 70s scream and the 40s stay low.</li>
+  <li><b>PSL 06</b>: portamento, in ticks. Six ticks is one row, so the slide takes the whole
+  step.</li>
+  <li><b>AMP 20, LIM CLIP</b>: a bit of grit.</li>
+</ul>
+
+<h2>Try</h2>
+<ul>
+  <li>An LFO on CUTOFF, very slow (FREQ 40 or more), so the line opens over several bars.</li>
+  <li><b>SHAPE PULSE 50%</b> for the square-wave flavor.</li>
+  <li>RES higher until it nearly whistles, then back off a hair.</li>
+</ul>
+
+<p class="unverified">Values are a starting point, not tried on an M8. Is the third mod type
+named TRACKING on your screen, and does a mod slot accept CUTOFF as DEST alongside another slot
+on CUTOFF?</p>
+</main>
+</body>
+</html>

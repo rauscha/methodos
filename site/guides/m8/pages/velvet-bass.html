@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Velvet bass</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../patches/faded-polaroid.json" label="Faded Polaroid, four bars"></m8-player>
+
+<p class="kicker">Patch card · Wavsynth · bass</p>
+<h1>Velvet bass</h1>
+
+<p>A warm, filtered saw with a little drive, fat enough to carry the roots under rootless
+chords. From the Faded Polaroid session, under <a href="page:polaroid-chords">Polaroid
+chords</a>.</p>
+
+<p class="demo-note">The browser plays the notes on a plain tone. Mute <b>T1</b> and <b>T3</b> to
+hear the bass alone.</p>
+
+<m8-instrument inst="02" show="params mods"></m8-instrument>
+
+<h2>Play it</h2>
+<p>The chord's root on row 0 of each bar. The chords leave the root out; this puts it back.</p>
+<m8-phrase phrase="20,21,22,23"></m8-phrase>
+
+<h2>Why these values</h2>
+<ul>
+  <li><b>SHAPE SAW, CUTOFF 60, RES 08</b>: a saw with its top shaved off. Full harmonics low down,
+  nothing fizzy.</li>
+  <li><b>AMP 18, LIM POST</b>: a little gain, clipped after the filter, so it thickens without
+  getting brighter.</li>
+  <li><b>AHD on volume: ATK 01, HOLD 18, DEC 30.</b> At 90 BPM: holds one beat, then fades over
+  two. The bass breathes instead of droning.</li>
+  <li><b>REV 08</b>: almost none. Reverb on bass muddies the chord above it.</li>
+</ul>
+
+<h2>Try</h2>
+<ul>
+  <li><b>SHAPE TRIANGLE</b> if the saw is too aggressive.</li>
+  <li>A second note on row 0A, an octave up and quieter, for movement.</li>
+</ul>
+
+<p class="unverified">The chat's recipe; CHO became <b>MFX</b> and PAN 00 became <b>80</b>.
+The instrument number here (02) is a guess: use whatever slot it has in your song.</p>
+</main>
+</body>
+</html>

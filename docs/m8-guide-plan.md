@@ -17,6 +17,19 @@ previous links already step through the pages of one section, so filling the sec
 enough; check on the Pixel before planning any app change. This comes after fix plan D in
 `docs/review-2026-10-23.md`.
 
+**Built 2026-10-24, at his request ("next up - m8 instrument cards").** Ten cards in one
+`cards` section, so next/previous pages through all of them: Tide pad and Roots (Low Tide);
+Polaroid chords, Polaroid arp, Velvet bass (his Faded Polaroid session; the chords card uses
+his photo of instrument 10 and his COL test, the other two the chat's recipes with CHO→MFX and
+PAN→80); then Struck bell (candidate for Low Tide's arp), No-sample drum kit (Low Tide's planned
+beat), Acid bass, Glass keys (FM; Glass Garden's second chance), Field recording loop (Low
+Tide's texture). Each card has its own mini spec in `patches/<id>.json`, so Play plays that
+card's phrase; non-Hypersynth instruments sound on the plain stand-in. `<m8-player silent>`
+(new in the kit) loads the spec with no Play, for the drums and the recording. Every value not
+from his device sits under an Unverified box with one ask. Low Tide's bass, drums, arp and
+texture steps are still unwritten; when they are, they should use these cards' values or
+update the cards.
+
 ### Changes in revision 3
 
 - **The arp is written by hand** (step 7), not made with the ARP command. ARP is a fast

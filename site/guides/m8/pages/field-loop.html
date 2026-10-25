@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Field recording loop</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../patches/field-loop.json" silent="No demo sound: the sound is whatever you record."></m8-player>
+
+<p class="kicker">Patch card · Sampler · texture</p>
+<h1>Field recording loop</h1>
+
+<p>A sound from where you are (rain, a café, a train) recorded on the M8's own mic, looped low
+under everything. It's Low Tide's texture track (step 8, not written yet), and it needs no
+computer, so it works on the trip.</p>
+
+<h2>Record it</h2>
+<ol class="do">
+  <li>On a free instrument, set <b>TYPE</b> to <b>SAMPLER</b>. Press <kbd>EDIT</kbd> on
+  <b>REC.</b> to open the sample editor.</li>
+  <li>Set <b>SRC</b> to <b>MIC</b> and bring <b>VOL</b> up until the loudest part sits high
+  without clipping.</li>
+  <li>Start with the <b>power button</b> rather than <kbd>EDIT</kbd> on START, so the key click
+  isn't in the recording. Record half a minute or more.</li>
+  <li><b>SELECT</b> a calm stretch of 5 to 10 seconds with no one sound sticking out. Then
+  <b>PROCESS</b>: <b>CROP</b>, then <b>XFADE LOOP</b> so the end blends into the start, then
+  <b>NORMALIZE</b>.</li>
+  <li><b>NAME</b> it and <b>SAVE</b>. <kbd>OPTION</kbd> leaves the editor.</li>
+</ol>
+
+<h2>The instrument</h2>
+<m8-instrument inst="0B" show="params"></m8-instrument>
+<ul>
+  <li><b>PLAY FWDLOOP</b>: loops forward for as long as the note holds.</li>
+  <li><b>FILTER HIGHPASS, CUTOFF 30</b>: takes out the rumble (traffic, wind, handling) that
+  would fight the bass.</li>
+  <li><b>DRY 60, REV 40</b>: low and far away. It should be felt more than heard; if you notice it,
+  it's too loud.</li>
+</ul>
+
+<h2>Play it</h2>
+<p>One note on row 0 of phrase 50, then seven empty phrases in the chain, so it's struck once
+every eight bars and holds.</p>
+<m8-chain chain="05"></m8-chain>
+<m8-phrase phrase="50" compact></m8-phrase>
+
+<h2>Try</h2>
+<ul>
+  <li><b>PLAY OSC</b>: oscillator modes ignore the start position and don't restart on a new
+  note, so the loop runs on through the chain without a seam at bar 1.</li>
+  <li><b>DETUNE</b> or a lower note for a darker, slower texture. On the Zoom M4 at 96 kHz you can
+  pitch down much further without grit.</li>
+  <li>A slow LFO on CUTOFF so the texture opens and closes with the pad.</li>
+</ul>
+
+<p class="unverified">How a recording stops (<kbd>EDIT</kbd> again, or the power button), and
+which note plays a sample at its own pitch (C-4 here is a guess): what did you find?</p>
+</main>
+</body>
+</html>

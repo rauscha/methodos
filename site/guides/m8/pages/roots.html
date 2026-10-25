@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Roots</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../songs/low-tide.json" step="3" label="Pad and roots"></m8-player>
+
+<p class="kicker">Patch card · Macrosynth · low roots</p>
+<h1>Roots</h1>
+
+<p>A soft, round low tone that holds the root of each chord so a rootless pad can float above it.
+Nothing about it should draw the ear; it's the floor. From
+<a href="page:low-tide-3">Low Tide, step 3</a>, track 2.</p>
+
+<p class="demo-note">Play gives the whole Low Tide loop. Mute <b>T3</b> to hear the roots alone.
+The roots play on a plain browser tone close to this shape; your M8 will be rounder.</p>
+
+<m8-instrument inst="02" show="params"></m8-instrument>
+
+<h2>Play it</h2>
+<p>One note per chord, on row 0, with an empty phrase after it so the note holds for two bars.</p>
+<m8-phrase phrase="20,21,22,23"></m8-phrase>
+
+<h2>Why these values</h2>
+<ul>
+  <li><b>SHAPE SINE TRIANGLE</b> (model 03): a sine and a triangle sent into a wavefolder.
+  <b>COLOR 20</b> keeps it mostly sine; <b>TIMBRE 18</b> folds it just enough to be heard on a
+  small speaker.</li>
+  <li><b>CUTOFF 70, RES 10</b>: rounds off whatever the folding adds.</li>
+  <li><b>DRY C0, REV 10</b>: nearly dry. Reverb on the low end turns to mud under a wet pad.</li>
+  <li>No envelope: the note holds until the next one arrives, which is what a pedal root wants.</li>
+</ul>
+
+<h2>Try</h2>
+<ul>
+  <li><b>TIMBRE 40</b> for a bass that speaks on a phone speaker; back to 18 on headphones.</li>
+  <li><b>COLOR 80</b> for an even sine and triangle: a little reedier.</li>
+  <li>Put the <a href="page:tide-pad">Tide pad</a>'s rootless banks over any root here, and the
+  root names the chord.</li>
+</ul>
+</main>
+</body>
+</html>

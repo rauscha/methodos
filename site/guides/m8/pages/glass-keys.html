@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glass keys</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../patches/glass-keys.json" label="The Glass Garden arp, bar 1"></m8-player>
+
+<p class="kicker">Patch card · FM synth · electric piano</p>
+<h1>Glass keys</h1>
+
+<p>An electric piano with a glassy tine on the front of each note: a bright "tink" that fades
+in an eighth note, over a round body that rings for a bar. The Glass Garden arp gets a second
+chance; in the Faded Polaroid session its FM voice "wasn't becoming very crystalline".</p>
+
+<p class="demo-note">The browser plays the notes on a plain tone; FM is the M8's.</p>
+
+<m8-instrument inst="0A" show="params mods"></m8-instrument>
+
+<h2>The operators</h2>
+<p><b>ALGO 07</b> is <b>[A&gt;B]+[C&gt;D]</b>: two pairs, side by side. In each pair the first
+operator bends the second, and you hear the second. So B and D are what you hear; A and C only
+color them.</p>
+<table class="m8-banks">
+  <caption>Operator rows</caption>
+  <thead><tr><th>Op</th><th>Shape</th><th>RATIO</th><th>LEV</th><th>FB</th><th>MOD</th><th>Job</th></tr></thead>
+  <tbody>
+    <tr><td>A</td><td>SIN</td><td>1.00</td><td>30</td><td>00</td><td>--</td><td>warms the body</td></tr>
+    <tr><td>B</td><td>SIN</td><td>1.00</td><td>C0</td><td>00</td><td>--</td><td>the body you hear</td></tr>
+    <tr><td>C</td><td>SIN</td><td>14.00</td><td>60</td><td>00</td><td>1 LEV</td><td>the tine's sparkle</td></tr>
+    <tr><td>D</td><td>SIN</td><td>1.00</td><td>80</td><td>00</td><td>--</td><td>the tine you hear</td></tr>
+  </tbody>
+</table>
+
+<h2>Play it</h2>
+<p>Bar 1 of the Glass Garden arp, Dmaj9, at its 92 BPM.</p>
+<m8-phrase phrase="14"></m8-phrase>
+
+<h2>Why these values</h2>
+<ul>
+  <li><b>C at ratio 14.00 into D at 1.00</b>: a modulator fourteen times the note's frequency
+  puts a cluster of high, slightly bell-like partials on D. That's the glass.</li>
+  <li><b>C's MOD slot set to 1 LEV</b>, and <b>MOD 2 (AHD, DEC 0C) on MOD1</b>: the envelope
+  pulls C's level from full to nothing in an eighth note. The sparkle is only on the attack, as
+  on a real tine.</li>
+  <li><b>MOD 1, AHD on VOLUME, DEC 60</b>: the whole note fades over a bar.</li>
+  <li><b>A at 1.00 into B, low level (30)</b>: a gentle body. More A level makes it reedier.</li>
+</ul>
+
+<p><b>Why Glass Garden may have missed.</b> The chat's patch set A to level 80 and B to 24, at
+ratios 1.00 and 3.00. If B is the one you hear, as the algorithm's name suggests, its 3.00 ratio
+plays an octave and a fifth above the note, quietly, under a loud modulator. Worth a look.</p>
+
+<h2>Try</h2>
+<ul>
+  <li>C's ratio at 7.00 or 3.50 for a different glass.</li>
+  <li>MOD 2's DEC at 18 (a beat) for a longer shimmer.</li>
+  <li>A little FB on A for a dirtier, harder body.</li>
+</ul>
+
+<p class="unverified">Values are a starting point, not tried on an M8. How a mod-page envelope
+reaches an operator is the guess here: the manual says each operator's MOD slots assign MOD1–4
+to LEV, RAT, PIT or FBK, but not how MOD 2's DEST names them. What DEST choices does a mod slot
+show on an FM instrument? And which operators does ALGO 07's picture put at the bottom (the ones
+you hear)?</p>
+</main>
+</body>
+</html>
