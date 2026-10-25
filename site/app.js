@@ -340,15 +340,28 @@ function renderSection(g, s, done) {
          ${s.items.map((p) => pageRow(g, p, done)).join('')}
        </${s.layout === 'steps' ? 'ol' : 'ul'}>`
     : `<p class="empty">Nothing here yet.</p>`;
+  // Every section folds shut with a tap on its heading; the device remembers which.
+  const folded = foldSet(g.id).has(s.id);
   return `
-    <section class="section">
-      <div class="section-head">
+    <details class="section" data-section="${esc(s.id)}" ${folded ? '' : 'open'}>
+      <summary class="section-head">
+        <span class="fold-mark" aria-hidden="true"></span>
         <h3>${esc(s.title ?? s.id)}</h3>
         ${s.items.length ? `<span class="meta">${countLine(s.items, done)}</span>` : ''}
-      </div>
+        <span class="fold-word meta" aria-hidden="true"></span>
+      </summary>
       ${s.description ? `<p class="section-desc">${esc(s.description)}</p>` : ''}
       ${list}
-    </section>`;
+    </details>`;
+}
+
+const foldSet = (guideId) => new Set(store.get(`fold:${guideId}`, []));
+function wireFolds(g, root) {
+  root.querySelectorAll('details.section').forEach((d) => d.addEventListener('toggle', () => {
+    const s = foldSet(g.id);
+    d.open ? s.delete(d.dataset.section) : s.add(d.dataset.section);
+    store.set(`fold:${g.id}`, [...s]);
+  }));
 }
 
 function matches(p, q) {
@@ -403,9 +416,12 @@ function renderGuide(g) {
     </main>`;
 
   const input = app.querySelector('input[type=search]');
+  const body = app.querySelector('.guide-body');
+  wireFolds(g, body);
   input?.addEventListener('input', () => {
     store.set(`q:${g.id}`, input.value);
-    app.querySelector('.guide-body').innerHTML = renderGuideBody(g, input.value.trim().toLowerCase());
+    body.innerHTML = renderGuideBody(g, input.value.trim().toLowerCase());
+    wireFolds(g, body);
   });
   app.querySelector('[data-save]')?.addEventListener('click', (e) => saveOffline(g, e.currentTarget));
   app.querySelector('[data-remove]')?.addEventListener('click', async () => {
