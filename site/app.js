@@ -250,9 +250,23 @@ const countLine = (items, done) => {
 
 // ---- library view
 
-function renderLibrary() {
+// The shelf's order and hidden guides are this device's own, kept beside done marks.
+let arranging = false;
+function arrangedGuides() {
+  const { order = [], hidden = [] } = store.get('shelf', {});
+  const rank = (id) => { const i = order.indexOf(id); return i < 0 ? Infinity : i; };
+  const all = library.guides.map((g, i) => ({ g, i }))
+    .sort((a, b) => rank(a.g.id) - rank(b.g.id) || a.i - b.i).map((x) => x.g);
+  return { all, shown: all.filter((g) => !hidden.includes(g.id)), hidden: all.filter((g) => hidden.includes(g.id)) };
+}
+function saveShelf(all, hidden) {
+  store.set('shelf', { order: all.map((g) => g.id), hidden: hidden.map((g) => g.id) });
+}
+
+function renderLibrary(focus) {
   document.title = 'Methodos';
-  const cards = library.guides.map((g) => {
+  const { all, shown, hidden } = arrangedGuides();
+  const cards = shown.map((g, i) => {
     const done = doneSet(g.id);
     const meta = g.error
       ? `Could not load: ${esc(g.error)}`
@@ -267,19 +281,64 @@ function renderLibrary() {
           ${g.description ? `<p>${esc(g.description)}</p>` : ''}
           <span class="meta">${meta}</span>
         </a>
+        ${arranging ? `<div class="arrange-row" role="group" aria-label="Arrange ${esc(g.title ?? g.id)}">
+          <button class="button" type="button" data-move="-1" data-id="${esc(g.id)}" ${i === 0 ? 'disabled' : ''}><span aria-hidden="true">↑</span> Up</button>
+          <button class="button" type="button" data-move="1" data-id="${esc(g.id)}" ${i === shown.length - 1 ? 'disabled' : ''}><span aria-hidden="true">↓</span> Down</button>
+          <button class="button" type="button" data-hide="${esc(g.id)}">Hide</button>
+        </div>` : ''}
       </li>`;
   }).join('');
+  const hiddenList = hidden.length ? `
+      <details class="hidden-guides" ${arranging ? 'open' : ''}>
+        <summary>Hidden guides (${hidden.length})</summary>
+        <ul class="link-list">${hidden.map((g) => `
+          <li><a href="#/${encodeURIComponent(g.id)}">${esc(g.title ?? g.id)}</a>
+            <button class="button" type="button" data-show="${esc(g.id)}">Show</button></li>`).join('')}
+        </ul>
+      </details>` : '';
   app.innerHTML = `
     ${bar({ title: 'Methodos', sub: 'Library' })}
     <main class="page-body">
       ${library.shelfError ? `<p class="empty">Couldn't reach the shelf (${esc(library.shelfError)}). Check the connection and reload; guides on this device still open.</p>` : ''}
-      <ul class="guide-grid">${cards || (library.shelfError ? '' : '<li class="empty">No guides yet. Add one with <code>tools/methodos.py new</code>.</li>')}</ul>
-      ${'caches' in window ? `<div class="guide-tools library-tools">
-        <button class="button" type="button" data-add>Add a guide from a file</button>
+      <ul class="guide-grid${arranging ? ' arranging' : ''}">${cards || (library.shelfError || hidden.length ? '' : '<li class="empty">No guides yet. Add one with <code>tools/methodos.py new</code>.</li>')}</ul>
+      ${hiddenList}
+      <div class="guide-tools library-tools">
+        ${all.length > 1 ? `<button class="button toggle" type="button" data-arrange aria-pressed="${arranging}">${arranging ? 'Done arranging' : 'Arrange'}</button>` : ''}
+        ${'caches' in window ? `<button class="button" type="button" data-add>Add a guide from a file</button>
         <input type="file" accept=".zip,application/zip" hidden data-file>
-        <span class="add-status meta" role="status"></span>
-      </div>` : ''}
+        <span class="add-status meta" role="status"></span>` : ''}
+      </div>
     </main>`;
+
+  // Arrange: move, hide, show. Re-render, then put focus back on the button that was used.
+  app.querySelector('.page-body').addEventListener('click', (e) => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    const { all: list, hidden: off } = arrangedGuides();
+    if (b.hasAttribute('data-arrange')) {
+      arranging = !arranging;
+      return renderLibrary('[data-arrange]');
+    }
+    if (b.dataset.move) {
+      const id = b.dataset.id, dir = Number(b.dataset.move);
+      const on = list.filter((g) => !off.includes(g));
+      const j = on.findIndex((g) => g.id === id) + dir;
+      if (j < 0 || j >= on.length) return;
+      const a = list.findIndex((g) => g.id === id), c = list.indexOf(on[j]);
+      [list[a], list[c]] = [list[c], list[a]];
+      saveShelf(list, off);
+      return renderLibrary(`[data-move="${dir}"][data-id="${CSS.escape(id)}"]`);
+    }
+    if (b.dataset.hide) {
+      saveShelf(list, [...off, list.find((g) => g.id === b.dataset.hide)]);
+      return renderLibrary('[data-arrange]');
+    }
+    if (b.dataset.show) {
+      saveShelf(list, off.filter((g) => g.id !== b.dataset.show));
+      return renderLibrary(`[data-id="${CSS.escape(b.dataset.show)}"]`);
+    }
+  });
+  if (focus) (app.querySelector(`${focus}:not(:disabled)`) ?? app.querySelector('[data-arrange]'))?.focus();
 
   const input = app.querySelector('[data-file]');
   const status = app.querySelector('.add-status');
