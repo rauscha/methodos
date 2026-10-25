@@ -52,7 +52,8 @@ duck.</p>
 <p>The M8 counts time three ways, and these pages say which each time it matters:</p>
 <ul>
   <li><b>ADSR envelopes: seconds.</b> You found on 6.6.3 that ATK 60 reads "0.200 SECONDS". The
-  pages give a target ("until the help line reads 2.86 s") rather than a hex value.</li>
+  pages give a target ("until the help line reads 0.5 s") rather than a hex value, except where
+  you've found it: ATK C2 = 2.869 s, REL CB = 3.663 s.</li>
   <li><b>AHD and trig envelopes: ticks</b>, 6 to a row, 24 to a beat. AHD ATK 10 reads "2 STEPS 4
   TICKS".</li>
   <li><b>LFO FREQ: a length in steps.</b> FREQ 80 reads "8 PHRASES 0 STEPS 0 TICKS". Higher is
@@ -65,11 +66,9 @@ manual for 6.5.2, the changelog up to 6.6.3, or Dirtywave's meetups: a button pr
 units, how a value is written. Each box ends with one thing to check on the M8.</p>
 
 <h2>Report back</h2>
-<p>The five that matter most. A text with the answers, and a photo or two, fixes the pages; the
+<p>The four that matter most. A text with the answers, and a photo or two, fixes the pages; the
 other dashed boxes can wait.</p>
 <ol class="do">
-  <li>The pad's ADSR: the ATK and REL values whose help line reads 2.86 s and 5.71 s.
-  <i>(step 2)</i></li>
   <li>The SWARM value you like on the held chord, somewhere around 04 to 10. <i>(step 2)</i></li>
   <li>The duck: the trig envelope AMT whose help line reads about minus half. <i>(step 6)</i></li>
   <li>The delay: what the help line says for TIME <code>0C</code>. <i>(step 7)</i></li>

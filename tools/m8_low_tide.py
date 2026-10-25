@@ -39,7 +39,7 @@ phrases["30"] = {"rows": {"0": cell("D-3", "64", "03", step=2, fx=[fx("CRD", "00
 for ph, bank in [("31", "01"), ("32", "02"), ("33", "03"), ("34", "04"), ("35", "05")]:
     phrases[ph] = {"rows": {"0": cell(fx=[fx("CRD", bank, 3)])}}
 phrases["3F"] = {"rows": {}, "about": "Empty on purpose: the chord keeps sounding through this bar."}
-phrases["3E"] = {"rows": {"0": cell("OFF", step=9)}, "about": "An OFF: the pad starts its two-bar release."}
+phrases["3E"] = {"rows": {"0": cell("OFF", step=9)}, "about": "An OFF: the pad starts its release, about a bar and a quarter."}
 chains["03"] = [{"ph": "30", "step": 2}] + [{"ph": p, "step": 3} for p in ["31", "32", "3F", "33", "3F", "34", "35"]]
 chains["33"] = [{"ph": p, "step": 9} for p in ["30", "3F", "31", "3F", "30", "3F", "3E", "3F"]]
 
@@ -166,8 +166,8 @@ instruments = {
         ],
         "mods": [
             {"slot": 1, "type": "ADSR ENV", "dest": "VOLUME", "step": 2,
-             "p": {"AMT": "FF", "ATK": "→2.9s", "DEC": "00", "SUS": "FF", "REL": "→5.7s"},
-             "sec": {"ATK": 2.857, "REL": 5.714}},
+             "p": {"AMT": "FF", "ATK": "C2", "DEC": "00", "SUS": "FF", "REL": "CB"},
+             "sec": {"ATK": 2.869, "REL": 3.663}},
             {"slot": 2, "type": "LFO", "dest": "CUTOFF", "step": 2,
              "p": {"OSC": "SIN", "TRIG": "FREE", "AMT": "40", "FREQ": "80"}},
             {"slot": 3, "type": "TRIG ENV", "dest": "VOLUME", "step": 6,

@@ -610,7 +610,7 @@
      "step": 9
     }
    },
-   "about": "An OFF: the pad starts its two-bar release."
+   "about": "An OFF: the pad starts its release, about a bar and a quarter."
   },
   "20": {
    "rows": {
@@ -1633,14 +1633,14 @@
      "step": 2,
      "p": {
       "AMT": "FF",
-      "ATK": "→2.9s",
+      "ATK": "C2",
       "DEC": "00",
       "SUS": "FF",
-      "REL": "→5.7s"
+      "REL": "CB"
      },
      "sec": {
-      "ATK": 2.857,
-      "REL": 5.714
+      "ATK": 2.869,
+      "REL": 3.663
      }
     },
     {

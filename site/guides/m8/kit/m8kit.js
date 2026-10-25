@@ -215,7 +215,7 @@ function hold(param, t) {
 
 // ADSR. On 6.6.3 its times are seconds, not ticks (Andrew's unit: ATK 60 reads "0.200
 // SECONDS"), and the hex-to-seconds curve isn't published. So a mod carries the target in
-// seconds as `sec: {ATK: 2.86, REL: 5.71}`; a time given only as hex is read as ticks.
+// seconds as `sec: {ATK: 2.869, REL: 3.663}`; a time given only as hex is read as ticks.
 class Env {
   constructor(mod, tempo) {
     const p = mod.p, sec = mod.sec ?? {};
@@ -1231,7 +1231,10 @@ class M8Envelope extends Panel {
       const nice = (b) => (b === 1 ? 'one bar' : b === 2 ? 'two bars' : `${b.toFixed(2).replace(/0+$/, '').replace(/\.$/, '')} bars`);
       let items = '';
       if (this.kind === 'adsr') {
-        const time = (k) => sec[k] != null
+        const found = (k) => p[k] && /^[0-9A-F]{2}$/.test(p[k]);
+        const time = (k) => sec[k] != null && found(k)
+          ? `<li><b>${k} ${p[k]}</b> = <b>${sec[k].toFixed(3)} s</b> on the help line, ${nice(Math.round(bars(sec[k]) * 100) / 100)} at ${tempo} BPM. ADSR times are seconds, not ticks.</li>`
+          : sec[k] != null
           ? `<li><b>${k}</b>: raise it until the help line at the bottom of the screen reads <b>${sec[k].toFixed(2)} s</b>, ${nice(Math.round(bars(sec[k]) * 100) / 100)} at ${tempo} BPM. ADSR times are seconds, not ticks.</li>`
           : p[k] == null ? '' : `<li><b>${k} ${p[k]}</b> ${hex(p[k]) ? `= about ${(hex(p[k]) * tk).toFixed(2)} s read as ticks (check the help line)` : '= none'}</li>`;
         items = `${time('ATK')}${p.DEC != null ? (sec.DEC != null ? time('DEC') : `<li><b>DEC ${p.DEC}</b> ${hex(p.DEC) ? '' : '= no decay: straight to the sustain level'}</li>`) : ''}${p.SUS != null ? `<li><b>SUS ${p.SUS}</b> = hold at ${Math.round(hex(p.SUS) / 2.55)}% while the note is held</li>` : ''}${time('REL')}`;

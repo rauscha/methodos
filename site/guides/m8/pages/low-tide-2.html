@@ -95,26 +95,25 @@ published. Try 04 to 10 on the held chord. (Not 00: at 00 the saws freeze in pha
 firmware 4.0 meetup: AHD counts ticks, ADSR counts time. So the hex values don't map to bars, and
 these pages give the time to aim for instead.</p>
 <ul>
-  <li><b>ATK</b>: raise it with <kbd>EDIT</kbd>+<kbd>UP</kbd>, then fine-tune with
-  <kbd>EDIT</kbd>+<kbd>LEFT</kbd>/<kbd>RIGHT</kbd>, until the help line reads about
-  <b>2.86 s</b>. That's one bar at 84 BPM (four beats of 0.714 s), so the pad takes a full bar to
-  arrive.</li>
-  <li><b>REL</b>: about <b>5.71 s</b>, two bars. It takes two bars to fade after an OFF.</li>
+  <li><b>ATK C2</b>: the help line reads <b>2.869 s</b>. That's one bar at 84 BPM (four beats of
+  0.714 s), so the pad takes a full bar to arrive. You found the value.</li>
+  <li><b>REL CB</b>: <b>3.663 s</b>, about a bar and a quarter, your choice. After an OFF the pad
+  fades over that long. For a full two bars, raise it until the help line reads about 5.71 s.</li>
   <li><b>DEC 00, SUS FF</b>: no decay; it holds at full level.</li>
 </ul>
 
 <m8-envelope inst="03" mod="1"></m8-envelope>
 
-<p class="unverified">Which hex gives those times. The changelog only says ADSR "has better
-scaling on the low range", so the curve isn't known. You tried ATK E8. <b>Report back:</b> the
-ATK and REL values (as the screen shows them) whose help line reads 2.86 s and 5.71 s.</p>
+<p class="demo-note">How the hex maps to seconds isn't published (the changelog only says the
+low range was rescaled). Three points you've read off the screen: 60 = 0.200 s, C2 = 2.869 s,
+CB = 3.663 s. Set any other ADSR by the help line.</p>
 
 <p>Because ADSR is in seconds, these times are right only at 84 BPM. At another tempo, work out
 the bar length (240 divided by the BPM) and set them again by the help line.</p>
 
 <p>An ADSR only releases on an OFF (a note OFF or the OFF command). This phrase has none, so while it
 plays, the pad just holds at the top. Press <b>Stop</b> on the strip to send an OFF and watch the
-two-bar release.</p>
+release.</p>
 
 <p>The phrase retriggers the note every bar. Since 6.6, a retrigger of the same instrument resumes
 the attack from wherever the envelope already is, so a held pad doesn't dip each bar. In step 3
