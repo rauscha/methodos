@@ -1,0 +1,223 @@
+{
+ "title": "Tables: a table arp",
+ "tempo": 84,
+ "key": "D minor",
+ "firmware": "6.6.3",
+ "notes": "The Tables technique page's demo: every element is on from the start.",
+ "tracks": [
+  {
+   "n": 4,
+   "name": "Arp"
+  }
+ ],
+ "song": [
+  {
+   "row": "00",
+   "chains": {
+    "4": "07"
+   }
+  }
+ ],
+ "chains": {
+  "07": [
+   {
+    "ph": "70"
+   },
+   {
+    "ph": "71"
+   }
+  ]
+ },
+ "phrases": {
+  "70": {
+   "rows": {
+    "0": {
+     "n": "D-5",
+     "v": "64",
+     "i": "0C"
+    }
+   }
+  },
+  "71": {
+   "rows": {
+    "0": {
+     "n": "A#4",
+     "v": "64",
+     "i": "0C",
+     "fx": [
+      {
+       "cmd": "TBL",
+       "val": "80"
+      }
+     ]
+    }
+   }
+  }
+ },
+ "tables": {
+  "0C": {
+   "rows": {
+    "0": {
+     "n": "00",
+     "v": "7F"
+    },
+    "1": {
+     "n": "07",
+     "v": "48"
+    },
+    "2": {
+     "n": "0E",
+     "v": "7F"
+    },
+    "3": {
+     "n": "0A",
+     "v": "48"
+    },
+    "4": {
+     "n": "0F",
+     "v": "7F"
+    },
+    "5": {
+     "n": "0E",
+     "v": "48"
+    },
+    "6": {
+     "n": "07",
+     "v": "7F"
+    },
+    "7": {
+     "n": "0A",
+     "v": "48"
+    },
+    "8": {
+     "fx": [
+      {
+       "cmd": "HOP",
+       "val": "00"
+      }
+     ]
+    }
+   },
+   "about": "instrument 0C's own table: Dm9 from the played note"
+  },
+  "80": {
+   "rows": {
+    "0": {
+     "n": "00",
+     "v": "7F"
+    },
+    "1": {
+     "n": "07",
+     "v": "48"
+    },
+    "2": {
+     "n": "0E",
+     "v": "7F"
+    },
+    "3": {
+     "n": "0B",
+     "v": "48"
+    },
+    "4": {
+     "n": "10",
+     "v": "7F"
+    },
+    "5": {
+     "n": "0E",
+     "v": "48"
+    },
+    "6": {
+     "n": "07",
+     "v": "7F"
+    },
+    "7": {
+     "n": "0B",
+     "v": "48"
+    },
+    "8": {
+     "fx": [
+      {
+       "cmd": "HOP",
+       "val": "00"
+      }
+     ]
+    }
+   },
+   "about": "a free table, picked with TBL: B♭maj9"
+  }
+ },
+ "instruments": {
+  "0C": {
+   "type": "WAVSYNTH",
+   "name": "TBL ARP",
+   "table": "0C",
+   "params": [
+    [
+     "TABLE TIC",
+     "0C"
+    ],
+    [
+     "SHAPE",
+     "TRIANGLE"
+    ],
+    [
+     "SIZE",
+     "20"
+    ],
+    [
+     "MULT",
+     "00"
+    ],
+    [
+     "WARP",
+     "00"
+    ],
+    [
+     "SCAN",
+     "00"
+    ],
+    [
+     "FILTER",
+     "LOWPASS"
+    ],
+    [
+     "CUTOFF",
+     "A0"
+    ],
+    [
+     "RES",
+     "10"
+    ],
+    [
+     "AMP",
+     "00"
+    ],
+    [
+     "LIM",
+     "CLIP"
+    ],
+    [
+     "PAN",
+     "80"
+    ],
+    [
+     "DRY",
+     "C0"
+    ],
+    [
+     "MFX",
+     "00"
+    ],
+    [
+     "DEL",
+     "30"
+    ],
+    [
+     "REV",
+     "40"
+    ]
+   ],
+   "mods": []
+  }
+ }
+}

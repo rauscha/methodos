@@ -9,14 +9,15 @@
 </head>
 <body>
 <main>
-<m8-player src="../songs/low-tide.json" step="2" label="Held chord"></m8-player>
+<m8-player src="../songs/low-tide.json" step="3" label="Pad and roots"></m8-player>
 
 <p class="kicker">Patch card · Hypersynth · pad</p>
 <h1>Tide pad</h1>
 
 <p>A warm, wide pad that takes a bar to arrive, fades over two, and slowly dulls and opens on an
-eight-bar cycle. Built for slow music where the chords change every bar or two. From
-<a href="page:low-tide-2">Low Tide, step 2</a>.</p>
+eight-bar cycle. It plays one held note and changes chords with <code>CRD</code>, so nothing
+re-attacks. From <a href="page:low-tide-2">Low Tide, step 2</a>, with the chord banks from
+<a href="page:low-tide-3">step 3</a>. Mute T2 to hear it alone.</p>
 
 <m8-instrument inst="03" show="params mods banks"></m8-instrument>
 
@@ -26,11 +27,19 @@ eight-bar cycle. Built for slow music where the chords change every bar or two. 
 
 <h2>Notes</h2>
 <ul>
-  <li>Needs firmware 6.6 for SOFT SAW and for the smooth retrigger on chord changes.</li>
+  <li>Needs firmware 6.6 for SOFT SAW.</li>
+  <li><b>SWARM 08</b>, not more. SWARM is a wide detune (about a fifth up and down at 80), and
+  past about 10 the pad starts to buzz, worse on close chords.</li>
+  <li><b>ATK</b> and <b>REL</b> are set by the help line, in seconds: 2.86 s and 5.71 s are one bar
+  and two bars at 84 BPM. At another tempo, set them again. The LFO counts steps, so the tide stays
+  eight bars at any tempo.</li>
+  <li><b>SUBOSC 80</b> and <b>SHIFT 80</b> are the defaults: no sub, both halves of the chord at
+  full level.</li>
   <li>The ADSR only releases on an OFF. End a section with an OFF a couple of bars before it should
   be silent.</li>
-  <li>Timing is in ticks, so the swell and the tide stay one bar and eight bars at any tempo.</li>
-  <li>Plays rootless: put the root on another track. Bank 00 (F A C E on F-3) over a D is Dm9.</li>
+  <li>Plays rootless: put the root on another track. The banks are intervals above a held D-3; over
+  a D, bank 00 is Dm9.</li>
+  <li>In step 6 it gets a third mod, a trig envelope that ducks it on each kick.</li>
 </ul>
 </main>
 </body>

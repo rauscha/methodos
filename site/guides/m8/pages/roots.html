@@ -14,14 +14,15 @@
 <p class="kicker">Patch card · Macrosynth · low roots</p>
 <h1>Roots</h1>
 
-<p>A soft, round low tone that holds the root of each chord so a rootless pad can float above it.
-Nothing about it should draw the ear; it's the floor. From
-<a href="page:low-tide-3">Low Tide, step 3</a>, track 2.</p>
+<p>A soft, nearly pure sine that holds the root of each chord under a rootless pad, and breathes
+with it: the same eight-bar filter tide, smaller. It should hide inside the pad, so you feel the
+chord change more than you hear a bass. From <a href="page:low-tide-3">Low Tide, step 3</a>, track
+2. In <a href="page:low-tide-4">step 4</a> the same instrument plays the bassline.</p>
 
 <p class="demo-note">Play gives the whole Low Tide loop. Mute <b>T3</b> to hear the roots alone.
-The roots play on a plain browser tone close to this shape; your M8 will be rounder.</p>
+They play on a plain browser tone close to this shape.</p>
 
-<m8-instrument inst="02" show="params"></m8-instrument>
+<m8-instrument inst="02" show="params mods"></m8-instrument>
 
 <h2>Play it</h2>
 <p>One note per chord, on row 0, with an empty phrase after it so the note holds for two bars.</p>
@@ -29,18 +30,24 @@ The roots play on a plain browser tone close to this shape; your M8 will be roun
 
 <h2>Why these values</h2>
 <ul>
-  <li><b>SHAPE SINE TRIANGLE</b> (model 03): a sine and a triangle sent into a wavefolder.
-  <b>COLOR 20</b> keeps it mostly sine; <b>TIMBRE 18</b> folds it just enough to be heard on a
-  small speaker.</li>
-  <li><b>CUTOFF 70, RES 10</b>: rounds off whatever the folding adds.</li>
-  <li><b>DRY C0, REV 10</b>: nearly dry. Reverb on the low end turns to mud under a wet pad.</li>
-  <li>No envelope: the note holds until the next one arrives, which is what a pedal root wants.</li>
+  <li><b>SHAPE SINE TRIANGLE</b>: a sine and a triangle sent into a wavefolder. <b>COLOR 10</b>
+  keeps it almost all sine; <b>TIMBRE 00</b> doesn't fold it at all. Few harmonics, so nothing
+  pokes out above the pad.</li>
+  <li><b>CUTOFF 50, RES 00, AMP 00</b>: rounds off whatever is left.</li>
+  <li><b>DRY 80, REV 00</b>: quiet and dry. Reverb on the low end turns to mud under a wet pad.</li>
+  <li><b>MOD 1 ADSR</b>: a soft attack (about 0.5 s on the help line) so a root swells in from
+  silence, and a 1 s release after an OFF. ADSR times are seconds; set them by the help line.</li>
+  <li><b>MOD 2 LFO on CUTOFF</b>: the pad's tide (FREQ 80, eight bars) at AMT 20, so the floor
+  darkens and opens with the pad.</li>
 </ul>
+
+<m8-envelope inst="02" mod="1"></m8-envelope>
 
 <h2>Try</h2>
 <ul>
-  <li><b>TIMBRE 40</b> for a bass that speaks on a phone speaker; back to 18 on headphones.</li>
-  <li><b>COLOR 80</b> for an even sine and triangle: a little reedier.</li>
+  <li>Still too present? Lower <b>DRY</b> first, then an EQ low shelf (Low Tide step 10).</li>
+  <li><b>TIMBRE 30</b> if you're listening on the M8's speaker and can't hear it at all; back to
+  00 on headphones.</li>
   <li>Put the <a href="page:tide-pad">Tide pad</a>'s rootless banks over any root here, and the
   root names the chord.</li>
 </ul>

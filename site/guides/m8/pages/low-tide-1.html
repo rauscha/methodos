@@ -30,37 +30,49 @@ most of the work.</p>
 
 <h3>The floor moves, the room stays</h3>
 <p>D minor to B♭ major (i to ♭VI) is one of the most used moves in trip-hop and ambient music,
-and the reason is in the notes. Dm is D F A; B♭maj7 is B♭ D F A. They share three notes, so the
-pad barely changes while the bass falls a major third underneath it. In bar 3 the pad plays exactly
-the notes it played in bar 1, and the chord still changes because the root did.</p>
+and the reason is in the notes. Dm9 is D F A C E; B♭maj9 is B♭ D F A C. They share four notes, so
+the pad barely changes while the bass falls a major third underneath it. Bar 3's pad is bar 1's
+with one note moved up a half step (E to F), and the chord still changes, because the root did.</p>
 
-<h3>Rootless chords</h3>
-<p>This is the same trick as Faded Polaroid: the pad never plays the root. It plays the
-<i>upper structure</i>, the notes above the root, and a separate track holds the root down low.
-F A C E over a D is Dm9. F A B♭ D over a G is Gm9. That keeps the pad floating and the bottom
-clean, and it means one pad shape can serve two chords.</p>
+<h3>Rootless chords on one held note</h3>
+<p>As in Faded Polaroid, the pad never plays the root. It plays the <i>upper structure</i>, the
+notes above the root, and a separate track holds the root down low. F C E A D over a D is Dm9.
+F B♭ F A D over a G is Gm9. That keeps the pad floating and the bottom clean.</p>
+<p>The pad is also one note, held for the whole loop. You type D-3 once, and each chord is a
+<i>chord bank</i>: a list of intervals above that D. A command, <code>CRD</code>, switches banks
+on a row with no note, so the chord changes while the note keeps sounding. Nothing re-attacks;
+the pad just moves.</p>
 
 <h3>A top voice that orbits one note</h3>
 <p>Follow the thick line in the roll. The pad's top note is D, rises to E in bar 2, comes back to D
 and stays there for five bars while the chords change underneath it. In bar 8 it slips down to
 C♯, the only C♯ in the loop and its one bright note, which pulls straight back to D at the top.
-At that moment every voice in the pad moves up a step at once (E to F, G to A, B♭ to C, C♯ to D),
-which is why the loop feels like it comes home.</p>
+At that moment four voices step up at once (E to F, B♭ to C, G to A, C♯ to D) and one holds, which
+is why the loop feels like it comes home.</p>
+<p>The voicings are open: no two neighboring notes closer than a minor third, most a fourth or
+more apart, from F3 up to D5. Each note in a Hypersynth chord is a pair of detuned saws, and
+saws packed a step apart beat against each other and turn to buzz. You heard that on your M8 in
+the first version of these chords. The other half of the fix is a much smaller detune, in
+step 2.</p>
 
-<div class="listen">Bar 3, where nothing in the pad moves but the chord changes anyway. Then the end
+<div class="listen">Bar 3, where one pad note moves and the whole chord changes anyway. Then the end
 of bar 8 into bar 1: the C♯ resolving.</div>
 
-<h2>Five tracks</h2>
+<h2>The tracks</h2>
 <table class="values">
   <thead><tr><th>Track</th><th>Part</th><th>Instrument</th><th>Step</th></tr></thead>
   <tbody>
-    <tr><td>1</td><td>Drums: kick, rim, swung hats</td><td>Sampler</td><td>5</td></tr>
-    <tr><td>2</td><td>Roots now, the bassline later</td><td>Macrosynth</td><td>3, then 4</td></tr>
-    <tr><td>3</td><td>The pad</td><td>Hypersynth</td><td>2 and 3</td></tr>
-    <tr><td>4</td><td>The arp, written by hand</td><td>Macrosynth</td><td>7</td></tr>
+    <tr><td>1</td><td>Kick and snare</td><td>Macrosynth drum models, no samples</td><td>5</td></tr>
+    <tr><td>2</td><td>Roots, then the bassline</td><td>Macrosynth</td><td>3, then 4</td></tr>
+    <tr><td>3</td><td>The pad</td><td>Hypersynth</td><td>2 and 3, the duck in 6</td></tr>
+    <tr><td>4</td><td>The arp, written by hand</td><td>Macrosynth bell</td><td>7</td></tr>
     <tr><td>5</td><td>A sound you record on the trip</td><td>Sampler</td><td>8</td></tr>
+    <tr><td>6</td><td>Hats</td><td>Macrosynth</td><td>5</td></tr>
+    <tr><td>8</td><td>No notes: moves the mixer's filter</td><td>none</td><td>9</td></tr>
   </tbody>
 </table>
+<p>Each M8 track plays one note at a time, which is why the hats get a track of their own while
+kick and snare (which never land together here) share one.</p>
 
 <h2>Set up the song</h2>
 <ol class="do">
@@ -71,8 +83,8 @@ of bar 8 into bar 1: the C♯ resolving.</div>
   <li>Set <b>NAME</b> to LOW TIDE and <b>SAVE</b>.</li>
   <li>Leave <b>SCALE</b> alone. A scale would quantize notes to D minor, and the C♯ in bar 8 isn't in
   D minor: it would get bent to C or D, and the loop would lose its pull home.</li>
-  <li>Leave <b>GROOVE</b> on the default for now. Swing arrives with the drums in step 5, and it
-  can't be heard on chords that only move on row 0.</li>
+  <li>Leave <b>GROOVE</b> on the default. Swing arrives with the drums in step 5, on the
+  drum and bass tracks only, so the pad stays straight and floats over it.</li>
 </ol>
 
 <p>Next: <a href="page:low-tide-2">step 2, the pad sound</a>.</p>

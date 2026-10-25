@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Low Tide 8: texture</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../songs/low-tide.json" step="8" label="The loop; your recording isn't in the demo"></m8-player>
+
+<p class="kicker">Low Tide · step 8 of 10</p>
+<h1>Texture: record a sound where you are</h1>
+
+<p>The last part is a sound from wherever you are: rain, a café, a train, an airport hum.
+Recorded on the M8's own mic, looped, and set low and far away under everything. It needs no
+computer. The instrument is the <a href="page:field-loop">Field recording loop</a> card,
+instrument 0B on track 5. For more on recording and samples, see
+<a href="page:sampling">Sampling</a>.</p>
+
+<p class="demo-note">The demo can't play your recording, so track 5 is silent here. Its chain and
+phrase still light up.</p>
+
+<h2>Record it</h2>
+<ol class="do">
+  <li><b>Stop the song first</b>, or the mic records the M8's own speaker.</li>
+  <li>Go to instrument 0B (in phrase 50's I column, enter <code>0B</code>, then
+  <kbd>SHIFT</kbd>+<kbd>RIGHT</kbd>). Set <b>TYPE</b> to <b>SAMPLER</b>. Press <kbd>EDIT</kbd> on
+  <b>REC.</b> to open the sample editor.</li>
+  <li>Set <b>SRC</b> to <b>MIC</b>. Bring <b>VOL</b> up until the loudest part sits high without
+  clipping.</li>
+  <li>Start with the <b>power button</b> rather than <kbd>EDIT</kbd> on START, so the key click
+  isn't in the recording. Hold still and record half a minute or more.</li>
+  <li><b>SELECT</b> a calm stretch of 5 to 10 seconds where no one sound sticks out (a voice, a
+  door). Then <b>PROCESS</b>, choosing each with <kbd>EDIT</kbd>+<kbd>LEFT</kbd>/<kbd>RIGHT</kbd>
+  and tapping <kbd>EDIT</kbd> to run it: <b>CROP</b>, then <b>XFADE LOOP</b> so the end blends
+  into the start, then <b>NORMALIZE</b>.</li>
+  <li><b>NAME</b> it and <b>SAVE</b>. <kbd>OPTION</kbd> leaves the editor.</li>
+</ol>
+
+<p class="unverified">How a recording stops: the manual says how to start one (EDIT on START, or
+the power button) but not how to end it. Try the power button again. <b>Report back:</b> what
+stopped it?</p>
+
+<h2>The instrument</h2>
+<m8-instrument inst="0B" show="params"></m8-instrument>
+<ul>
+  <li><b>PLAY FWDLOOP</b>: loops forward for as long as the note holds.</li>
+  <li><b>FILTER HIGHPASS, CUTOFF 30</b>: takes out the rumble (traffic, wind, handling) that
+  would fight the bass.</li>
+  <li><b>DRY 60, REV 40</b>: low and far away. It should be felt more than heard.</li>
+</ul>
+
+<h2>Track 5</h2>
+<p>One note at the top of eight bars, then empty phrases, so the loop is struck once per pass
+of the progression and holds.</p>
+<ol class="do">
+  <li>Song view, track 5, row 00: chain <code>05</code>. In it, phrase 50 on row 0 and an empty
+  phrase 5F on rows 1 to 7.</li>
+  <li>Phrase 50, row 0: <code>C-4</code>, V <code>50</code>, instrument <code>0B</code>.</li>
+</ol>
+<m8-chain chain="05" compact></m8-chain>
+<m8-phrase phrase="50" compact></m8-phrase>
+
+<p class="unverified">Which note plays a sample at its own pitch. The manual's note that "notes
+above C-4 are limited" by bit depth suggests C-4 is where a sample plays as recorded, so these
+pages use it. <b>Report back:</b> does C-4 sound at the pitch you recorded?</p>
+
+<div class="listen">Mute everything else and the texture should sound like a place, not a sound
+effect. Then bring the other tracks back: you should lose track of it within a bar, and miss it
+if you mute it. If you can hear the loop's seam, choose a calmer stretch, or try PLAY OSC on the
+card.</div>
+
+<h2>Things to try</h2>
+<ul>
+  <li><b>DETUNE</b> below 80, or play it on a lower note, for a darker, slower texture. See the
+  Zoom M4 route on <a href="page:sampling">Sampling</a> for pitching down a long way.</li>
+  <li>Give instrument 0B its own LFO on CUTOFF with FREQ 80, like the pad's, so the texture opens
+  and closes with the tide.</li>
+</ul>
+
+<p>Next: <a href="page:low-tide-9">step 9, arrange it</a>.</p>
+</main>
+</body>
+</html>

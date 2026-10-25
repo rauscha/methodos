@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Low Tide 7: the arp</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../songs/low-tide.json" step="7" label="Pad, bass and arp"></m8-player>
+
+<p class="kicker">Low Tide · step 7 of 10</p>
+<h1>The arp</h1>
+
+<p>A small bell plays eighth notes through each chord's upper notes, an octave above the pad, with
+a dotted-eighth echo and a few notes left to chance. It's written by hand, one phrase per chord,
+because the ARP command can't follow chords: it plays the note plus two fixed intervals. The
+voice is the <a href="page:struck-bell">Struck bell</a> card, instrument 05.</p>
+
+<m8-roll tracks="3,4"></m8-roll>
+
+<div class="listen">The arp's notes sit above the pad's top line and keep touching it: D over D in
+bar 1, E against the pad's E in bar 2. In bar 8 it leans on C♯ three times, and the loop's first
+note is the D it was waiting for.</div>
+
+<h2>Six phrases, eight bars</h2>
+<p>Notes on even rows only (0, 2, 4 … E), velocity 60 on the beat and 40 off it, every note on
+instrument <code>05</code>. Phrase 40 is drawn in full below; the others follow the same pattern,
+so here they are as a list, row 0 first. The last column is the rows that also get
+<code>CHA 8F</code>.</p>
+
+<table class="values">
+  <thead><tr><th>Phrase</th><th>Chord</th><th>Notes, rows 0 to E</th><th>CHA</th></tr></thead>
+  <tbody>
+    <tr><td>40</td><td>Dm9</td><td><code>D-6 A-5 E-6 C-6 F-6 E-6 A-5 C-6</code></td><td>6, C</td></tr>
+    <tr><td>41</td><td>Dm9, top E</td><td><code>E-6 A-5 D-6 C-6 F-6 E-6 C-6 A-5</code></td><td>4</td></tr>
+    <tr><td>42</td><td>B♭maj9</td><td><code>F-5 C-6 A-5 D-6 C-6 F-5 A-5 C-6</code></td><td>6, A</td></tr>
+    <tr><td>43</td><td>Gm9</td><td><code>D-6 A-5 A#5 F-6 D-6 A-5 A#5 F-5</code></td><td>4, C</td></tr>
+    <tr><td>44</td><td>A7sus4♭9</td><td><code>G-5 D-6 A#5 E-6 D-6 G-5 A#5 D-6</code></td><td>6</td></tr>
+    <tr><td>45</td><td>A7♭9</td><td><code>E-6 A#5 C#6 G-5 E-6 C#6 A#5 C#6</code></td><td>A</td></tr>
+  </tbody>
+</table>
+
+<m8-phrase phrase="40" compact></m8-phrase>
+
+<ol class="do">
+  <li>Song view, track 4, row 00: chain <code>04</code>. In it: 40, 41, 42, 42, 43, 43, 44, 45. The
+  B♭ and G bars repeat their phrase; the chance notes keep the repeat from sounding like one.</li>
+  <li>Enter phrase 40. For the next ones, clone: on the phrase number in the chain,
+  <kbd>SHIFT</kbd>+<kbd>OPTION</kbd> then <kbd>EDIT</kbd> copies it to a new number. Then change the
+  notes: <kbd>EDIT</kbd>+<kbd>LEFT</kbd>/<kbd>RIGHT</kbd> moves a note by a semitone,
+  <kbd>EDIT</kbd>+<kbd>UP</kbd>/<kbd>DOWN</kbd> by an octave.</li>
+  <li>Instrument 05 as on the <a href="page:struck-bell">card</a>: MACROSYN, SHAPE 20 STRUCK BELL,
+  TIMBRE 50, COLOR 30, CUTOFF C0, DRY A0, DEL 50, REV 60. No envelope: a struck model makes its own
+  decay.</li>
+</ol>
+<m8-chain chain="04" compact></m8-chain>
+
+<h2>Why these notes</h2>
+<ul>
+  <li>Each bar uses the chord's color notes (9ths, 7ths, 5ths) more than its root. Over B♭ the arp
+  never plays B♭; over G it never plays G. The bass has the root.</li>
+  <li>The line moves mostly by leaps of a fourth or fifth, which a bell rings through well, and
+  its highest notes land on the beat, where the velocity is 60.</li>
+  <li>Bar 8 is built around C♯, the leading tone, so the D on bar 1 row 0 is a resolution. The
+  roll shows the arp's C♯6 above the pad's C♯5: the same pull in two octaves.</li>
+</ul>
+
+<h2>Chance: CHA</h2>
+<p><code>CHA XY</code> in a phrase sets two odds, from 0 (never) to F (always): X for the note,
+Y for the other FX on the row. <code>CHA 8F</code> gives the note about an even chance and leaves
+the FX alone. A note or two per bar drops out at random, so eight bars of the same figure never
+repeat exactly.</p>
+
+<h2>The echo: delay</h2>
+<p>DEL 50 on the instrument sends it to the delay. Set the delay in the effect settings: from the
+Mixer view, <kbd>SHIFT</kbd>+<kbd>DOWN</kbd>.</p>
+<ul>
+  <li><b>TIME</b> to a dotted eighth (three rows), so each echo lands between two notes.</li>
+  <li><b>FEEDBACK</b> low to middling: two or three audible repeats.</li>
+  <li><b>REVERB SEND</b> up a little, so the echoes sit in the same room as the pad.</li>
+</ul>
+<p class="unverified">The delay TIME value for a dotted eighth. The manual: "First digit is in
+beats, second digit is in fractions of a beat. Ex: 40 is 4 beats long". If the second digit
+counts sixteenths of a beat, a dotted eighth (3/4 of a beat) is <code>0C</code>. <b>Report
+back:</b> what does the help line say for <code>0C</code>?</p>
+
+<div class="listen">Solo track 4 (<kbd>OPTION</kbd>+<kbd>PLAY</kbd>): the bell and its echo should
+interlock into a steady sixteenth-note shimmer, with gaps where CHA drops a note. Then unsolo:
+it should sit on top of the pad, not inside it.</div>
+
+<h2>Things to try</h2>
+<ul>
+  <li>TIMBRE lower for a duller clink, higher for a long glassy ring (it's the damping).</li>
+  <li><code>CHA 4F</code> on more rows: sparser, more like rain.</li>
+  <li>The arp written as a table instead: see <a href="page:tables">Tables</a>, which shows why a
+  table can follow the root but not the chord.</li>
+</ul>
+
+<p>Next: <a href="page:low-tide-8">step 8, texture</a>.</p>
+</main>
+</body>
+</html>

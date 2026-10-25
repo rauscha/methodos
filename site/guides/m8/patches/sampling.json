@@ -1,0 +1,152 @@
+{
+ "title": "Sampling: a sliced loop",
+ "tempo": 84,
+ "key": "D minor",
+ "firmware": "6.6.3",
+ "notes": "The Sampling technique page's example: a sliced drum loop. Silent in the demo.",
+ "tracks": [
+  {
+   "n": 1,
+   "name": "Chops"
+  }
+ ],
+ "song": [
+  {
+   "row": "00",
+   "chains": {
+    "1": "0D"
+   }
+  }
+ ],
+ "chains": {
+  "0D": [
+   {
+    "ph": "D0"
+   }
+  ]
+ },
+ "phrases": {
+  "D0": {
+   "rows": {
+    "0": {
+     "n": "C-1",
+     "v": "70",
+     "i": "0D"
+    },
+    "4": {
+     "n": "C#1",
+     "v": "60",
+     "i": "0D"
+    },
+    "6": {
+     "n": "C-1",
+     "v": "40",
+     "i": "0D"
+    },
+    "8": {
+     "n": "D-1",
+     "v": "70",
+     "i": "0D"
+    },
+    "11": {
+     "n": "D#1",
+     "v": "30",
+     "i": "0D"
+    },
+    "12": {
+     "n": "C#1",
+     "v": "60",
+     "i": "0D"
+    },
+    "14": {
+     "n": "E-1",
+     "v": "50",
+     "i": "0D"
+    }
+   },
+   "about": "Each note picks a slice: C-1 is the first, C#1 the second, and so on up."
+  }
+ },
+ "instruments": {
+  "0D": {
+   "type": "SAMPLER",
+   "name": "CHOPS",
+   "demo": false,
+   "params": [
+    [
+     "SAMPLE",
+     "(a drum loop)"
+    ],
+    [
+     "SLICE",
+     "01 FILE"
+    ],
+    [
+     "PLAY",
+     "FWD"
+    ],
+    [
+     "START",
+     "00"
+    ],
+    [
+     "LOOP ST.",
+     "00"
+    ],
+    [
+     "LEN",
+     "FF"
+    ],
+    [
+     "DETUNE",
+     "80"
+    ],
+    [
+     "DEGRADE",
+     "00"
+    ],
+    [
+     "FILTER",
+     "LOWPASS"
+    ],
+    [
+     "CUTOFF",
+     "FF"
+    ],
+    [
+     "RES",
+     "00"
+    ],
+    [
+     "AMP",
+     "00"
+    ],
+    [
+     "LIM",
+     "CLIP"
+    ],
+    [
+     "PAN",
+     "80"
+    ],
+    [
+     "DRY",
+     "C0"
+    ],
+    [
+     "MFX",
+     "00"
+    ],
+    [
+     "DEL",
+     "00"
+    ],
+    [
+     "REV",
+     "10"
+    ]
+   ],
+   "mods": []
+  }
+ }
+}

@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Low Tide 5: drums and swing</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../songs/low-tide.json" step="5" label="Pad and swung bass; the drums draw but don't sound"></m8-player>
+
+<p class="kicker">Low Tide · step 5 of 10</p>
+<h1>Drums and swing</h1>
+
+<p>A slow trip-hop beat from three Macrosynth drum models, so it needs no samples: the
+<a href="page:drum-kit">No-sample drum kit</a> card. Kick and snare share track 1; the hats get
+track 6. Then a groove swings the drums and the bass, and leaves the pad straight.</p>
+
+<p class="demo-note">The demo plays no drums: a browser tone would only misrepresent them. Their
+phrases below still light up as the song plays, and the bass now swings.</p>
+
+<h2>The beat</h2>
+<table class="values">
+  <thead><tr><th>Part</th><th>Rows</th><th>Count</th></tr></thead>
+  <tbody>
+    <tr><td>Kick</td><td>0, A</td><td>1, and the "and" of 3</td></tr>
+    <tr><td>Snare</td><td>4, C, ghost on F</td><td>2 and 4, a quiet one leading into the next bar</td></tr>
+    <tr><td>Hats</td><td>every even row, ghosts on 3 and B</td><td>eighths, beats loud and offbeats soft</td></tr>
+  </tbody>
+</table>
+
+<h3>Track 1: kick and snare</h3>
+<p>An M8 track plays one note at a time, and these two never land on the same row, so they can
+share. Kick is instrument 06, snare 07.</p>
+<ol class="do">
+  <li>Song view, track 1, row 00: chain <code>01</code>. In it, phrase <code>10</code> on rows 0 to 6
+  and <code>11</code> on row 7.</li>
+  <li>Phrase 10: the rows below. Notes on instrument 06 are kicks, on 07 snares.</li>
+  <li>Phrase 11 is bar 8: the same, plus snare ghosts on D, E and F that build into the top of the
+  loop. Clone phrase 10 to start it: on its number in the chain, <kbd>SHIFT</kbd>+<kbd>OPTION</kbd>
+  then <kbd>EDIT</kbd>.</li>
+</ol>
+<m8-phrase phrase="10"></m8-phrase>
+<m8-phrase phrase="11" compact></m8-phrase>
+<m8-chain chain="01" compact></m8-chain>
+
+<h3>Track 6: hats</h3>
+<p>Instrument 08 on every row of chain 06, phrase 60 eight times.</p>
+<m8-phrase phrase="60"></m8-phrase>
+
+<h3>The three instruments</h3>
+<p>Set them up as on the <a href="page:drum-kit">drum kit card</a>, which explains each value:</p>
+<table class="values">
+  <thead><tr><th>Inst.</th><th>Settings</th></tr></thead>
+  <tbody>
+    <tr><td>06 KICK</td><td>MACROSYN, SHAPE 22 KICK, TIMBRE 60, COLOR 30, AMP 20, DRY E0</td></tr>
+    <tr><td>07 SNARE</td><td>MACROSYN, SHAPE 24 SNARE, TIMBRE 40, COLOR 90, AMP 10, DRY C0, REV 30</td></tr>
+    <tr><td>08 HAT</td><td>MACROSYN, SHAPE 23 CYMBAL, TIMBRE C0, COLOR E0, FILTER HIGHPASS at 80, DRY A0,
+    REV 18; MOD 1 AHD ENV on VOLUME, DEC 06</td></tr>
+  </tbody>
+</table>
+<p>The hat's AHD is in ticks (you found AHD ATK 10 reads "2 STEPS 4 TICKS", 6 ticks to a step), so
+DEC 06 is exactly one row: a closed hat.</p>
+
+<p class="unverified">The kick's length. The manual says KICK's TIMBRE is its decay, which
+suggests it dies away on its own; if it doesn't, the snare on row 4 cuts it anyway. <b>Report
+back:</b> at TIMBRE 60, does the kick stop by itself before beat 2?</p>
+
+<h2>Swing: groove 01</h2>
+<p>A groove sets how many ticks each row lasts. Groove 00, the default for every track, gives
+every row 6. Swing makes the first row of each pair longer and the second shorter, so every odd
+row arrives late.</p>
+<ol class="do">
+  <li>From any phrase, <kbd>SHIFT</kbd>+<kbd>UP</kbd> opens the Groove view.
+  <kbd>OPTION</kbd>+<kbd>RIGHT</kbd> moves to groove 01, so 00 stays straight.</li>
+  <li>Set row 0 to <code>07</code> with <kbd>EDIT</kbd>+<kbd>UP</kbd>/<kbd>DOWN</kbd>: that changes
+  row 1 with it, to <code>05</code>. Rows 2 to F stay empty, so the pair repeats. 7 + 5 = 12, the
+  same as 6 + 6, so a phrase is still 96 ticks.</li>
+  <li>Give each swung track groove 01 with <code>GRV 01</code>: on row 0 of phrase 10 (FX1), phrase
+  60 (FX1) and the bass's phrase 24 (FX2, beside the PSL). A GRV holds until another GRV, so once
+  per track is enough.</li>
+</ol>
+
+<figure class="m8-screen" aria-label="Groove 01">
+  <figcaption><span class="m8-title">GROOVE 01</span><span class="m8-note">the manual's "common swing setting"</span></figcaption>
+  <table class="m8-grid"><tbody>
+    <tr class="m8-row-new"><th scope="row">0</th><td class="m8-is-new">07</td><td class="m8-newcol"><span class="m8-new">new</span></td></tr>
+    <tr class="m8-row-new"><th scope="row">1</th><td class="m8-is-new">05</td><td></td></tr>
+    <tr><th scope="row">2</th><td class="m8-dim">--</td><td></td></tr>
+    <tr><th scope="row">…</th><td class="m8-dim">--</td><td></td></tr>
+  </tbody></table>
+</figure>
+
+<m8-phrase phrase="24" compact></m8-phrase>
+
+<p>Groove 07/05 swings <i>sixteenths</i>. Only the odd rows move, one tick late, and the even rows
+stay on the beat. That's why the hats have quiet notes on rows 3 and B and the bass has its ghost
+on row B: without notes on odd rows, a swing groove has nothing to move. The pad's only row is
+row 0, and it has no GRV, so it stays straight.</p>
+
+<div class="listen">On the M8, mute track 6 (<kbd>OPTION</kbd>+<kbd>SHIFT</kbd> on it) and back:
+the ghosts on 3 and B are where the lilt is. In the demo, listen to the bass's row B ghost: it
+now arrives a little late, leaning into beat 4.</div>
+
+<h2>Things to try</h2>
+<ul>
+  <li><b>08 04</b> in groove 01 (the manual's other swing): heavier, closer to a shuffle.</li>
+  <li><b>06 06</b> to hear the beat straight again, then back to 07 05.</li>
+  <li>Hat V on the offbeats from 30 down to 20: the accents become the groove.</li>
+</ul>
+
+<p>Next: <a href="page:low-tide-6">step 6, the duck</a>.</p>
+</main>
+</body>
+</html>

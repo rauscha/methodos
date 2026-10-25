@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tables</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../patches/table-arp.json" label="A table arp: Dm9, then B♭maj9"></m8-player>
+
+<p class="kicker">Technique</p>
+<h1>Tables</h1>
+
+<p>A table is a little sequencer that runs inside an instrument while a note plays. Sixteen rows,
+like a phrase, but each row is a transpose, a volume and three FX commands, and the table runs at
+its own speed, not the song's rows. Tables are how the M8 does arpeggios, volume shapes,
+multi-stage envelopes and moving effects from a single note. This page builds one arp from a
+table and shows where a table stops being the right tool.</p>
+
+<m8-roll tracks="4"></m8-roll>
+
+<div class="listen">Two bars, two notes typed in the phrase: D-5, then A#4. Everything else you
+hear, eight notes a bar, comes from the tables. Watch the ▶ cursor run down each table below.</div>
+
+<h2>Where tables live</h2>
+<ul>
+  <li>Every instrument has its own table. From the instrument view,
+  <kbd>SHIFT</kbd>+<kbd>RIGHT</kbd> opens it.</li>
+  <li>There are another 128 tables any instrument can borrow with the <code>TBL</code> command. On
+  a TBL value, <kbd>EDIT</kbd> twice picks a new unused table.</li>
+  <li><code>TBX</code> plays a second, auxiliary table alongside the instrument's own.</li>
+</ul>
+
+<h2>The speed: TABLE TIC</h2>
+<p><b>TABLE TIC</b> in the instrument view sets how many ticks each table row lasts. The default
+<code>01</code> is one tick, very fast. A phrase row is 6 ticks, so <code>06</code> runs the table
+in sixteenths and <code>0C</code> (12 ticks) in eighths, like the hand-written arp in Low Tide.
+The <code>TIC</code> command changes it from a phrase or a table, and inside a table each FX column
+can have its own rate. A few values are special:</p>
+<table class="values">
+  <thead><tr><th>TIC</th><th>What the table does</th></tr></thead>
+  <tbody>
+    <tr><td>00</td><td>Moves one row each time the instrument is triggered</td></tr>
+    <tr><td>01–FB</td><td>Ticks per row</td></tr>
+    <tr><td>FC</td><td>Octave map: the octave you play picks the row</td></tr>
+    <tr><td>FD</td><td>Velocity map: the velocity picks the row</td></tr>
+    <tr><td>FE</td><td>Note map: the note picks the row (use HOP 00 on row C for 12 notes an octave)</td></tr>
+    <tr><td>FF</td><td>Moves at 200 Hz, faster than any tick</td></tr>
+  </tbody>
+</table>
+
+<h2>An arp from a table</h2>
+<p>Instrument 0C is a plain Wavsynth triangle with no envelope, so it sustains and the table does
+all the moving. TABLE TIC <code>0C</code>: one row per eighth note.</p>
+<m8-instrument inst="0C" show="params"></m8-instrument>
+
+<h3>The N column is a transpose</h3>
+<p>Each row's N is semitones above the note you play, for as long as that row lasts. The table
+doesn't retrigger the instrument; it bends the sounding note to a new pitch. Rows 0 to 7 spell Dm9
+from D: root, fifth, ninth, seventh, the minor third an octave up, back down. Row 8 holds
+<code>HOP 00</code>, which jumps back to row 0, so the table loops every eight rows instead of
+sixteen.</p>
+<m8-table table="0C"></m8-table>
+
+<h3>The V column is a volume shape</h3>
+<p>V multiplies the phrase's volume: <code>7F</code> on the even rows, <code>48</code> on the odd
+ones, so the arp accents the first of each pair. Leave V empty and every row plays at the
+phrase's volume.</p>
+
+<h3>FX columns</h3>
+<p>Any FX command can go in a table row and fires when the row plays. Two that behave differently
+in a table: <code>CHA</code> takes one value, the chance for everything to its left, from 00 to FF;
+<code>HOP XY</code> jumps to row Y, X times (00 jumps for good).</p>
+
+<p class="unverified">Whether a HOP row takes time. Here the HOP sits on a row of its own, and the
+demo treats it as an instant jump. On the M8 it might play as a short silent row first.
+<b>Report back:</b> does the D table loop with an even eighth-note pulse, or is there a gap at the
+loop?</p>
+
+<h2>Where a table stops: the root, not the chord</h2>
+<p>A table transposes whatever note you play by the same intervals. Play D and you get Dm9. Play
+B♭ through the same table and you get B♭, F, C, A♭, D♭: B♭ minor, which clashes with Low Tide's
+B♭maj9 (A and D, not A♭ and D♭). So bar 2 switches table:</p>
+<m8-phrase phrase="70,71"></m8-phrase>
+<m8-table table="80"></m8-table>
+<p>Table 80 spells B♭maj9 from B♭: <code>00 07 0E 0B 10</code>, root, fifth, ninth, major
+seventh, third. It's a free table picked with <code>TBL 80</code> in phrase 71's FX1; your M8 may
+offer a different free number.</p>
+
+<p class="unverified">What happens after TBL. The manual says TBL "sets the table number for the
+current instrument", but not whether the next note with I <code>0C</code> goes back to the
+instrument's own table. The demo assumes it does. <b>Report back:</b> on the second time round,
+does bar 1 play the D table again, or stay on table 80? (If it stays, add <code>TBL 0C</code> to
+phrase 70; the instrument's own table should carry its number, but check that too.)</p>
+
+<h2>Table, ARP, or by hand</h2>
+<table class="values">
+  <thead><tr><th>Way</th><th>Good for</th><th>Limit</th></tr></thead>
+  <tbody>
+    <tr><td>ARP XY</td><td>A quick three-note figure: the note, +X, +Y</td><td>Fixed intervals, up to F (15) semitones</td></tr>
+    <tr><td>A table</td><td>Long figures, its own speed, volume and FX per row</td><td>Same intervals over every root; one table per chord quality</td></tr>
+    <tr><td>By hand</td><td>Following the harmony note for note (Low Tide step 7)</td><td>One phrase per chord; more typing</td></tr>
+  </tbody>
+</table>
+<p>Low Tide's arp is by hand because its chords change quality every bar or two. A table arp suits a
+song that sits on one chord, or one where you keep a table per chord type.</p>
+
+<h2>Things to try</h2>
+<ul>
+  <li>TABLE TIC <code>06</code>: the same figure twice as fast.</li>
+  <li>Move the HOP to row 6: a six-note figure against the eight-step bar, so it drifts.</li>
+  <li>In instrument 0C's table, put <code>VOL</code> commands down the rows instead of V values, as a
+  slow fade inside one note.</li>
+</ul>
+</main>
+</body>
+</html>

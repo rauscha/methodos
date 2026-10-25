@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Low Tide 6: the duck</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../songs/low-tide.json" step="6" label="The pad ducks where the kick lands"></m8-player>
+
+<p class="kicker">Low Tide · step 6 of 10</p>
+<h1>The duck</h1>
+
+<p>The pad dips each time the kick hits, then swells back: the breathing you hear under most
+trip-hop. On a computer this is sidechain compression. On the M8 it's a <b>trig envelope</b>: an
+envelope on the pad that is fired by another instrument's notes. It's the meetups' own way of
+doing it; Tim demonstrated it as "a fake compressor" in the firmware 4.0 meetup.</p>
+
+<p class="demo-note">The demo doesn't play the kick, but the kick's notes still fire the duck, so
+you hear the pad dip where the kick would be.</p>
+
+<h2>MOD 3 on the pad</h2>
+<p>Instrument 03 already uses MOD 1 (the ADSR) and MOD 2 (the LFO). <kbd>SHIFT</kbd>+<kbd>UP</kbd>
+from the instrument, and set up the third slot:</p>
+<m8-instrument inst="03" show="mods"></m8-instrument>
+
+<table class="values">
+  <thead><tr><th>Setting</th><th>Why</th></tr></thead>
+  <tbody>
+    <tr><td>MOD3 TRIG ENV</td><td>An AHD envelope (attack, hold, decay) that another instrument fires.</td></tr>
+    <tr><td>DEST VOLUME</td><td>It moves the pad's level.</td></tr>
+    <tr><td>SRC 06</td><td>Fired by instrument 06, the kick. SRC <code>00</code>–<code>7F</code> is an
+    instrument; <code>80</code>–<code>87</code> is every instrument on tracks 1 to 8. Track 1 also has
+    the snare, so SRC 80 would duck on the snares too. Naming the instrument ducks on kicks only.</td></tr>
+    <tr><td>AMT, negative</td><td>A trig envelope is bipolar: a negative amount pulls the level
+    down. Aim for about half.</td></tr>
+    <tr><td>ATK 00</td><td>The dip is instant.</td></tr>
+    <tr><td>HOLD 03</td><td>Stays down for 3 ticks, half a row.</td></tr>
+    <tr><td>DEC 12</td><td>Comes back over 18 ticks (12 in hex), three rows: most of a beat.</td></tr>
+  </tbody>
+</table>
+
+<p>Its times are ticks, like any AHD, not seconds like the pad's ADSR. So the duck stays locked to
+the beat at any tempo.</p>
+
+<m8-envelope inst="03" mod="3"></m8-envelope>
+
+<p class="unverified">How a negative AMT is written. The manual says only that a trig envelope
+"can have a positive or negative amount applied". Raise AMT from 00 and watch the help line.
+<b>Report back:</b> the AMT value, as the screen shows it, whose help line reads about minus
+half.</p>
+
+<div class="listen">The pad should sink on beat 1 and on the "and" of 3, and float back up in
+between. Too deep and it pumps like dance music; aim for a breath you'd miss if it stopped. In
+the M8's breakdown (step 9), the kick drops out and the pad stops breathing, which is part of
+why the breakdown feels open.</div>
+
+<h2>Things to try</h2>
+<ul>
+  <li><b>DEC 18</b> (24 ticks, a full beat): a slower, more obvious swell back.</li>
+  <li><b>SRC 80</b>: ducks on every note on track 1, kick and snare. Busier.</li>
+  <li>The same trig envelope on the bass (instrument 02, MOD 3 is free), with a smaller AMT, so
+  bass and kick don't stack.</li>
+</ul>
+
+<p>Next: <a href="page:low-tide-7">step 7, the arp</a>.</p>
+</main>
+</body>
+</html>

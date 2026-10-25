@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Low Tide 9: arrange it</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../songs/low-tide.json" step="9" label="The whole song, seven song rows"></m8-player>
+
+<p class="kicker">Low Tide · step 9 of 10</p>
+<h1>Arrange it in the song view</h1>
+
+<p>So far everything lives in song row 00, one eight-bar loop. Now the song view lays out a whole
+piece, eight bars per row: an intro, the parts arriving one at a time, a breakdown where the
+filter closes, the full loop again, and an outro where the pad lets go. About two and a half
+minutes.</p>
+
+<m8-song></m8-song>
+
+<table class="values">
+  <thead><tr><th>Row</th><th>What happens</th></tr></thead>
+  <tbody>
+    <tr><td>00</td><td>Intro: the pad swells in over the texture.</td></tr>
+    <tr><td>01</td><td>The bass enters.</td></tr>
+    <tr><td>02</td><td>Drums and hats enter; the pad starts to breathe.</td></tr>
+    <tr><td>03</td><td>The arp: everything.</td></tr>
+    <tr><td>04</td><td>Breakdown. No drums, no bass; the mixer's filter closes over the rest and
+    opens again in bar 8.</td></tr>
+    <tr><td>05</td><td>Everything again.</td></tr>
+    <tr><td>06</td><td>Outro: the pad holds Dm9 and fades; the texture carries on alone.</td></tr>
+  </tbody>
+</table>
+
+<div class="listen">Press Play and let it run. The transport reads the song row as it goes. Notice
+row 04: when the drums leave, the pad stops ducking, and the filter closing makes the room sound
+smaller. Then the drop back in on row 05.</div>
+
+<h2>A chain for silence: FE</h2>
+<p>A track that should be quiet for a row can't just be left empty. In the song view an empty cell
+(<code>--</code>) ends that track's list, and it would loop back to its top out of step with the
+others. The manual's answer is a chain of empty phrases; FE is the usual number. This one starts
+with an OFF, because an empty phrase on its own lets the last note keep ringing.</p>
+<ol class="do">
+  <li>On an empty song cell, <kbd>EDIT</kbd>, then dial the chain number to <code>FE</code> with
+  <kbd>EDIT</kbd>+arrows (<kbd>EDIT</kbd>+<kbd>UP</kbd>/<kbd>DOWN</kbd> moves in big steps).</li>
+  <li>In chain FE: phrase <code>FD</code> on row 0, phrase <code>FE</code> on rows 1 to 7.</li>
+  <li>Phrase FD, row 0: an OFF. On the empty note (<code>---</code>), <kbd>OPTION</kbd>+<kbd>EDIT</kbd>
+  inserts one. Phrase FE stays empty.</li>
+</ol>
+<m8-chain chain="FE" compact></m8-chain>
+<m8-phrase phrase="FD" compact></m8-phrase>
+
+<h2>Lay out the rows</h2>
+<ol class="do">
+  <li>Copy row 00 down to rows 03 and 05 first, while it's still the full loop: on row 00, track 1,
+  <kbd>SHIFT</kbd>+<kbd>OPTION</kbd> starts a selection; move right to track 6 to stretch it;
+  <kbd>OPTION</kbd> copies. Put the cursor on row 03, track 1, and <kbd>SHIFT</kbd>+<kbd>EDIT</kbd>
+  pastes. Same again on row 05.</li>
+  <li>Then fill the rest from the song screen above. Cells that read FE are the silence chain.
+  Edit row 00 last: it becomes the intro.</li>
+  <li>Track 8 gets FE on every row except 04, so it stays in step too.</li>
+</ol>
+<p>Each track's song list must be as long as the others, or they drift apart: here every row is
+eight bars on every track, and the empty row 07 sends them all back to row 00 together.</p>
+
+<h2>The outro: chain 33</h2>
+<p>The pad gets its own last chain: Dm9 struck again and held, the top E for a bar, Dm9 again, then
+an OFF in bar 7 so the two-bar release ends with the row.</p>
+<m8-chain chain="33" compact></m8-chain>
+<m8-phrase phrase="3E" compact></m8-phrase>
+<p>Make it by cloning: on chain 03 in row 06, <kbd>SHIFT</kbd>+<kbd>OPTION</kbd> then
+<kbd>EDIT</kbd> copies it to a new, unused chain number. These pages call that chain 33; yours may
+get another number, which is fine. Then change its rows. Phrase 3E holds the OFF.</p>
+
+<h2>The breakdown: track 8 moves the DJ filter</h2>
+<p>Track 8 plays no notes. Its phrases only carry <code>DJC</code>, which sets the cutoff of the
+mixer's DJ filter. The filter sits on the whole mix: <code>80</code> is off, below 80 it's a
+low-pass that closes as the value falls.</p>
+<ol class="do">
+  <li>In the Mixer view, put the cursor on <b>DJF</b> and tap <kbd>EDIT</kbd>. Since 6.6.1 that
+  "captures" its command, so tapping <kbd>EDIT</kbd> on an empty FX column in a phrase inserts
+  <code>DJC</code>. (Or pick DJC from the FX help list.)</li>
+  <li>Chain 80 on track 8, row 04: phrases 80, 8F, 81, 8F, 82, 8F, 8F, 83.</li>
+  <li>Phrases 80, 81, 82: one DJC on row 0, at 60, 40 and 30. 8F is empty: the filter stays where
+  it was put.</li>
+  <li>Phrase 83, bar 8, opens it back up a beat at a time: 48, 58, 68, then 80 on beat 4, just
+  before the drums return.</li>
+</ol>
+<m8-chain chain="80" compact></m8-chain>
+<m8-phrase phrase="83"></m8-phrase>
+<p>The DJ filter is a mixer setting, so it stays where the last DJC left it. If you stop in the
+middle of the breakdown, the next play starts muffled: set DJF back to 80 in the mixer.</p>
+
+<h2>Playing it</h2>
+<ul>
+  <li><kbd>PLAY</kbd> in the song view plays from the cursor's row. Put it on row 00 for the whole
+  song.</li>
+  <li>While it plays, <kbd>LEFT</kbd>+<kbd>PLAY</kbd> on a row cues it next, which is the quick
+  way to hear the breakdown into row 05 again and again.</li>
+  <li>Since 6.6, pressing <kbd>LEFT</kbd> twice on track 1 selects a whole song row; then
+  <kbd>EDIT</kbd>+<kbd>UP</kbd>/<kbd>DOWN</kbd> moves it, if you want to try another order.</li>
+</ul>
+
+<h2>Things to try</h2>
+<ul>
+  <li>A second breakdown chain for the pad with the arp left out, so row 04 thins even further.</li>
+  <li>Keep the arp in the outro: track 4, row 06, chain 04 instead of FE.</li>
+  <li>Swap the order of rows 01 and 02, so the drums arrive before the bass.</li>
+</ul>
+
+<p>Next: <a href="page:low-tide-10">step 10, the mix</a>.</p>
+</main>
+</body>
+</html>

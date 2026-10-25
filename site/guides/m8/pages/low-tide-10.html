@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Low Tide 10: the mix</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../songs/low-tide.json" step="10" label="The whole song"></m8-player>
+
+<p class="kicker">Low Tide · step 10 of 10</p>
+<h1>The mix</h1>
+
+<p>The song is written. The mix makes room: each part gets its own space in pitch and in the
+stereo field, the reverb puts them in one room, and the limiter keeps it from clipping. All of it
+is done on the M8 by ear, and since 6.6 the EQ view shows a live spectrum, so you can also see
+what you're cutting.</p>
+
+<p class="demo-note">This page is about the M8's own mixer; the demo above just plays the song
+for reference. Mix on headphones and check on the speaker.</p>
+
+<h2>1. Balance</h2>
+<ol class="do">
+  <li>Start with the kick and bass alone: solo track 1 with <kbd>OPTION</kbd>+<kbd>PLAY</kbd> (release
+  OPTION first to latch it), then track 2 the same way.</li>
+  <li>Bring in the pad, then hats, arp and texture, one at a time. For each, ask whether you'd miss
+  it if it stopped, and whether it covers anything already there.</li>
+  <li>Turn parts down with the instrument's <b>DRY</b> first, so its reverb send stays where it is.
+  The Mixer view's track volume moves the dry level and the sends together.</li>
+  <li><kbd>OPTION</kbd>+<kbd>SHIFT</kbd>+<kbd>PLAY</kbd> clears all mutes and solos.</li>
+</ol>
+
+<h2>2. EQ: a mono low end under a wide pad</h2>
+<p>The pad is wide (WIDTH C0) all the way down, so its low notes spread left and right on top of
+the mono bass, and they smear each other. The fix comes from Dirtywave's own meetup (#32, firmware
+6.5.2), "particularly for Hypersynth": a low cut that only touches the <i>side</i> of the signal.
+The pad stays wide above, and goes mono below.</p>
+<ol class="do">
+  <li>In instrument 03, set <b>EQ</b> to a free slot number (03 is easy to remember). Then
+  <kbd>EDIT</kbd> on it, or <kbd>SHIFT</kbd>+<kbd>RIGHT</kbd>, opens the EQ editor.</li>
+  <li>On the <b>LOW</b> band: <b>TYPE</b> LOWCUT, <b>MODE</b> SIDE, <b>FREQ</b> about 500 Hz.</li>
+  <li>Press PLAY and watch the spectrum. Bring FREQ down until the pad starts to sound narrow, then
+  back up a little.</li>
+  <li>Instrument 05 (the bell) can share it, or get its own slot with a plain STEREO low cut a
+  little higher: the arp has nothing below its lowest F5 worth keeping.</li>
+</ol>
+<p>MODE can be STEREO (both channels the same), MID (only what's common to both), SIDE (only the
+difference between them), LEFT or RIGHT. A double tap of <kbd>EDIT</kbd> in the EQ editor mutes
+and unmutes the EQ, which is the quickest before-and-after.</p>
+
+<p class="unverified">The EQ FREQ value for 500 Hz. The manual describes FREQ as the band's
+"center (or corner) frequency" but not how it's shown. <b>Report back:</b> does the screen show
+FREQ in Hz, or as hex?</p>
+
+<h2>3. One room: the sends</h2>
+<p>The reverb is shared, so the sends decide how far back each part sits. As set in the earlier
+steps:</p>
+<table class="values">
+  <thead><tr><th>Part</th><th>REV</th><th>Why</th></tr></thead>
+  <tbody>
+    <tr><td>Pad 03</td><td>90</td><td>Far back and huge; at the bottom of the tide, mostly reverb.</td></tr>
+    <tr><td>Bell 05</td><td>60</td><td>In the room, plus the delay (DEL 50).</td></tr>
+    <tr><td>Texture 0B</td><td>40</td><td>Distant.</td></tr>
+    <tr><td>Snare 07</td><td>30</td><td>A little space around it.</td></tr>
+    <tr><td>Hats 08</td><td>18</td><td>Barely.</td></tr>
+    <tr><td>Bass 02</td><td>00</td><td>Dry: reverb on the low end turns to mud.</td></tr>
+    <tr><td>Kick 06</td><td>00</td><td>Dry and in front.</td></tr>
+  </tbody>
+</table>
+<p>The reverb itself is in the effect settings (Mixer view, then <kbd>SHIFT</kbd>+<kbd>DOWN</kbd>):
+a large <b>SIZE</b> and a long <b>DECAY</b> suit this song. Its <b>INPUT EQ</b> can cut the lows
+going into the reverb, which keeps the tail clear of the bass. Leave <b>SHIMMER</b> at 00 to start;
+a little later on is lovely on the pad.</p>
+
+<h2>4. The limiter</h2>
+<ol class="do">
+  <li>In the Mixer view, <b>LIM</b> above 00 turns the main limiter on. Raise it until the white
+  line on the MIX meter moves only on the loudest moments (the drops into rows 02 and 05).</li>
+  <li><kbd>EDIT</kbd> on LIM opens the Limiter and Mix Scope view. <b>ATK</b> near zero and
+  <b>REL</b> 00 (auto) are good settings, and have been the defaults since firmware 5.0 (Dirtywave meetup). <b>PEAK</b> shows the
+  loudest level so far.</li>
+  <li>Any clipping shows as a bar on the meter; if you see it, lower <b>MIX</b> rather than pushing
+  the limiter harder.</li>
+</ol>
+
+<div class="listen">Switch the pad's EQ off and on (double tap <kbd>EDIT</kbd> in the EQ editor):
+with it on, the bass gets firmer and the pad stays as wide. Then the whole song from row 00: the
+intro should feel deep, the full rows should be louder without being harsh, and the breakdown
+should feel like the room closing, not like the volume dropping.</div>
+
+<h2>When you're home</h2>
+<p>Project view, <b>RENDER</b>: <b>MIXED</b> writes one stereo file to /Renders, <b>STEMS</b> one
+per track. Set SONG ROW START 00 and LAST 06. Leave REVERB, DELAY and LIMITER on for a finished
+mix.</p>
+
+<p>That's Low Tide. The pad's patch card is <a href="page:tide-pad">Tide pad</a>; the others are in
+Patch cards. For the techniques behind steps 7 and 8, see <a href="page:tables">Tables</a> and
+<a href="page:sampling">Sampling</a>.</p>
+</main>
+</body>
+</html>

@@ -18,23 +18,19 @@
 time: how slowly it arrives, how long it hangs after you let go, and how it changes while it's
 held. That's easier to judge on one chord than on eight bars of them.</p>
 
-<h2>One chord in phrase 30</h2>
+<h2>One note in phrase 30</h2>
 <ol class="do">
   <li>In the <b>Song</b> view, put the cursor on track 3, row 00, and press <kbd>EDIT</kbd> to make a
   chain. Set it to <code>03</code> with <kbd>EDIT</kbd>+arrows.</li>
   <li><kbd>SHIFT</kbd>+<kbd>RIGHT</kbd> into the chain. On row 0, make phrase <code>30</code>.</li>
-  <li><kbd>SHIFT</kbd>+<kbd>RIGHT</kbd> into the phrase. On row 0 enter the note <code>F-3</code> and set
+  <li><kbd>SHIFT</kbd>+<kbd>RIGHT</kbd> into the phrase. On row 0 enter the note <code>D-3</code> and set
   the I column to <code>03</code>.</li>
 </ol>
 <m8-phrase phrase="30"></m8-phrase>
 
 <p>Nothing else in the phrase. With no OFF, the note keeps sounding, and because the chain is one
-phrase long, it plays again every bar.</p>
-
-<p class="unverified">Which octave the M8 means by F-3. The pages and the demo assume C-4 is
-middle C (261 Hz). The manual calls C-1 the lowest octave, which could put everything one or two
-octaves lower than the demo plays it. <b>Report back:</b> play C-4 on any instrument against a
-tuner app. Is it middle C?</p>
+phrase long, it plays again every bar. That D-3 is the only note the pad will ever play. The
+chord comes from the instrument.</p>
 
 <h2>Instrument 03: Hypersynth</h2>
 <p><kbd>SHIFT</kbd>+<kbd>RIGHT</kbd> from the phrase into instrument 03 and set <b>TYPE</b> to
@@ -43,19 +39,40 @@ HYPERSYNTH. It's a chord synth: up to six notes per chord, each one a pair of de
 
 <m8-instrument inst="03" show="params banks"></m8-instrument>
 
+<h3>Bank 00</h3>
+<p>You found on 6.6.3 that the CHORD row reads <code>CHORD 00 ▸ 00 04 07 0B 00 00</code>: the
+bank number, then six interval slots, with a keyboard under it showing the notes. Leave the bank
+at <code>00</code> and set its slots to <code>03 0A 0E 13 18</code>. Those are semitones above the
+played note, in hex: on D-3 that's F3 C4 E4 A4 D5, Dm9 with no D at the bottom. The keyboard
+under the row should show those five notes.</p>
+
+<p class="unverified">Intervals above an octave. <code>13</code> and <code>18</code> are 19 and 24
+semitones, past the one-octave mark at <code>0C</code>. The changelog says chord values "can now
+jump an octave" with <kbd>EDIT</kbd>+<kbd>UP</kbd>/<kbd>DOWN</kbd>, which suggests they go that far.
+<b>Report back:</b> does <code>18</code> go in, and does the keyboard show D5?</p>
+
+<p><b>Remove slot 6.</b> Bank 00 uses five slots, and a slot left at <code>00</code> plays the
+held D itself, stacked on the chord. You found that <kbd>OPTION</kbd>+<kbd>EDIT</kbd> (the delete
+shortcut) on a slot of the CHORD row removes it. Do that on the sixth slot of every bank you
+use.</p>
+
 <table class="values">
   <thead><tr><th>Setting</th><th>Why</th></tr></thead>
   <tbody>
     <tr><td>SHAPE SOFT SAW</td><td>New in 6.6. Fewer bright harmonics than a plain saw, so the
     pad is warm before the filter touches it. Try DARK SAW for murkier.</td></tr>
-    <tr><td>CHORD 00</td><td>Bank 00 holds the intervals <code>00 04 07 0B</code>: on F-3 that's
-    F A C E, the upper part of Dm9. The other banks come in step 3.</td></tr>
-    <tr><td>SWARM 30</td><td>Detunes each note's two saws. At 30 it's a slow shimmer, not a
-    chorus wobble.</td></tr>
+    <tr><td>SWARM 08</td><td>How far each note's two saws are pulled apart. It's a much wider
+    control than it looks: at 80 the saws sit about a fifth up and a fifth down, at FF an octave
+    (Tim, firmware 3.0 meetup). The 30 these pages first gave you was well past a lush detune, and
+    with the chords voiced close it was most of the buzz you heard. Small values are where the
+    shimmer lives.</td></tr>
     <tr><td>WIDTH C0</td><td>Spreads the notes across the stereo field, which is most of what makes
     a pad sound big on headphones.</td></tr>
-    <tr><td>SUBOSC 00</td><td>Off. The roots track will carry the bottom, and a sub here would
-    double it.</td></tr>
+    <tr><td>SHIFT 80</td><td>Cross-fades between the first three intervals and the last three. 80,
+    the default, plays both halves fully.</td></tr>
+    <tr><td>SUBOSC 80</td><td>Off. Below 80 mixes in a sub two octaves under the played note,
+    above 80 one octave under; 80 is the point where there's none. The roots track will carry the
+    bottom, and a sub here would double it.</td></tr>
     <tr><td>CUTOFF 80, RES 20</td><td>Lowpass, half closed. The LFO below will move it either side
     of here.</td></tr>
     <tr><td>DRY B0, REV 90</td><td>A lot of reverb for the M8. A pad can take it; the bass and drums
@@ -63,10 +80,9 @@ HYPERSYNTH. It's a chord synth: up to six notes per chord, each one a pair of de
   </tbody>
 </table>
 
-<p class="unverified">How the CHORD banks are edited on the screen (choosing a bank, then entering
-its intervals), and whether the intervals are semitones in hex as written here. The manual
-describes CHORD only as "the chord bank and intervals for the selected bank". <b>Report back:</b>
-one photo of the CHORD field while editing a bank.</p>
+<p class="unverified">The best SWARM. 08 is a starting point; the curve between 00 and 80 isn't
+published. Try 04 to 10 on the held chord. (Not 00: at 00 the saws freeze in phase.)
+<b>Report back:</b> the SWARM value you like.</p>
 
 <h2>Make it breathe</h2>
 <p><kbd>SHIFT</kbd>+<kbd>UP</kbd> from the instrument opens its four modulation slots.</p>
@@ -74,42 +90,62 @@ one photo of the CHORD field while editing a bank.</p>
 <m8-instrument inst="03" show="mods"></m8-instrument>
 
 <h3>MOD 1: a slow swell</h3>
-<p>An ADSR on VOLUME. The M8 counts envelope time in ticks, 24 to a quarter note, so 96 ticks is
-one bar at any tempo. <b>ATK 60</b> is 96 ticks: the pad takes a full bar to arrive.
-<b>REL C0</b> is 192 ticks: it takes two bars to fade after an OFF.</p>
+<p>An ADSR on VOLUME. You found on 6.6.3 that ADSR times are in <b>seconds</b>, not ticks: ATK
+60 reads "0.200 SECONDS" in the help line at the bottom of the screen. Tim said the same in the
+firmware 4.0 meetup: AHD counts ticks, ADSR counts time. So the hex values don't map to bars, and
+these pages give the time to aim for instead.</p>
+<ul>
+  <li><b>ATK</b>: raise it with <kbd>EDIT</kbd>+<kbd>UP</kbd>, then fine-tune with
+  <kbd>EDIT</kbd>+<kbd>LEFT</kbd>/<kbd>RIGHT</kbd>, until the help line reads about
+  <b>2.86 s</b>. That's one bar at 84 BPM (four beats of 0.714 s), so the pad takes a full bar to
+  arrive.</li>
+  <li><b>REL</b>: about <b>5.71 s</b>, two bars. It takes two bars to fade after an OFF.</li>
+  <li><b>DEC 00, SUS FF</b>: no decay; it holds at full level.</li>
+</ul>
 
 <m8-envelope inst="03" mod="1"></m8-envelope>
+
+<p class="unverified">Which hex gives those times. The changelog only says ADSR "has better
+scaling on the low range", so the curve isn't known. You tried ATK E8. <b>Report back:</b> the
+ATK and REL values (as the screen shows them) whose help line reads 2.86 s and 5.71 s.</p>
+
+<p>Because ADSR is in seconds, these times are right only at 84 BPM. At another tempo, work out
+the bar length (240 divided by the BPM) and set them again by the help line.</p>
 
 <p>An ADSR only releases on an OFF (a note OFF or the OFF command). This phrase has none, so while it
 plays, the pad just holds at the top. Press <b>Stop</b> on the strip to send an OFF and watch the
 two-bar release.</p>
 
-<p>The phrase retriggers the chord every bar. Since 6.6, a retrigger of the same instrument
-resumes the attack from wherever the envelope already is, so a held pad doesn't dip each bar. That
-matters for step 3, where every chord change is a retrigger.</p>
+<p>The phrase retriggers the note every bar. Since 6.6, a retrigger of the same instrument resumes
+the attack from wherever the envelope already is, so a held pad doesn't dip each bar. In step 3
+the note is struck only once every eight bars, and the chords change without striking it at
+all.</p>
 
 <h3>MOD 2: the tide</h3>
 <p>An LFO on CUTOFF: <b>OSC SIN</b> for a smooth sweep, <b>TRIG FREE</b> so it keeps running
-across notes instead of restarting on each one, <b>AMT 40</b> for a modest sweep, and <b>FREQ 80</b>,
-meant to be one slow cycle every eight bars.</p>
+across notes instead of restarting on each one, <b>AMT 40</b> for a modest sweep, and
+<b>FREQ 80</b>: one slow cycle every eight bars.</p>
+
+<p>LFO FREQ is a length, not a speed: you found that FREQ 80 reads "8 PHRASES 0 STEPS 0 TICKS".
+Higher is slower. <code>10</code> is one phrase (16 steps, one bar here), <code>80</code> is
+eight. Unlike the ADSR, it counts steps, so the tide stays eight bars long at any tempo.</p>
 
 <m8-filter inst="03"></m8-filter>
 
-<p class="unverified">Which way FREQ goes. The manual calls it "the rate at which the LFO
-cycles, represented in steps", so a higher value may well be <i>faster</i>, not slower, and the
-demo above assumes the opposite. <b>Report back:</b> set FREQ to 04, then 80. Which one sweeps
-faster? Then find the value that takes about eight bars. The octave-wide sweep drawn above is
-the demo's own scale for AMT, not an M8 fact.</p>
+<p class="demo-note">How wide the sweep drawn above is (about an octave either way) is the demo's
+own reading of AMT 40, not an M8 fact. Trust your ears on the device.</p>
 
-<div class="listen">Press PLAY in the phrase view and wait. The first chord takes a full bar to
+<div class="listen">Press PLAY in the phrase view and wait. The chord takes a full bar to
 arrive. Then, over the next eight bars, the tone darkens until it's almost muffled and slowly opens
-up again. That's the tide. When it's at its darkest, the reverb is most of what you hear.</div>
+up again. That's the tide. When it's at its darkest, the reverb is most of what you hear. The
+saws should shimmer slowly, not buzz.</div>
 
 <h2>Things to try</h2>
 <ul>
-  <li><b>SWARM 60</b>: more motion. Past about 80 it starts to sound out of tune.</li>
+  <li><b>SWARM 20</b>: more motion, and the start of the buzz. Hear where it tips over, then go
+  back down.</li>
   <li><b>LFO OSC TRI</b>: the sweep turns at the ends instead of lingering.</li>
-  <li><b>ATK 30</b>: half a bar. Quicker, less dreamlike.</li>
+  <li><b>ATK</b> at about 1.43 s: half a bar. Quicker, less dreamlike.</li>
   <li>Press PLAY in the instrument view, then <kbd>EDIT</kbd>+<kbd>LEFT</kbd>/<kbd>RIGHT</kbd> on
   CUTOFF, to hear by hand what the LFO is doing for you.</li>
 </ul>

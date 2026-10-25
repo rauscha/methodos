@@ -3,20 +3,25 @@
 // A page loads this module once and declares what it wants to show:
 //
 //   <m8-player src="../songs/low-tide.json" step="3"></m8-player>   transport (one per page)
-//   <m8-phrase phrase="30"></m8-phrase>        the phrase as the M8 draws it
+//   <m8-song></m8-song>                        the song view: chains per track, per row
+//   <m8-phrase phrase="30"></m8-phrase>        the phrase as the M8 draws it ("30,31" = one
+//                                              line per phrase; `compact` = used rows only)
 //   <m8-chain chain="03"></m8-chain>
+//   <m8-table table="0C"></m8-table>           an instrument table or a TBL table
 //   <m8-instrument inst="03" show="params mods banks"></m8-instrument>
 //   <m8-roll tracks="2,3"></m8-roll>           piano roll, chord lane, top voice
 //   <m8-progression></m8-progression>          the chords, where they are going
-//   <m8-envelope inst="03" mod="1"></m8-envelope>
+//   <m8-envelope inst="03" mod="1"></m8-envelope>   ADSR, AHD, or a trig envelope (the duck)
 //   <m8-filter inst="03"></m8-filter>          cutoff over time + response over a spectrum
 //
 // Everything comes from the song spec. Every element in the spec carries the walkthrough
-// step that introduces it; a page at step N plays and draws everything up to N and marks
-// what step N adds as new.
+// step that introduces it (`step`), and may carry the last step it belongs to (`until`); a
+// page at step N plays and draws what is on at N and marks what step N adds as new.
 //
-// The sound is a stand-in made with Web Audio, not the M8. Value scales (cutoff in Hz,
-// LFO depth) are the demo's own and are labeled as such wherever they are shown.
+// The sound is a stand-in made with Web Audio, not the M8: "the notes, not the tone". Value
+// scales (cutoff in Hz, LFO depth) are the demo's own and are labeled as such where shown.
+// Instruments marked `"demo": false` (drum models, samples) make no sound, but their notes
+// still draw and still fire trig envelopes on other instruments.
 
 // ---------------------------------------------------------------- notes and numbers
 
@@ -27,49 +32,25 @@ export function midiOf(name) {
   const m = /^([A-G][-#])(-?\d+)$/.exec(name ?? '');
   return m ? (Number(m[2]) + 1) * 12 + PC[m[1]] : null;
 }
-const spell = (midi) => SPELL[midi % 12] + (Math.floor(midi / 12) - 1);
+const spell = (midi) => SPELL[((midi % 12) + 12) % 12] + (Math.floor(midi / 12) - 1);
 const hex = (s) => parseInt(s, 16);
+const isHex = (s) => /^[0-9A-F]{2}$/i.test(s ?? '');
+const sgn = (s) => { const v = hex(s ?? '00'); return v >= 0x80 ? v - 0x100 : v; }; // FF = -1
 const hz = (midi) => 440 * 2 ** ((midi - 69) / 12);
+const fxOf = (ev, cmd) => (ev.fx ?? []).find((f) => f.cmd === cmd);
 
 // Demo scales. The M8's own curves are not published; these are chosen to sound right.
 const cutoffHz = (v) => 20 * 2 ** (v / 255 * 10);          // 00 = 20 Hz, FF = 20 kHz
 const lfoCents = (amt) => amt / 255 * 4800;                // 40 = about one octave each way
 const resQ = (v) => 0.7 + v / 255 * 14;
+const djHz = (v) => (v >= 0x80 ? 20000 : 30 * 2 ** (v / 0x80 * 9.4)); // DJ filter: 80 = open
 
 // ---------------------------------------------------------------- song model
 
 function build(spec, step) {
-  const on = (x) => (x?.step ?? 0) <= step;
-  const tracks = [];
-  for (const t of spec.tracks.filter(on)) {
-    const events = [];
-    let pos = 0;
-    for (const row of spec.song) {
-      const chainId = row.chains[String(t.n)];
-      if (!chainId) break;
-      const chain = (spec.chains[chainId] ?? []).filter(on);
-      chain.forEach((c, ci) => {
-        const ph = spec.phrases[c.ph] ?? { rows: {} };
-        for (let r = 0; r < 16; r++) {
-          const cell = ph.rows[String(r)];
-          if (cell && on(cell)) {
-            events.push({
-              t: pos + r, note: midiOf(cell.n), name: cell.n, v: hex(cell.v ?? '64'),
-              inst: cell.i, fx: (cell.fx ?? []).filter(on), phrase: c.ph, chainRow: ci, row: r,
-            });
-          }
-        }
-        pos += 16;
-      });
-    }
-    if (pos === 0) continue;
-    events.forEach((e, i) => {
-      const next = events[i + 1];
-      e.end = next ? next.t : pos + (events[0]?.t ?? 0);
-    });
-    tracks.push({ ...t, len: pos, events, chainId: spec.song[0].chains[String(t.n)] });
-  }
-  const len = Math.max(16, ...tracks.map((t) => t.len));
+  const on = (x) => (x?.step ?? 0) <= step && (x?.until == null || step <= x.until);
+  // A phrase cell is shown if its note is on, or any of its FX is.
+  const visible = (c) => !!c && ((c.n && on(c)) || (c.fx ?? []).some(on));
   const insts = {};
   for (const [id, inst] of Object.entries(spec.instruments)) {
     if (!on(inst)) continue;
@@ -81,19 +62,144 @@ function build(spec, step) {
       banks: (inst.banks ?? []).filter(on),
     };
   }
-  // Harmony entries show once their own step is reached (default: with the first chord
-  // change, i.e. when the song is longer than one bar), and only inside the song's length.
-  const harmony = (spec.harmony ?? []).filter((h) => (h.step ?? (len > 16 ? 0 : 99)) <= step && (h.bar - 1) * 16 < len);
-  return { spec, step, tracks, len, insts, on, harmony };
+  const songRows = (spec.song ?? []).filter(on);
+  const tracks = [];
+  for (const t of spec.tracks.filter(on)) {
+    const events = [];
+    const segs = [];
+    let pos = 0;              // in steps (16ths); fractional when a groove swings a row
+    let groove = [6, 6];      // ticks per row: groove 00. GRV changes it and it holds.
+    let last = null;          // what is sounding, for rows that change it without retriggering
+    for (const row of songRows) {
+      const chainId = row.chains[String(t.n)];
+      if (!chainId) break; // "--": the track's song list ends here
+      const chain = (spec.chains[chainId] ?? []).filter(on);
+      const seg = { start: pos, songRow: row.row, chainId, phrases: [] };
+      chain.forEach((c, ci) => {
+        const ph = spec.phrases[c.ph] ?? { rows: {} };
+        const tsp = sgn(c.tsp);
+        const phStart = pos;
+        let tick = 0;
+        for (let r = 0; r < 16; r++) {
+          const cell = ph.rows[String(r)];
+          if (visible(cell)) {
+            const fx = (cell.fx ?? []).filter(on);
+            const grv = fx.find((f) => f.cmd === 'GRV');
+            if (grv) groove = spec.grooves?.[grv.val] ?? [6, 6];
+            const crd = fx.find((f) => f.cmd === 'CRD');
+            const base = { t: pos + tick / 6, fx, phrase: c.ph, chainRow: ci, row: r, songRow: row.row };
+            const hasNote = cell.n && on(cell);
+            if (hasNote && cell.n === 'OFF') {
+              events.push({ ...base, off: true });
+              last = null;
+            } else if (hasNote) {
+              // A note with an I column retriggers; without one it changes the note in place.
+              const retrig = !!cell.i;
+              const inst = cell.i ?? last?.inst ?? null;
+              const vh = cell.v ?? last?.vh ?? '64';
+              const ev = {
+                ...base, note: midiOf(cell.n) + tsp, name: cell.n, v: hex(vh), vh, inst, change: !retrig,
+                bank: crd?.val ?? (retrig ? insts[inst]?.params.CHORD : last?.bank),
+              };
+              events.push(ev); last = ev;
+            } else if (last) {
+              // FX with no note (CRD, say): the held note keeps sounding and changes in place.
+              const ev = { ...base, note: last.note, name: last.name, v: last.v, vh: last.vh, inst: last.inst, change: true, bank: crd?.val ?? last.bank };
+              events.push(ev); last = ev;
+            } else {
+              events.push({ ...base, fxOnly: true }); // commands on a track with no note (DJC)
+            }
+          }
+          tick += groove[r % groove.length];
+        }
+        seg.phrases.push({ ph: c.ph, start: phStart, tsp });
+        pos += tick / 6;
+      });
+      seg.end = pos;
+      segs.push(seg);
+    }
+    if (pos === 0) continue;
+    const len = Math.round(pos);
+    expandTables(spec, insts, events, len);
+    events.sort((a, b) => a.t - b.t);
+    events.forEach((e, i) => {
+      const next = events[i + 1];
+      e.end = next ? next.t : len + (events[0]?.t ?? 0);
+    });
+    const audible = events.some((e) => e.inst && insts[e.inst] && insts[e.inst].demo !== false);
+    tracks.push({ ...t, len, events, segs, audible, chainId: segs[0]?.chainId });
+  }
+  const len = Math.max(16, ...tracks.map((t) => t.len));
+  // Harmony entries show from their own step, only inside the song's length. They describe
+  // one loop; `loopBars` is its length, so an arrangement cycles through it.
+  const harmony = (spec.harmony ?? []).filter((h) => (h.step ?? 0) <= step && (h.bar - 1) * 16 < len);
+  const loopBars = Math.max(1, ...harmony.map((h) => h.bar + (h.hold ?? 1) - 1));
+  return { spec, step, tracks, len, insts, on, harmony, loopBars, songRows };
+}
+
+// Tables: rows of transposes (N), volumes (V) and FX, run at the instrument's TABLE TIC
+// (ticks per row) for as long as the note plays. The demo reads N, V and HOP 0Y, which
+// jumps to row Y and keeps no time of its own (unverified: see the Tables page).
+function expandTables(spec, insts, events, len) {
+  const subs = [];
+  events.forEach((ev, k) => {
+    if (ev.off || ev.fxOnly || ev.change) return;
+    const inst = insts[ev.inst];
+    if (!inst) return;
+    const id = fxOf(ev, 'TBL')?.val ?? inst.table;
+    const table = spec.tables?.[id];
+    if (!table) return;
+    const tic = hex(fxOf(ev, 'TIC')?.val ?? inst.params['TABLE TIC'] ?? '01');
+    if (!tic || tic > 0xFB) return; // TIC00 and the map modes aren't modeled
+    let stop = len;
+    for (let j = k + 1; j < events.length; j++) if (!events[j].fxOnly) { stop = events[j].t; break; }
+    const rowAt = (r) => table.rows[String(r)] ?? {};
+    const resolve = (r) => {
+      for (let g = 0; g < 17; g++) {
+        const h = (rowAt(r).fx ?? []).find((f) => f.cmd === 'HOP');
+        if (!h || hex(h.val) >> 4) return r;
+        r = hex(h.val) & 0xF;
+      }
+      return r;
+    };
+    const base = ev.note, v0 = ev.v;
+    const apply = (r, e) => {
+      const tr = rowAt(r);
+      e.note = base + sgn(tr.n ?? '00');
+      e.v = tr.v ? Math.round(v0 * hex(tr.v) / 0x7f) : v0;
+      e.table = id; e.tableRow = r;
+    };
+    let row = resolve(0);
+    apply(row, ev);
+    let t = ev.t + tic / 6, guard = 0;
+    while (t < stop - 1e-6 && guard++ < 1024) {
+      row = resolve((row + 1) % 16);
+      const sub = { ...ev, t, change: true, sub: true, fx: [] };
+      apply(row, sub);
+      subs.push(sub);
+      t += tic / 6;
+    }
+  });
+  events.push(...subs);
 }
 
 // The notes a Hypersynth event actually sounds: the played note plus its bank's intervals.
+// The bank comes from CRD, or carries over from the row before.
 function chordOf(model, ev) {
   const inst = model.insts[ev.inst];
   if (!inst || inst.type !== 'HYPERSYNTH') return [ev.note];
-  const bankId = ev.fx.find((f) => f.bank)?.bank ?? inst.params.CHORD ?? '00';
+  const bankId = ev.bank ?? inst.params.CHORD ?? '00';
   const bank = inst.banks.find((b) => b.bank === bankId) ?? inst.banks[0];
   return bank ? bank.iv.map((i) => ev.note + hex(i)) : [ev.note];
+}
+
+// Where a track is at song position `pos`: song row, chain row, phrase, phrase row.
+function locate(tr, pos) {
+  const p = ((pos % tr.len) + tr.len) % tr.len;
+  const seg = tr.segs.find((s) => p >= s.start && p < s.end) ?? tr.segs[0];
+  const k = Math.max(0, Math.min(seg.phrases.length - 1, Math.floor((p - seg.start) / 16)));
+  const ph = seg.phrases[k];
+  return { seg, chainRow: k, ph: ph?.ph, row: Math.min(15, Math.floor(p - (ph?.start ?? 0))) };
 }
 
 // ---------------------------------------------------------------- envelope model
@@ -107,14 +213,19 @@ function hold(param, t) {
   else param.cancelScheduledValues(t);
 }
 
+// ADSR. On 6.6.3 its times are seconds, not ticks (Andrew's unit: ATK 60 reads "0.200
+// SECONDS"), and the hex-to-seconds curve isn't published. So a mod carries the target in
+// seconds as `sec: {ATK: 2.86, REL: 5.71}`; a time given only as hex is read as ticks.
 class Env {
-  constructor(p, tempo) {
+  constructor(mod, tempo) {
+    const p = mod.p, sec = mod.sec ?? {};
     const tk = ticks(tempo);
+    const time = (k) => sec[k] ?? (isHex(p[k]) ? hex(p[k]) * tk : 0);
     this.amt = hex(p.AMT ?? 'FF') / 255;
-    this.atk = hex(p.ATK ?? '00') * tk;
-    this.dec = hex(p.DEC ?? '00') * tk;
+    this.atk = time('ATK');
+    this.dec = time('DEC');
     this.sus = hex(p.SUS ?? 'FF') / 255;
-    this.rel = hex(p.REL ?? '00') * tk;
+    this.rel = time('REL');
     this.trig = null; this.from = 0; this.off = null; this.offLevel = 0;
   }
   level(t) {
@@ -160,10 +271,19 @@ class Env {
   }
 }
 
+// AHD and trig envelopes: attack, hold, decay, all in ticks (6 to a row). A trig
+// envelope's amount can be negative; `amt` in the spec (-1 to 1) is the demo's reading.
+function ahdOf(mod, tempo) {
+  const tk = ticks(tempo), p = mod.p;
+  const amt = mod.amt ?? (isHex(p.AMT) ? hex(p.AMT) / 255 : 1);
+  return { a: hex(p.ATK ?? '00') * tk, h: hex(p.HOLD ?? '00') * tk, d: hex(p.DEC ?? '00') * tk, amt };
+}
+const ahdAt = (e, dt) => (dt < 0 ? 0 : dt < e.a ? dt / e.a : dt < e.a + e.h ? 1 : dt < e.a + e.h + e.d ? 1 - (dt - e.a - e.h) / e.d : 0);
+
 // ---------------------------------------------------------------- voices
 
 function wave(ctx, shape) {
-  // Harmonic recipes for the Hypersynth shapes the guide uses; others fall back to saw.
+  // Harmonic recipes for the Hypersynth shapes the guide uses; others fall back to sine.
   const n = 48;
   const real = new Float32Array(n), imag = new Float32Array(n);
   const tilt = { 'SAW': 1, 'SOFT SAW': 1.45, 'DARK SAW': 1.9 }[shape];
@@ -187,15 +307,19 @@ class Voice {
     this.filter.Q.value = resQ(hex(p.RES ?? '00'));
     this.vca = ctx.createGain();
     this.vca.gain.value = 0;
+    this.duck = ctx.createGain(); // trig envelopes on VOLUME act here
     this.out = ctx.createGain();
-    this.filter.connect(this.vca).connect(this.out);
+    this.filter.connect(this.vca).connect(this.duck).connect(this.out);
     engine.route(this.out, p);
     const envMod = inst.mods.find((m) => m.type.startsWith('ADSR') && m.dest === 'VOLUME');
-    this.env = envMod ? new Env(envMod.p, engine.tempo) : null;
+    this.env = envMod ? new Env(envMod, engine.tempo) : null;
+    this.ducks = inst.mods.filter((m) => m.type === 'TRIG ENV' && m.dest === 'VOLUME').map((m) => ({ mod: m, e: ahdOf(m, engine.tempo) }));
+    this.duckHits = [];
     this.lfo = null;
     const lfoMod = inst.mods.find((m) => m.type === 'LFO' && m.dest === 'CUTOFF');
     if (lfoMod) {
-      const period = hex(lfoMod.p.FREQ) * (60 / engine.tempo / 4); // FREQ in steps (demo reading)
+      // FREQ is a period in steps: 10 = one phrase, 80 = eight (help line on 6.6.3).
+      const period = hex(lfoMod.p.FREQ) * (60 / engine.tempo / 4);
       const start = Math.max(engine.t0, ctx.currentTime);
       this.lfo = { period, cents: lfoCents(hex(lfoMod.p.AMT)), start };
       const osc = ctx.createOscillator();
@@ -217,8 +341,25 @@ class Voice {
     return base * 2 ** (Math.sin(2 * Math.PI * ph) * this.lfo.cents / 1200);
   }
   levelAt(t) { return this.env ? this.env.level(t) : (this.gate ? 1 : 0); }
-  trigger(ev, notes, t) {
-    this.setNotes(notes, t, ev.v / 0x7f);
+  duckAt(t) {
+    let g = 1;
+    for (const { e } of this.ducks) for (const h of this.duckHits) g = Math.min(g, 1 + e.amt * ahdAt(e, t - h));
+    return g;
+  }
+  fireDuck(t) {
+    const d = this.ducks[0];
+    if (!d) return;
+    const { a, h, d: dec, amt } = d.e;
+    const g = this.duck.gain;
+    hold(g, t);
+    g.linearRampToValueAtTime(1 + amt, t + Math.max(a, 0.004));
+    g.linearRampToValueAtTime(1 + amt, t + Math.max(a, 0.004) + h);
+    g.linearRampToValueAtTime(1, t + Math.max(a, 0.004) + h + Math.max(dec, 0.01));
+    this.duckHits.push(t);
+    if (this.duckHits.length > 8) this.duckHits.shift();
+  }
+  trigger(ev, notes, t, glide) {
+    this.setNotes(notes, t, ev.v / 0x7f, ev, glide);
     if (this.env) this.env.trigger(t, this.vca.gain);
     else {
       hold(this.vca.gain, t);
@@ -231,6 +372,14 @@ class Voice {
     if (this.env) this.env.release(t, this.vca.gain);
     else { hold(this.vca.gain, t); this.vca.gain.setTargetAtTime(0, t, 0.03); }
   }
+  // Pitch to a note, gliding over `glide` seconds (PSL) when asked.
+  pitch(param, f, t, glide) {
+    if (glide && param._last) {
+      param.setValueAtTime(param._last, t);
+      param.exponentialRampToValueAtTime(f, t + glide);
+    } else param.setValueAtTime(f, t);
+    param._last = f;
+  }
   stop() {
     const t = this.engine.ctx.currentTime;
     for (const o of [...this.nodes, ...this.oscs.flat(), this.sub].filter(Boolean)) try { o.stop(t + 0.05); } catch {}
@@ -238,13 +387,18 @@ class Voice {
 }
 
 // Hypersynth stand-in: each interval is a pair of detuned oscillators (SWARM), spread in
-// stereo (WIDTH), plus a square sub one or two octaves down (SUBOSC), as the manual describes.
+// stereo (WIDTH), plus a square sub one or two octaves below the played note (SUBOSC).
+// SUBOSC 80 is off; below 80 mixes in a sub two octaves down, above 80 one octave down,
+// louder the further from 80 (manual; the default instrument shows SUBOSC 80).
 class HyperVoice extends Voice {
-  setNotes(notes, t, vel) {
+  setNotes(notes, t, vel, ev, glide) {
     const { ctx } = this.engine;
     const p = this.inst.params;
     if (!this.pw) this.pw = wave(ctx, p.SHAPE);
-    const detune = hex(p.SWARM ?? '00') / 255 * 40;
+    // SWARM detunes every saw: 80 is about a fifth up and down, FF an octave (Dirtywave
+    // meetup, firmware 3.0). The curve between is unknown; the demo draws a straight line.
+    const sw = hex(p.SWARM ?? '00');
+    const detune = sw <= 0x80 ? sw / 0x80 * 700 : 700 + (sw - 0x80) / 0x7f * 500;
     const width = hex(p.WIDTH ?? '00') / 255;
     while (this.oscs.length < 6) {
       const pair = [-1, 1].map((side) => {
@@ -260,38 +414,41 @@ class HyperVoice extends Voice {
       });
       this.oscs.push(pair);
     }
-    const level = 0.16 * vel;
+    const level = 0.14 * vel;
     this.oscs.forEach((pair, i) => {
       const n = notes[i];
       pair.forEach((o, side) => {
-        if (n != null) o.frequency.setValueAtTime(hz(n), t);
-        o._g.gain.setTargetAtTime(n != null ? level : 0, t, 0.01);
+        if (n != null) this.pitch(o.frequency, hz(n), t, glide);
+        // A chord change on a held note (CRD) slides the level, so it doesn't click.
+        o._g.gain.setTargetAtTime(n != null ? level : 0, t, ev?.change ? 0.03 : 0.01);
         const spread = notes.length > 1 ? (i / (notes.length - 1)) * 2 - 1 : 0;
         o._pan.pan.setValueAtTime(Math.max(-1, Math.min(1, (spread * 0.7 + (side ? 0.3 : -0.3)) * width)), t);
       });
     });
-    const sub = hex(p.SUBOSC ?? '00');
-    if (sub) {
+    const sub = hex(p.SUBOSC ?? '80');
+    const amount = Math.abs(sub - 0x80) / 0x80;
+    if (amount > 0.01) {
       if (!this.sub) {
         this.sub = ctx.createOscillator(); this.sub.type = 'square';
         this.subG = ctx.createGain(); this.sub.connect(this.subG).connect(this.filter); this.sub.start(t);
       }
-      this.sub.frequency.setValueAtTime(hz(notes[0] - (sub >= 0x80 ? 12 : 24)), t);
-      this.subG.gain.setTargetAtTime(0.12 * vel, t, 0.01);
+      this.pitch(this.sub.frequency, hz((ev?.note ?? notes[0]) - (sub > 0x80 ? 12 : 24)), t, glide);
+      this.subG.gain.setTargetAtTime(0.12 * vel * amount, t, 0.01);
     }
   }
 }
 
-// Macrosynth SINE TRIANGLE stand-in: a sine and a triangle (balance on COLOR) into a
-// wavefolder (strength on TIMBRE). Close in spirit only.
+// Every other instrument plays on one plain stand-in: a sine and a triangle (balance on
+// COLOR) into a wavefolder (strength on TIMBRE). It is the Macrosynth SINE TRIANGLE model in
+// spirit, and only the notes for anything else.
 class MacroVoice extends Voice {
-  setNotes(notes, t, vel) {
+  setNotes(notes, t, vel, ev, glide) {
     const { ctx } = this.engine;
     const p = this.inst.params;
     if (!this.oscs.length) {
-      const mix = hex(p.COLOR ?? '00') / 255;
+      const mix = isHex(p.COLOR) ? hex(p.COLOR) / 255 : 0.3;
       const fold = ctx.createWaveShaper();
-      const k = 1 + hex(p.TIMBRE ?? '00') / 255 * 6;
+      const k = 1 + (isHex(p.TIMBRE) ? hex(p.TIMBRE) : 0x18) / 255 * 6;
       const curve = new Float32Array(1024);
       for (let i = 0; i < curve.length; i++) curve[i] = Math.sin((i / 511.5 - 1) * k * Math.PI / 2);
       fold.curve = curve;
@@ -306,8 +463,8 @@ class MacroVoice extends Voice {
       this.oscs = [[s, tr]];
       this.out.gain.value = 0.5;
     }
-    for (const o of this.oscs[0]) o.frequency.setValueAtTime(hz(notes[0]), t);
-    this.out.gain.setValueAtTime(0.55 * vel, t);
+    for (const o of this.oscs[0]) this.pitch(o.frequency, hz(notes[0]), t, glide);
+    this.out.gain.setTargetAtTime(0.55 * vel, t, 0.005);
   }
 }
 
@@ -335,6 +492,12 @@ class Engine {
     this.voices = new Map();   // "track:inst" -> voice
     this.trackOut = new Map(); // track -> { gain, rev, del, analyser }
     this.starting = true;
+    // Events indexed by the step they fall in, per track.
+    this.byStep = new Map(model.tracks.map((tr) => {
+      const at = Array.from({ length: tr.len }, () => []);
+      for (const ev of tr.events) at[Math.min(tr.len - 1, Math.floor(ev.t + 1e-9))].push(ev);
+      return [tr.n, at];
+    }));
   }
   async start() {
     const ctx = this.ctx = new AudioContext({ latencyHint: 'playback' });
@@ -342,11 +505,13 @@ class Engine {
     this.t0 = ctx.currentTime + 0.12;
     const master = this.master = ctx.createGain();
     master.gain.value = 0.8;
+    this.djf = ctx.createBiquadFilter(); // the mixer's DJ filter, moved by DJC
+    this.djf.type = 'lowpass'; this.djf.frequency.value = 20000; this.djf.Q.value = 0.9;
     const limiter = ctx.createDynamicsCompressor();
     limiter.threshold.value = -10; limiter.ratio.value = 12; limiter.attack.value = 0.003;
     this.analyser = ctx.createAnalyser();
     this.analyser.fftSize = 4096;
-    master.connect(limiter).connect(this.analyser).connect(ctx.destination);
+    master.connect(this.djf).connect(limiter).connect(this.analyser).connect(ctx.destination);
     this.reverb = ctx.createConvolver();
     this.reverb.buffer = impulse(ctx, 4.5, 2.4);
     this.reverb.connect(master);
@@ -364,6 +529,8 @@ class Engine {
       const del = ctx.createGain(); del.connect(this.delay);
       this.trackOut.set(tr.n, { gain: g, rev, del, analyser: a, muted: false });
     }
+    // Make every voice up front, so trig envelopes hear the first hit and LFOs share t0.
+    for (const tr of this.model.tracks) for (const ev of tr.events) if (ev.inst) this.voiceFor(tr, ev.inst);
     this.next = this.t0;
     this.stepIndex = 0;
     this.starting = false;
@@ -387,7 +554,7 @@ class Engine {
     let v = this.voices.get(key);
     if (!v) {
       const inst = this.model.insts[instId];
-      if (!inst) return null;
+      if (!inst || inst.demo === false) return null;
       this._routing = this.trackOut.get(track.n);
       v = new (inst.type === 'HYPERSYNTH' ? HyperVoice : MacroVoice)(this, inst);
       v.track = track.n;
@@ -407,18 +574,43 @@ class Engine {
     while (this.next < ctx.currentTime + 0.3) {
       for (const tr of this.model.tracks) {
         const local = this.stepIndex % tr.len;
-        for (const ev of tr.events) {
-          if (ev.t !== local) continue;
-          const v = this.voiceFor(tr, ev.inst);
-          if (!v) continue;
-          // One voice per track, as on the M8: a new instrument cuts the old one.
-          for (const [k, other] of this.voices) if (other !== v && other.track === tr.n && other.gate) other.release(this.next);
-          v.trigger(ev, chordOf(this.model, ev), this.next);
-        }
+        for (const ev of this.byStep.get(tr.n)[local]) this.fire(tr, ev, this.next + (ev.t - local) * this.stepDur);
       }
       this.next += this.stepDur;
       this.stepIndex++;
     }
+  }
+  fire(tr, ev, when) {
+    for (const f of ev.fx ?? []) if (f.cmd === 'DJC') this.djf.frequency.setTargetAtTime(djHz(hex(f.val)), when, 0.08);
+    if (ev.fxOnly) return;
+    if (ev.off) {
+      for (const v of this.voices.values()) if (v.track === tr.n && v.gate) v.release(when);
+      return;
+    }
+    // CHA X_: the note plays with chance X out of F.
+    const cha = fxOf(ev, 'CHA');
+    if (cha && !ev.change && Math.random() * 15 >= hex(cha.val) >> 4) return;
+    if (!ev.change) {
+      // Trig envelopes listening for this track (SRC 80-87) or this instrument (SRC = its number).
+      for (const v of this.voices.values()) {
+        for (const { mod } of v.ducks) {
+          const src = hex(mod.p.SRC ?? '80');
+          if (src >= 0x80 ? tr.n === src - 0x7f : ev.inst === mod.p.SRC) v.fireDuck(when);
+        }
+      }
+    }
+    const v = this.voiceFor(tr, ev.inst);
+    if (!v) return; // a silent instrument: drawn, not heard
+    const notes = chordOf(this.model, ev);
+    const psl = fxOf(ev, 'PSL');
+    const glide = psl ? hex(psl.val) * ticks(this.tempo) : 0;
+    if (ev.change) {
+      if (v.gate) v.setNotes(notes, when, ev.v / 0x7f, ev, glide);
+      return;
+    }
+    // One voice per track, as on the M8: a new instrument cuts the old one.
+    for (const other of this.voices.values()) if (other !== v && other.track === tr.n && other.gate) other.release(when);
+    v.trigger(ev, notes, when, glide);
   }
   pos() {
     // Song position in steps (16ths), as a float.
@@ -471,6 +663,9 @@ function canvasFor(el, h) {
   return { g, w, h };
 }
 
+const hx2 = (n) => n.toString(16).toUpperCase().padStart(2, '0');
+const hx1 = (n) => n.toString(16).toUpperCase();
+
 class M8Player extends HTMLElement {
   async connectedCallback() {
     pages.player = this;
@@ -499,8 +694,9 @@ class M8Player extends HTMLElement {
     this.idle = `${spec.tempo} BPM · ${this.model.len / 16} bar${this.model.len > 16 ? 's' : ''}`;
     where.textContent = this.idle;
     if (label) { where.title = label; this.querySelector('.m8-play').setAttribute('aria-label', `Play: ${label}`); }
+    // Mute buttons only for tracks the demo makes a sound on.
     const mutes = this.querySelector('.m8-mutes');
-    for (const tr of this.model.tracks) {
+    for (const tr of this.model.tracks.filter((t) => t.audible)) {
       const b = document.createElement('button');
       b.type = 'button'; b.className = 'm8-mute'; b.setAttribute('aria-pressed', 'false');
       b.textContent = `T${tr.n}`;
@@ -545,13 +741,19 @@ class M8Player extends HTMLElement {
   loop() {
     const s = this.state();
     const where = this.querySelector('.m8-where');
-    if (s.playing) {
-      const p = Math.floor(s.pos) % this.model.len;
-      where.textContent = `Bar ${Math.floor(p / 16) + 1} · row ${(p % 16).toString(16).toUpperCase()}`;
-    } else if (s.engine) {
-      where.textContent = 'Stopped · release ringing';
-    } else if (this.idle && where.textContent !== this.idle && this.model) {
-      where.textContent = this.idle;
+    if (where) {
+      if (s.playing) {
+        const p = Math.floor(s.pos) % this.model.len;
+        const tr = this.model.tracks[0];
+        if (this.model.songRows.length > 1 && tr) {
+          const at = locate(tr, p);
+          where.textContent = `Song ${at.seg.songRow} · bar ${at.chainRow + 1} · row ${hx1(at.row)}`;
+        } else where.textContent = `Bar ${Math.floor(p / 16) + 1} · row ${hx1(p % 16)}`;
+      } else if (s.engine) {
+        where.textContent = 'Stopped · release ringing';
+      } else if (this.idle && where.textContent !== this.idle && this.model) {
+        where.textContent = this.idle;
+      }
     }
     for (const panel of pages.panels) panel.frame?.(s);
     requestAnimationFrame(() => this.loop());
@@ -577,41 +779,38 @@ class Panel extends HTMLElement {
 
 function newTag() { return '<span class="m8-new" title="Added in this step">new</span>'; }
 
-const UNKNOWN_CMD = '<abbr class="m8-unknown" title="Hypersynth\'s chord-bank command: look up its name in the FX help list">???</abbr>';
-
 class M8Phrase extends Panel {
   // One phrase row as the M8 draws it. `head` is the row-number cell (or a phrase number in
-  // the combined view).
+  // the combined view). A row with FX and no note shows the note columns empty.
   cells(c, head, dataAttr) {
-    const shown = c && this.model.on(c);
+    const on = this.model.on;
+    const fxs = c ? (c.fx ?? []).filter(on) : [];
+    const noteOn = !!c && !!c.n && on(c);
     const fx = [0, 1, 2].map((k) => {
-      const f = shown ? (c.fx ?? []).filter(this.model.on)[k] : null;
+      const f = fxs[k];
       if (!f) return '<td class="m8-dim">--- 00</td>';
-      const nu = this.isNew(f) ? 'm8-is-new' : '';
-      return f.bank ? `<td class="${nu}">${UNKNOWN_CMD} ${f.bank}</td>` : `<td class="${nu}">${f.cmd} ${f.val}</td>`;
+      return `<td class="${this.isNew(f) ? 'm8-is-new' : ''}">${f.cmd} ${f.val}</td>`;
     }).join('');
-    const isNew = shown && (this.isNew(c) || (c.fx ?? []).some((f) => this.isNew(f)));
+    const isNew = (noteOn && this.isNew(c)) || fxs.some((f) => this.isNew(f));
+    const col = (show, val, empty, nu) => `<td class="${show ? (nu ? 'm8-is-new' : '') : 'm8-dim'}">${show ? val : empty}</td>`;
     return `<tr ${dataAttr} class="${isNew ? 'm8-row-new' : ''}">
       <th scope="row"><span class="m8-cursor" aria-hidden="true">▶</span>${head}</th>
-      <td class="${shown ? (this.isNew(c) ? 'm8-is-new' : '') : 'm8-dim'}">${shown ? c.n : '---'}</td>
-      <td class="${shown ? '' : 'm8-dim'}">${shown ? c.v : '--'}</td>
-      <td class="${shown ? '' : 'm8-dim'}">${shown ? c.i : '--'}</td>
+      ${col(noteOn, c?.n, '---', this.isNew(c))}
+      ${col(noteOn && c.v != null && c.n !== 'OFF', c?.v, '--')}
+      ${col(noteOn && c.i != null && c.n !== 'OFF', c?.i, '--')}
       ${fx}
       <td class="m8-newcol">${isNew ? newTag() : ''}</td></tr>`;
   }
+  shown(c) { return !!c && ((c.n && this.model.on(c)) || (c.fx ?? []).some(this.model.on)); }
   usesOf(id) {
-    return Object.values(this.model.spec.chains).flat().filter((c) => c.ph === id && this.model.on(c)).length;
-  }
-  hasBank(ph) {
-    return Object.values(ph.rows).some((c) => (c.fx ?? []).some((f) => f.bank && this.model.on(f)));
+    const chains = new Set(this.model.songRows.flatMap((r) => Object.values(r.chains)));
+    return [...chains].flatMap((cid) => (this.model.spec.chains[cid] ?? []).filter(this.model.on)).filter((c) => c.ph === id).length;
   }
   setup() {
     if (this._built) return; this._built = true;
     this.ids = this.getAttribute('phrase').split(',').map((x) => x.trim());
     const phs = this.ids.map((id) => this.model.spec.phrases[id] ?? { rows: {} });
-    const head = '<thead><tr><th>PH</th><th>N</th><th>V</th><th>I</th><th>FX1</th><th>FX2</th><th>FX3</th><th></th></tr></thead>';
-    const bankNote = phs.some((ph) => this.hasBank(ph))
-      ? `<p class="m8-note">${UNKNOWN_CMD} is the chord-bank command. Its name is in the FX help list: <kbd>EDIT</kbd>+<kbd>UP</kbd> on the FX1 column.</p>` : '';
+    const head = (first) => `<thead><tr><th>${first}</th><th>N</th><th>V</th><th>I</th><th>FX1</th><th>FX2</th><th>FX3</th><th></th></tr></thead>`;
     if (this.ids.length > 1) {
       // Combined view: one line per phrase, each phrase's row 0. For phrases that are a
       // single row, which is most of them in a slow song.
@@ -619,35 +818,33 @@ class M8Phrase extends Panel {
       this.innerHTML = `<figure class="m8-screen">
         <figcaption><span class="m8-title">PHRASES ${this.ids[0]}–${this.ids[this.ids.length - 1]}</span>
           <span class="m8-note">row 0 of each; rows 1–F stay empty</span></figcaption>
-        <table class="m8-grid">${head.replace('<th>PH</th>', '<th>PH</th>')}<tbody>${rows}</tbody></table>${bankNote}</figure>`;
+        <table class="m8-grid">${head('PH')}<tbody>${rows}</tbody></table></figure>`;
       return;
     }
     const id = this.ids[0], ph = phs[0];
     const uses = this.usesOf(id);
     const compact = this.hasAttribute('compact');
-    const last = Math.max(0, ...Object.keys(ph.rows).map(Number).filter((r) => this.model.on(ph.rows[String(r)])));
+    const last = Math.max(0, ...Object.keys(ph.rows).map(Number).filter((r) => this.shown(ph.rows[String(r)])));
     const shownRows = compact ? last + 1 : 16;
     const rows = [];
     for (let r = 0; r < shownRows; r++) {
-      rows.push(this.cells(ph.rows[String(r)], r.toString(16).toUpperCase(), `data-row="${r}"`));
+      const c = ph.rows[String(r)];
+      rows.push(this.cells(this.shown(c) ? c : null, hx1(r), `data-row="${r}"`));
     }
-    const rest = compact && shownRows < 16
-      ? `<p class="m8-note">rows ${shownRows.toString(16).toUpperCase()}–F empty</p>` : '';
+    const rest = compact && shownRows < 16 ? `<p class="m8-note">rows ${hx1(shownRows)}–F empty</p>` : '';
     this.innerHTML = `<figure class="m8-screen">
       <figcaption><span class="m8-title">PHRASE ${id}${uses > 1 ? '*' : ''}</span>
-        ${uses > 1 ? `<span class="m8-note">* used ${uses} times in the chain</span>` : ''}</figcaption>
-      <table class="m8-grid">${head.replace('<th>PH</th>', '<th></th>')}<tbody>${rows.join('')}</tbody></table>
-      ${rest}${ph.about ? `<p class="m8-note">${ph.about}</p>` : ''}${bankNote}
+        ${uses > 1 ? `<span class="m8-note">* used ${uses} times in the song</span>` : ''}</figcaption>
+      <table class="m8-grid">${head('')}<tbody>${rows.join('')}</tbody></table>
+      ${rest}${ph.about ? `<p class="m8-note">${ph.about}</p>` : ''}
     </figure>`;
   }
   // Which phrase and row is the M8 on? Returns { ph, row } or null.
   playing(s) {
     if (s.pos == null || !s.playing) return null;
     for (const tr of this.model.tracks) {
-      const local = Math.floor(s.pos) % tr.len;
-      const chain = this.model.spec.chains[tr.chainId].filter(this.model.on);
-      const ph = chain[Math.floor(local / 16)]?.ph;
-      if (ph && this.ids.includes(ph)) return { ph, row: local % 16 };
+      const at = locate(tr, s.pos);
+      if (at.ph && this.ids.includes(at.ph)) return { ph: at.ph, row: at.row };
     }
     return null;
   }
@@ -664,14 +861,23 @@ class M8Phrase extends Panel {
   }
 }
 
+// "new: rows 1–7" for a list of row numbers.
+function runsNote(rows, fmt = hx1) {
+  const runs = [];
+  for (const r of rows) {
+    const last = runs[runs.length - 1];
+    if (last && last[1] === r - 1) last[1] = r; else runs.push([r, r]);
+  }
+  return runs.length ? `<span class="m8-note">new: row${rows.length > 1 ? 's' : ''} ${runs.map(([a, b]) => a === b ? fmt(a) : `${fmt(a)}–${fmt(b)}`).join(', ')}</span>` : '';
+}
+
 class M8Chain extends Panel {
   setup() {
     if (this._built) return; this._built = true;
     const id = this.getAttribute('chain');
-    const chain = (this.model.spec.chains[id] ?? []).map((c) => (this.model.on(c) ? c : null));
-    const used = chain.filter(Boolean).length;
+    const chain = (this.model.spec.chains[id] ?? []).filter(this.model.on);
     const compact = this.hasAttribute('compact');
-    const shownRows = compact ? Math.min(16, used + 1) : 16;
+    const shownRows = compact ? Math.min(16, chain.length + 1) : 16;
     const rows = [];
     let prevNew = false;
     const newRows = [];
@@ -680,27 +886,100 @@ class M8Chain extends Panel {
       const nu = !!c && this.isNew(c);
       if (nu) newRows.push(r);
       rows.push(`<tr data-row="${r}" class="${nu ? 'm8-row-new' : ''}">
-        <th scope="row"><span class="m8-cursor" aria-hidden="true">▶</span>${r.toString(16).toUpperCase()}</th>
+        <th scope="row"><span class="m8-cursor" aria-hidden="true">▶</span>${hx1(r)}</th>
         <td class="${c ? (nu ? 'm8-is-new' : '') : 'm8-dim'}">${c ? c.ph : '--'}</td>
-        <td class="m8-dim">${c ? (c.tsp ?? '00') : '00'}</td>
+        <td class="${c?.tsp && c.tsp !== '00' ? (nu ? 'm8-is-new' : '') : 'm8-dim'}">${c ? (c.tsp ?? '00') : '00'}</td>
         <td class="m8-newcol">${nu && !prevNew ? newTag() : ''}</td></tr>`);
       prevNew = nu;
     }
-    const runs = [];
-    for (const r of newRows) {
-      const last = runs[runs.length - 1];
-      if (last && last[1] === r - 1) last[1] = r; else runs.push([r, r]);
-    }
-    const hx = (r) => r.toString(16).toUpperCase();
-    const newNote = runs.length ? `<span class="m8-note">new: row${newRows.length > 1 ? 's' : ''} ${runs.map(([a, b]) => a === b ? hx(a) : `${hx(a)}–${hx(b)}`).join(', ')}</span>` : '';
-    const rest = compact && shownRows < 16 ? `<p class="m8-note">rows ${hx(shownRows)}–F empty: the chain ends at the first empty row</p>` : '';
-    this.innerHTML = `<figure class="m8-screen"><figcaption><span class="m8-title">CHAIN ${id}</span>${newNote}</figcaption>
+    const rest = compact && shownRows < 16 ? `<p class="m8-note">rows ${hx1(shownRows)}–F empty: the chain ends at the first empty row</p>` : '';
+    this.innerHTML = `<figure class="m8-screen"><figcaption><span class="m8-title">CHAIN ${id}</span>${runsNote(newRows)}</figcaption>
       <table class="m8-grid"><thead><tr><th></th><th>PH</th><th>TSP</th><th></th></tr></thead><tbody>${rows.join('')}</tbody></table>${rest}</figure>`;
   }
   frame(s) {
     const id = this.getAttribute('chain');
-    const tr = this.model.tracks.find((t) => t.chainId === id);
-    const row = s.playing && tr ? Math.floor((Math.floor(s.pos) % tr.len) / 16) : -1;
+    let row = -1;
+    if (s.playing && s.pos != null) {
+      for (const tr of this.model.tracks) {
+        const at = locate(tr, s.pos);
+        if (at.seg.chainId === id) { row = at.chainRow; break; }
+      }
+    }
+    if (row === this._row) return;
+    this._row = row;
+    this.querySelectorAll('tr[data-row]').forEach((t) => t.classList.toggle('m8-current', Number(t.dataset.row) === row));
+  }
+}
+
+// The song view: one column per track, one row per song row, chain numbers in the cells.
+// As on the M8, a chain with no notes in it is drawn dim.
+class M8Song extends Panel {
+  setup() {
+    if (this._built) return; this._built = true;
+    const { spec, songRows, on } = this.model;
+    const hasNotes = (cid) => (spec.chains[cid] ?? []).filter(on).some((c) =>
+      Object.values(spec.phrases[c.ph]?.rows ?? {}).some((cell) => cell.n && cell.n !== 'OFF' && on(cell)));
+    const cols = [1, 2, 3, 4, 5, 6, 7, 8];
+    const newRows = [];
+    const rows = songRows.map((r, i) => {
+      const nu = this.isNew(r);
+      if (nu) newRows.push(hex(r.row));
+      return `<tr data-i="${i}" class="${nu ? 'm8-row-new' : ''}">
+        <th scope="row"><span class="m8-cursor" aria-hidden="true">▶</span>${r.row}</th>
+        ${cols.map((n) => {
+          const c = r.chains[String(n)];
+          return `<td class="${!c || !hasNotes(c) ? 'm8-dim' : ''}">${c ?? '--'}</td>`;
+        }).join('')}</tr>`;
+    }).join('');
+    const end = `<tr class="m8-end"><th scope="row">${hx2(hex(songRows[songRows.length - 1]?.row ?? '00') + 1)}</th>${cols.map(() => '<td class="m8-dim">--</td>').join('')}</tr>`;
+    this.innerHTML = `<figure class="m8-screen"><figcaption><span class="m8-title">SONG</span>${runsNote(newRows, hx2)}</figcaption>
+      <table class="m8-grid m8-song"><thead><tr><th></th>${cols.map((n) => `<th>${n}</th>`).join('')}</tr></thead>
+      <tbody>${rows}${end}</tbody></table>
+      <p class="m8-note">dim: a chain with no notes in it, or "--", the end of a track's list</p></figure>`;
+  }
+  frame(s) {
+    let i = -1;
+    if (s.playing && s.pos != null && this.model.tracks[0]) {
+      const at = locate(this.model.tracks[0], s.pos);
+      i = this.model.songRows.findIndex((r) => r.row === at.seg.songRow);
+    }
+    if (i === this._i) return;
+    this._i = i;
+    this.querySelectorAll('tr[data-i]').forEach((t) => t.classList.toggle('m8-current', Number(t.dataset.i) === i));
+  }
+}
+
+// A table as the M8 draws it: N (transpose), V, three FX columns.
+class M8Table extends Panel {
+  setup() {
+    if (this._built) return; this._built = true;
+    this.id = this.getAttribute('table');
+    const table = this.model.spec.tables?.[this.id];
+    if (!table) { this.textContent = `No table ${this.id} in this spec.`; return; }
+    const rows = [];
+    for (let r = 0; r < 16; r++) {
+      const c = table.rows[String(r)];
+      const fx = [0, 1, 2].map((k) => {
+        const f = c?.fx?.[k];
+        return f ? `<td>${f.cmd} ${f.val}</td>` : '<td class="m8-dim">--- 00</td>';
+      }).join('');
+      rows.push(`<tr data-row="${r}"><th scope="row"><span class="m8-cursor" aria-hidden="true">▶</span>${hx1(r)}</th>
+        <td class="${c?.n ? '' : 'm8-dim'}">${c?.n ?? '00'}</td><td class="${c?.v ? '' : 'm8-dim'}">${c?.v ?? '--'}</td>${fx}</tr>`);
+    }
+    this.innerHTML = `<figure class="m8-screen"><figcaption><span class="m8-title">TABLE ${this.id}</span>
+      ${table.about ? `<span class="m8-note">${table.about}</span>` : ''}</figcaption>
+      <table class="m8-grid"><thead><tr><th></th><th>N</th><th>V</th><th>FX1</th><th>FX2</th><th>FX3</th></tr></thead><tbody>${rows.join('')}</tbody></table></figure>`;
+  }
+  frame(s) {
+    let row = -1;
+    if (s.playing && s.pos != null) {
+      for (const tr of this.model.tracks) {
+        const p = s.pos % tr.len;
+        let cur = null;
+        for (const ev of tr.events) { if (ev.t > p) break; if (!ev.fxOnly) cur = ev; }
+        if (cur?.table === this.id) { row = cur.tableRow; break; }
+      }
+    }
     if (row === this._row) return;
     this._row = row;
     this.querySelectorAll('tr[data-row]').forEach((t) => t.classList.toggle('m8-current', Number(t.dataset.row) === row));
@@ -724,9 +1003,12 @@ class M8Instrument extends Panel {
     }
     if (show.includes('banks') && raw.banks) {
       const banks = raw.banks.filter(this.model.on);
-      html += `<table class="m8-banks"><caption>Chord banks (CHORD)</caption>
-        <thead><tr><th>Bank</th><th>Intervals</th><th>Notes</th><th>Over the root</th><th></th></tr></thead><tbody>
-        ${banks.map((b) => `<tr class="${this.isNew(b) ? 'm8-row-new' : ''}"><td>${b.bank}</td><td class="m8-nowrap">${b.iv.join(' ')}</td><td class="m8-nowrap">${b.shape}</td><td>${b.use}</td><td>${this.isNew(b) ? newTag() : ''}</td></tr>`).join('')}
+      // Six interval slots per bank; slots a bank doesn't use are off.
+      const slots = (iv) => [...iv, ...Array(Math.max(0, 6 - iv.length)).fill(null)]
+        .map((x) => x == null ? '<span class="m8-dim" title="slot off">off</span>' : x).join(' ');
+      html += `<table class="m8-banks"><caption>Chord banks (CHORD): bank, then six interval slots</caption>
+        <thead><tr><th>Bank</th><th>Intervals</th><th>Notes</th><th>Chord</th><th></th></tr></thead><tbody>
+        ${banks.map((b) => `<tr class="${this.isNew(b) ? 'm8-row-new' : ''}"><td>${b.bank}</td><td class="m8-nowrap">${slots(b.iv)}</td><td>${b.shape}</td><td>${b.use}</td><td>${this.isNew(b) ? newTag() : ''}</td></tr>`).join('')}
         </tbody></table>`;
     }
     if (show.includes('mods')) {
@@ -752,6 +1034,7 @@ class M8Roll extends Panel {
       const reps = this.model.len / tr.len;
       for (let k = 0; k < reps; k++) {
         for (const ev of tr.events) {
+          if (ev.off || ev.fxOnly) continue;
           const t0 = ev.t + k * tr.len;
           const t1 = Math.min(ev.end + k * tr.len, this.model.len);
           const chord = chordOf(this.model, ev);
@@ -778,7 +1061,7 @@ class M8Roll extends Panel {
     this.draw(this._lastP);
   }
   draw(p) {
-    const lane = 26, left = 36, rowH = Math.max(5, Math.min(9, 260 / (this.hi - this.lo)));
+    const lane = 26, left = 36, rowH = Math.max(4, Math.min(9, 280 / (this.hi - this.lo)));
     const H = lane + (this.hi - this.lo) * rowH + 18;
     const { g, w, h } = canvasFor(this, H);
     const ink = css(this, '--m8-ink'), mid = css(this, '--m8-mid'), faint = css(this, '--m8-faint'), paper = css(this, '--m8-paper');
@@ -834,7 +1117,7 @@ class M8Roll extends Panel {
     for (const nt of this.notes) {
       const on = p != null && p >= nt.t0 && p < nt.t1;
       if (on) sounding.push(nt);
-      const x0 = x(nt.t0) + 1, x1 = x(nt.t1) - 1, yy = y(nt.n) - rowH / 2 + 1, hh = rowH - 2;
+      const x0 = x(nt.t0) + 1, x1 = Math.max(x0 + 2, x(nt.t1) - 1), yy = y(nt.n) - rowH / 2 + 1, hh = rowH - 2;
       if (nt.inst === 'HYPERSYNTH') {
         g.fillStyle = on ? mid : paper;
         g.fillRect(x0, yy, x1 - x0, hh);
@@ -876,7 +1159,8 @@ class M8Roll extends Panel {
           const ns = sounding.filter((s) => s.track === t.n).map((s) => spell(s.n));
           return ns.length ? `T${t.n} ${ns.join(' ')}` : null;
         }).filter(Boolean);
-        const hm = harmony.filter((h0) => h0.bar <= Math.floor(p / 16) + 1).pop();
+        const bar = Math.floor(p / 16) % this.model.loopBars + 1;
+        const hm = harmony.filter((h0) => h0.bar <= bar).pop();
         ro.textContent = `Bar ${Math.floor(p / 16) + 1}${hm ? ' · ' + hm.chord : ''} · sounding: ${byTrack.join(' | ') || 'nothing'}`;
       }
     }
@@ -902,7 +1186,7 @@ class M8Progression extends Panel {
     const hs = this.model.harmony;
     let cur = -1;
     if (s.playing && s.pos != null) {
-      const bar = Math.floor((s.pos % this.model.len) / 16) + 1;
+      const bar = Math.floor((s.pos % this.model.len) / 16) % this.model.loopBars + 1;
       hs.forEach((h, i) => { if (bar >= h.bar) cur = i; });
     }
     if (cur === this._cur) return;
@@ -924,63 +1208,97 @@ class M8Envelope extends Panel {
     const slot = Number(this.getAttribute('mod') ?? 1);
     this.mod = inst?.mods.find((m) => m.slot === slot);
     if (!this.mod) { this.textContent = 'This envelope arrives in a later step.'; return; }
-    this.env = new Env(this.mod.p, this.model.spec.tempo);
+    this.kind = this.mod.type.startsWith('ADSR') ? 'adsr' : this.mod.type === 'TRIG ENV' ? 'trig' : 'ahd';
+    const tempo = this.model.spec.tempo;
+    const tk = ticks(tempo);
+    const barSec = 240 / tempo;
+    if (this.kind === 'adsr') this.env = new Env(this.mod, tempo);
+    else this.ahd = ahdOf(this.mod, tempo);
+    if (this.kind === 'trig') {
+      // Where the source hits in one bar: its notes on the first bar of the song.
+      const src = hex(this.mod.p.SRC ?? '80');
+      const tr = src >= 0x80 ? this.model.tracks.find((t) => t.n === src - 0x7f) : this.model.tracks.find((t) => t.events.some((e) => e.inst === this.mod.p.SRC));
+      this.srcName = src >= 0x80 ? `track ${src - 0x7f}` : `instrument ${this.mod.p.SRC}`;
+      const first = tr?.events.find((e) => !e.fxOnly && !e.off);
+      const bar0 = first ? Math.floor(first.t / 16) * 16 : 0;
+      this.hits = (tr?.events ?? []).filter((e) => !e.change && !e.off && !e.fxOnly && (src >= 0x80 || e.inst === this.mod.p.SRC) && e.t >= bar0 && e.t < bar0 + 16).map((e) => e.t - bar0);
+      this.srcTrack = tr;
+    }
     this.resized = () => this.draw(this._live ?? null);
     if (!this.querySelector('.m8-readout')) {
-      const tk = ticks(this.model.spec.tempo);
-      const p = this.mod.p;
-      const row = (k, label) => p[k] == null ? '' : `<li><b>${k} ${p[k]}</b> ${label(hex(p[k]))}</li>`;
-      const time = (v) => `= ${v} ticks = ${(v * tk).toFixed(2)} s at ${this.model.spec.tempo} BPM (${(v / 96).toFixed(2).replace(/\.00$/, '')} bar${v === 96 ? '' : 's'})`;
-      this.insertAdjacentHTML('beforeend', `<ul class="m8-facts">
-        ${row('ATK', time)}${row('DEC', (v) => v ? time(v) : '= no decay: straight to the sustain level')}${row('SUS', (v) => `= hold at ${Math.round(v / 2.55)}% while the note is held`)}${row('REL', time)}
-        </ul><p class="m8-readout" aria-live="off"></p>`);
+      const p = this.mod.p, sec = this.mod.sec ?? {};
+      const bars = (s) => s / barSec;
+      const nice = (b) => (b === 1 ? 'one bar' : b === 2 ? 'two bars' : `${b.toFixed(2).replace(/0+$/, '').replace(/\.$/, '')} bars`);
+      let items = '';
+      if (this.kind === 'adsr') {
+        const time = (k) => sec[k] != null
+          ? `<li><b>${k}</b>: raise it until the help line at the bottom of the screen reads <b>${sec[k].toFixed(2)} s</b>, ${nice(Math.round(bars(sec[k]) * 100) / 100)} at ${tempo} BPM. ADSR times are seconds, not ticks.</li>`
+          : p[k] == null ? '' : `<li><b>${k} ${p[k]}</b> ${hex(p[k]) ? `= about ${(hex(p[k]) * tk).toFixed(2)} s read as ticks (check the help line)` : '= none'}</li>`;
+        items = `${time('ATK')}${p.DEC != null ? (sec.DEC != null ? time('DEC') : `<li><b>DEC ${p.DEC}</b> ${hex(p.DEC) ? '' : '= no decay: straight to the sustain level'}</li>`) : ''}${p.SUS != null ? `<li><b>SUS ${p.SUS}</b> = hold at ${Math.round(hex(p.SUS) / 2.55)}% while the note is held</li>` : ''}${time('REL')}`;
+      } else {
+        const t = (k) => p[k] == null ? '' : `<li><b>${k} ${p[k]}</b> = ${hex(p[k])} ticks${hex(p[k]) ? ` = ${(hex(p[k]) / 6).toFixed(2).replace(/\.00$/, '')} row${hex(p[k]) === 6 ? '' : 's'}, ${(hex(p[k]) * tk).toFixed(2)} s` : ''}</li>`;
+        items = `${t('ATK')}${t('HOLD')}${t('DEC')}${this.kind === 'trig' ? `<li><b>SRC ${p.SRC}</b> = fires on every note of ${this.srcName}</li><li><b>AMT</b>: negative, so it pulls the level down (the demo dips it to ${Math.round((1 + this.ahd.amt) * 100)}%)</li>` : ''}`;
+      }
+      this.insertAdjacentHTML('beforeend', `<ul class="m8-facts">${items}</ul><p class="m8-readout" aria-live="off"></p>`);
     }
     this.draw(null);
   }
   frame(s) {
     if (!this.mod) return;
     const v = s.engine && [...s.engine.voices.values()].find((x) => x.inst.id === this.getAttribute('inst'));
-    this._live = v?.env ? { env: v.env, t: s.t } : null;
+    this._live = v && s.playing ? { v, env: v.env, t: s.t, pos: s.pos } : null;
     this.draw(this._live);
   }
   draw(live) {
+    if (this.kind === 'trig') return this.drawTrig(live);
     const { g, w, h } = canvasFor(this, 176);
-    const ink = css(this, '--m8-ink'), mid = css(this, '--m8-mid'), faint = css(this, '--m8-faint');
-    const e = this.env;
+    const ink = css(this, '--m8-ink'), mid = css(this, '--m8-mid');
     const barSec = 240 / this.model.spec.tempo;
-    const holdShown = Math.max(e.atk * 0.6, 0.8);
-    const total = e.atk + e.dec + holdShown + e.rel;
+    let pts, total, off, labels, gated;
+    if (this.kind === 'adsr') {
+      const e = this.env;
+      const holdShown = Math.max(e.atk * 0.6, 0.8);
+      total = e.atk + e.dec + holdShown + e.rel;
+      off = e.atk + e.dec + holdShown;
+      pts = [[0, 0], [e.atk, e.amt], [e.atk + e.dec, e.amt * e.sus], [off, e.amt * e.sus], [total, 0]];
+      labels = [['ATK', e.atk / 2], ['SUS', e.atk + e.dec + holdShown / 2], ['REL', off + e.rel / 2]];
+      gated = true;
+    } else {
+      const e = this.ahd;
+      total = Math.max(e.a + e.h + e.d, 0.05) * 1.15;
+      pts = [[0, 0], [e.a, 1], [e.a + e.h, 1], [e.a + e.h + e.d, 0], [total, 0]];
+      labels = [['ATK', e.a / 2], ['HOLD', e.a + e.h / 2], ['DEC', e.a + e.h + e.d / 2]];
+      gated = false;
+    }
     const L = 8, R = w - 8, T = 8, B = h - 64;
     const x = (t) => L + (t / total) * (R - L);
     const y = (lv) => B - lv * (B - T);
     g.clearRect(0, 0, w, h);
-    // shape
     g.strokeStyle = ink; g.lineWidth = 2.5; g.beginPath();
-    g.moveTo(x(0), y(0)); g.lineTo(x(e.atk), y(e.amt));
-    g.lineTo(x(e.atk + e.dec), y(e.amt * e.sus));
-    g.lineTo(x(e.atk + e.dec + holdShown), y(e.amt * e.sus));
-    g.lineTo(x(total), y(0)); g.stroke();
+    pts.forEach(([t, lv], i) => (i ? g.lineTo(x(t), y(lv)) : g.moveTo(x(t), y(lv))));
+    g.stroke();
     g.fillStyle = mid; g.fillRect(L, B, R - L, 1);
-    // a tick per bar along the time axis
-    for (let t = 0, i = 0; t <= total + 1e-6; t += barSec, i++) {
-      g.fillStyle = mid; g.fillRect(x(t) - 0.5, B, 1.5, 6);
-    }
-    const off = e.atk + e.dec + holdShown;
+    // a tick per bar (ADSR) or per beat (AHD) along the time axis
+    const unit = this.kind === 'adsr' ? barSec : barSec / 4;
+    for (let t = 0; t <= total + 1e-6; t += unit) { g.fillStyle = mid; g.fillRect(x(t) - 0.5, B, 1.5, 6); }
     g.font = '12px system-ui, sans-serif'; g.textBaseline = 'top';
-    // stage names under the baseline, out of the dot's way
-    const labels = [['ATK', e.atk / 2], ['SUS', e.atk + e.dec + holdShown / 2], ['REL', off + e.rel / 2]];
-    for (const [k, t] of labels) { g.fillStyle = mid; g.fillText(k, x(t) - 11, B + 9); }
-    // gate bar: held from 0 to OFF
-    g.fillStyle = mid; g.fillRect(x(0), B + 30, x(off) - x(0), 6);
-    g.fillText('note held', x(0), B + 40);
-    g.fillStyle = ink; g.fillRect(x(off) - 1, B + 24, 2, 18);
-    g.fillText('OFF', x(off) + 5, B + 40);
+    let lastX = -99;
+    for (const [k, t] of labels) {
+      const lx = Math.max(x(t) - 11, lastX + 34);
+      g.fillStyle = mid; g.fillText(k, lx, B + 9); lastX = lx;
+    }
+    if (gated) {
+      g.fillStyle = mid; g.fillRect(x(0), B + 30, x(off) - x(0), 6);
+      g.fillText('note held', x(0), B + 40);
+      g.fillStyle = ink; g.fillRect(x(off) - 1, B + 24, 2, 18);
+      g.fillText('OFF', x(off) + 5, B + 40);
+    }
     g.fillStyle = mid; g.textAlign = 'right';
-    g.fillText('ticks: one bar each', R, B + 40);
+    g.fillText(this.kind === 'adsr' ? 'a tick per bar' : 'a tick per beat', R, B + (gated ? 40 : 28));
     g.textAlign = 'left'; g.textBaseline = 'alphabetic';
-    // the dot
     const ro = this.querySelector('.m8-readout');
-    if (live) {
+    if (this.kind === 'adsr' && live?.env) {
+      const e = this.env, holdShown = Math.max(e.atk * 0.6, 0.8);
       const lv = live.env.level(live.t);
       const st = live.env.stage(live.t);
       let tt;
@@ -990,7 +1308,44 @@ class M8Envelope extends Panel {
       else tt = total;
       g.fillStyle = ink; g.beginPath(); g.arc(x(Math.min(tt, total)), y(lv), 6, 0, Math.PI * 2); g.fill();
       if (ro) ro.textContent = `Now: ${st}, level ${Math.round(lv * 100)}%`;
-    } else if (ro) ro.textContent = 'Press Play: a dot rides this shape. Press Stop to send an OFF and watch the release.';
+    } else if (ro) ro.textContent = this.kind === 'adsr' ? 'Press Play: a dot rides this shape. Press Stop to send an OFF and watch the release.' : 'The shape each note makes, in ticks.';
+  }
+  // The duck: the destination's level over one bar, dipping at each hit of the source.
+  drawTrig(live) {
+    const { g, w, h } = canvasFor(this, 168);
+    const ink = css(this, '--m8-ink'), mid = css(this, '--m8-mid'), faint = css(this, '--m8-faint');
+    const e = this.ahd, stepSec = 60 / this.model.spec.tempo / 4;
+    const L = 30, R = w - 8, T = 10, B = h - 52;
+    const x = (st) => L + (st / 16) * (R - L);
+    const y = (lv) => B - lv * (B - T);
+    const levelAt = (st) => {
+      let lv = 1;
+      for (const hit of this.hits) for (const k of [0, 16]) lv = Math.min(lv, 1 + e.amt * ahdAt(e, (st + k - hit) * stepSec));
+      return lv;
+    };
+    g.clearRect(0, 0, w, h);
+    g.font = '12px system-ui, sans-serif';
+    g.fillStyle = faint; g.fillRect(L, y(1), R - L, 1);
+    g.fillStyle = mid; g.fillText('100%', 0, y(1) + 4); g.fillText('0', 18, B + 4);
+    g.fillRect(L, B, R - L, 1);
+    for (let b = 0; b < 4; b++) { g.fillRect(x(b * 4) - 0.5, B, 1.5, 6); g.fillText(String(b + 1), x(b * 4) + 3, B + 18); }
+    g.strokeStyle = ink; g.lineWidth = 2.5; g.beginPath();
+    for (let i = 0; i <= 320; i++) { const st = i / 20; const xx = x(st), yy = y(levelAt(st)); i ? g.lineTo(xx, yy) : g.moveTo(xx, yy); }
+    g.stroke();
+    // the hits: a solid triangle on the baseline, labeled
+    for (const hit of this.hits) {
+      const xx = x(hit);
+      g.fillStyle = ink; g.beginPath(); g.moveTo(xx, B + 22); g.lineTo(xx - 6, B + 34); g.lineTo(xx + 6, B + 34); g.closePath(); g.fill();
+    }
+    g.fillStyle = mid; g.fillText(`▲ = a note on ${this.srcName}`, L, h - 4);
+    g.textAlign = 'right'; g.fillText('one bar, beats 1–4', R, h - 4); g.textAlign = 'left';
+    const ro = this.querySelector('.m8-readout');
+    if (live) {
+      const st = live.pos % 16;
+      const lv = live.v.duckAt(live.t);
+      g.fillStyle = ink; g.beginPath(); g.arc(x(st), y(levelAt(st)), 6, 0, Math.PI * 2); g.fill();
+      if (ro) ro.textContent = `Now: row ${hx1(Math.floor(st))}, the pad at ${Math.round(lv * 100)}% of its level`;
+    } else if (ro) ro.textContent = 'Press Play: a dot rides the dip as the bar goes by.';
   }
 }
 
@@ -1096,8 +1451,10 @@ class M8Filter extends Panel {
 }
 
 customElements.define('m8-player', M8Player);
+customElements.define('m8-song', M8Song);
 customElements.define('m8-phrase', M8Phrase);
 customElements.define('m8-chain', M8Chain);
+customElements.define('m8-table', M8Table);
 customElements.define('m8-instrument', M8Instrument);
 customElements.define('m8-roll', M8Roll);
 customElements.define('m8-progression', M8Progression);

@@ -1,520 +1,2101 @@
 {
-  "title": "Low Tide",
-  "tempo": 84,
-  "key": "D minor",
-  "firmware": "6.6.3",
-  "notes": "Every element carries the walkthrough step that introduces it. A page at step N plays and draws everything with step <= N, and marks step == N as new.",
-  "tracks": [
-    {
-      "n": 2,
-      "name": "Roots",
-      "step": 3
-    },
-    {
-      "n": 3,
-      "name": "Pad",
-      "step": 2
-    }
-  ],
-  "song": [
-    {
-      "row": "00",
-      "chains": {
-        "2": "02",
-        "3": "03"
-      }
-    }
-  ],
-  "chains": {
-    "02": [
-      {
-        "ph": "20",
-        "step": 3
-      },
-      {
-        "ph": "2F",
-        "step": 3
-      },
-      {
-        "ph": "21",
-        "step": 3
-      },
-      {
-        "ph": "2F",
-        "step": 3
-      },
-      {
-        "ph": "22",
-        "step": 3
-      },
-      {
-        "ph": "2F",
-        "step": 3
-      },
-      {
-        "ph": "23",
-        "step": 3
-      },
-      {
-        "ph": "2F",
-        "step": 3
-      }
-    ],
-    "03": [
-      {
-        "ph": "30",
-        "step": 2
-      },
-      {
-        "ph": "31",
-        "step": 3
-      },
-      {
-        "ph": "30",
-        "step": 3
-      },
-      {
-        "ph": "3F",
-        "step": 3
-      },
-      {
-        "ph": "32",
-        "step": 3
-      },
-      {
-        "ph": "3F",
-        "step": 3
-      },
-      {
-        "ph": "33",
-        "step": 3
-      },
-      {
-        "ph": "34",
-        "step": 3
-      }
-    ]
-  },
-  "phrases": {
-    "20": {
-      "rows": {
-        "0": {
-          "n": "D-2",
-          "v": "64",
-          "i": "02",
-          "step": 3
-        }
-      }
-    },
-    "21": {
-      "rows": {
-        "0": {
-          "n": "A#1",
-          "v": "64",
-          "i": "02",
-          "step": 3
-        }
-      }
-    },
-    "22": {
-      "rows": {
-        "0": {
-          "n": "G-1",
-          "v": "64",
-          "i": "02",
-          "step": 3
-        }
-      }
-    },
-    "23": {
-      "rows": {
-        "0": {
-          "n": "A-1",
-          "v": "64",
-          "i": "02",
-          "step": 3
-        }
-      }
-    },
-    "2F": {
-      "rows": {},
-      "about": "Empty on purpose: the root keeps sounding through this bar."
-    },
-    "30": {
-      "rows": {
-        "0": {
-          "n": "F-3",
-          "v": "64",
-          "i": "03",
-          "step": 2,
-          "fx": [
-            {
-              "bank": "01",
-              "step": 3
-            }
-          ]
-        }
-      }
-    },
-    "31": {
-      "rows": {
-        "0": {
-          "n": "F-3",
-          "v": "64",
-          "i": "03",
-          "step": 3,
-          "fx": [
-            {
-              "bank": "00",
-              "step": 3
-            }
-          ]
-        }
-      }
-    },
-    "32": {
-      "rows": {
-        "0": {
-          "n": "F-3",
-          "v": "64",
-          "i": "03",
-          "step": 3,
-          "fx": [
-            {
-              "bank": "02",
-              "step": 3
-            }
-          ]
-        }
-      }
-    },
-    "33": {
-      "rows": {
-        "0": {
-          "n": "E-3",
-          "v": "64",
-          "i": "03",
-          "step": 3,
-          "fx": [
-            {
-              "bank": "03",
-              "step": 3
-            }
-          ]
-        }
-      }
-    },
-    "34": {
-      "rows": {
-        "0": {
-          "n": "E-3",
-          "v": "64",
-          "i": "03",
-          "step": 3,
-          "fx": [
-            {
-              "bank": "04",
-              "step": 3
-            }
-          ]
-        }
-      }
-    },
-    "3F": {
-      "rows": {},
-      "about": "Empty on purpose: the chord keeps sounding through this bar."
-    }
-  },
-  "instruments": {
-    "02": {
-      "type": "MACROSYN",
-      "name": "ROOTS",
-      "step": 3,
-      "params": [
-        [
-          "SHAPE",
-          "SINE TRIANGLE"
-        ],
-        [
-          "TIMBRE",
-          "18"
-        ],
-        [
-          "COLOR",
-          "20"
-        ],
-        [
-          "DEGRADE",
-          "00"
-        ],
-        [
-          "REDUX",
-          "00"
-        ],
-        [
-          "FILTER",
-          "LOWPASS"
-        ],
-        [
-          "CUTOFF",
-          "70"
-        ],
-        [
-          "RES",
-          "10"
-        ],
-        [
-          "AMP",
-          "10"
-        ],
-        [
-          "LIM",
-          "CLIP"
-        ],
-        [
-          "PAN",
-          "80"
-        ],
-        [
-          "DRY",
-          "C0"
-        ],
-        [
-          "MFX",
-          "00"
-        ],
-        [
-          "DEL",
-          "00"
-        ],
-        [
-          "REV",
-          "10"
-        ]
-      ],
-      "mods": []
-    },
-    "03": {
-      "type": "HYPERSYNTH",
-      "name": "TIDE PAD",
-      "step": 2,
-      "params": [
-        [
-          "SHAPE",
-          "SOFT SAW"
-        ],
-        [
-          "SCALE",
-          "00"
-        ],
-        [
-          "CHORD",
-          "00"
-        ],
-        [
-          "SHIFT",
-          "00"
-        ],
-        [
-          "SWARM",
-          "30"
-        ],
-        [
-          "WIDTH",
-          "C0"
-        ],
-        [
-          "SUBOSC",
-          "00"
-        ],
-        [
-          "FILTER",
-          "LOWPASS"
-        ],
-        [
-          "CUTOFF",
-          "80"
-        ],
-        [
-          "RES",
-          "20"
-        ],
-        [
-          "AMP",
-          "00"
-        ],
-        [
-          "LIM",
-          "CLIP"
-        ],
-        [
-          "PAN",
-          "80"
-        ],
-        [
-          "DRY",
-          "B0"
-        ],
-        [
-          "MFX",
-          "20"
-        ],
-        [
-          "DEL",
-          "10"
-        ],
-        [
-          "REV",
-          "90"
-        ]
-      ],
-      "banks": [
-        {
-          "bank": "00",
-          "iv": [
-            "00",
-            "04",
-            "07",
-            "0B"
-          ],
-          "step": 2,
-          "shape": "F A C E",
-          "use": "Dm9 over a D root"
-        },
-        {
-          "bank": "01",
-          "iv": [
-            "00",
-            "04",
-            "07",
-            "09"
-          ],
-          "step": 3,
-          "shape": "F A C D",
-          "use": "Dm7 over D, B♭maj9 over B♭"
-        },
-        {
-          "bank": "02",
-          "iv": [
-            "00",
-            "04",
-            "05",
-            "09"
-          ],
-          "step": 3,
-          "shape": "F A B♭ D",
-          "use": "Gm9 over G"
-        },
-        {
-          "bank": "03",
-          "iv": [
-            "00",
-            "03",
-            "06",
-            "0A"
-          ],
-          "step": 3,
-          "shape": "E G B♭ D",
-          "use": "A7sus4♭9 over A"
-        },
-        {
-          "bank": "04",
-          "iv": [
-            "00",
-            "03",
-            "06",
-            "09"
-          ],
-          "step": 3,
-          "shape": "E G B♭ C♯",
-          "use": "A7♭9 over A"
-        }
-      ],
-      "mods": [
-        {
-          "slot": 1,
-          "type": "ADSR ENV",
-          "dest": "VOLUME",
-          "step": 2,
-          "p": {
-            "AMT": "FF",
-            "ATK": "60",
-            "DEC": "00",
-            "SUS": "FF",
-            "REL": "C0"
-          }
-        },
-        {
-          "slot": 2,
-          "type": "LFO",
-          "dest": "CUTOFF",
-          "step": 2,
-          "p": {
-            "OSC": "SIN",
-            "TRIG": "FREE",
-            "AMT": "40",
-            "FREQ": "80"
-          }
-        }
-      ]
-    }
-  },
-  "harmony": [
-    {
-      "bar": 1,
-      "chord": "Dm7",
-      "roman": "i",
-      "bass": "D",
-      "upper": "F A C D",
-      "move": "The 9th opens on top",
-      "step": 3
-    },
-    {
-      "bar": 2,
-      "chord": "Dm9",
-      "roman": "i",
-      "bass": "D",
-      "upper": "F A C E",
-      "move": "Top voice back to D; the bass drops a major third",
-      "step": 3
-    },
-    {
-      "bar": 3,
-      "chord": "B♭maj9",
-      "roman": "♭VI",
-      "bass": "B♭",
-      "upper": "F A C D",
-      "hold": 2,
-      "move": "One voice steps down, C to B♭",
-      "step": 3
-    },
-    {
-      "bar": 5,
-      "chord": "Gm9",
-      "roman": "iv",
-      "bass": "G",
-      "upper": "F A B♭ D",
-      "hold": 2,
-      "move": "Two voices step down",
-      "step": 3
-    },
-    {
-      "bar": 7,
-      "chord": "A7sus4♭9",
-      "roman": "V",
-      "bass": "A",
-      "upper": "E G B♭ D",
-      "move": "The top D falls a half step",
-      "step": 3
-    },
-    {
-      "bar": 8,
-      "chord": "A7♭9",
-      "roman": "V",
-      "bass": "A",
-      "upper": "E G B♭ C♯",
-      "move": "Every voice steps up: home",
-      "step": 3
-    }
+ "title": "Low Tide",
+ "tempo": 84,
+ "key": "D minor",
+ "firmware": "6.6.3",
+ "notes": "Every element carries the walkthrough step that introduces it (and `until`, the last step it belongs to). A page at step N plays and draws what is on at N, and marks step == N as new. Generated by a script; tools/m8_low_tide.py; see docs/m8-guide-plan.md, revision 4.",
+ "grooves": {
+  "01": [
+   7,
+   5
   ]
+ },
+ "tracks": [
+  {
+   "n": 1,
+   "name": "Drums",
+   "step": 5
+  },
+  {
+   "n": 2,
+   "name": "Bass",
+   "step": 3
+  },
+  {
+   "n": 3,
+   "name": "Pad",
+   "step": 2
+  },
+  {
+   "n": 4,
+   "name": "Arp",
+   "step": 7
+  },
+  {
+   "n": 5,
+   "name": "Texture",
+   "step": 8
+  },
+  {
+   "n": 6,
+   "name": "Hats",
+   "step": 5
+  },
+  {
+   "n": 8,
+   "name": "DJ filter",
+   "step": 9
+  }
+ ],
+ "song": [
+  {
+   "row": "00",
+   "chains": {
+    "1": "01",
+    "2": "02",
+    "3": "03",
+    "4": "04",
+    "5": "05",
+    "6": "06"
+   },
+   "until": 8
+  },
+  {
+   "row": "00",
+   "chains": {
+    "1": "FE",
+    "2": "FE",
+    "3": "03",
+    "4": "FE",
+    "5": "05",
+    "6": "FE",
+    "8": "FE"
+   },
+   "step": 9,
+   "about": "intro: pad and texture"
+  },
+  {
+   "row": "01",
+   "chains": {
+    "1": "FE",
+    "2": "02",
+    "3": "03",
+    "4": "FE",
+    "5": "05",
+    "6": "FE",
+    "8": "FE"
+   },
+   "step": 9,
+   "about": "the bass enters"
+  },
+  {
+   "row": "02",
+   "chains": {
+    "1": "01",
+    "2": "02",
+    "3": "03",
+    "4": "FE",
+    "5": "05",
+    "6": "06",
+    "8": "FE"
+   },
+   "step": 9,
+   "about": "the drums enter"
+  },
+  {
+   "row": "03",
+   "chains": {
+    "1": "01",
+    "2": "02",
+    "3": "03",
+    "4": "04",
+    "5": "05",
+    "6": "06",
+    "8": "FE"
+   },
+   "step": 9,
+   "about": "the arp: everything"
+  },
+  {
+   "row": "04",
+   "chains": {
+    "1": "FE",
+    "2": "FE",
+    "3": "03",
+    "4": "04",
+    "5": "05",
+    "6": "FE",
+    "8": "80"
+   },
+   "step": 9,
+   "about": "breakdown: the filter closes"
+  },
+  {
+   "row": "05",
+   "chains": {
+    "1": "01",
+    "2": "02",
+    "3": "03",
+    "4": "04",
+    "5": "05",
+    "6": "06",
+    "8": "FE"
+   },
+   "step": 9,
+   "about": "everything again"
+  },
+  {
+   "row": "06",
+   "chains": {
+    "1": "FE",
+    "2": "FE",
+    "3": "33",
+    "4": "FE",
+    "5": "05",
+    "6": "FE",
+    "8": "FE"
+   },
+   "step": 9,
+   "about": "outro: the pad lets go"
+  }
+ ],
+ "chains": {
+  "03": [
+   {
+    "ph": "30",
+    "step": 2
+   },
+   {
+    "ph": "31",
+    "step": 3
+   },
+   {
+    "ph": "32",
+    "step": 3
+   },
+   {
+    "ph": "3F",
+    "step": 3
+   },
+   {
+    "ph": "33",
+    "step": 3
+   },
+   {
+    "ph": "3F",
+    "step": 3
+   },
+   {
+    "ph": "34",
+    "step": 3
+   },
+   {
+    "ph": "35",
+    "step": 3
+   }
+  ],
+  "33": [
+   {
+    "ph": "30",
+    "step": 9
+   },
+   {
+    "ph": "3F",
+    "step": 9
+   },
+   {
+    "ph": "31",
+    "step": 9
+   },
+   {
+    "ph": "3F",
+    "step": 9
+   },
+   {
+    "ph": "30",
+    "step": 9
+   },
+   {
+    "ph": "3F",
+    "step": 9
+   },
+   {
+    "ph": "3E",
+    "step": 9
+   },
+   {
+    "ph": "3F",
+    "step": 9
+   }
+  ],
+  "02": [
+   {
+    "ph": "20",
+    "step": 3,
+    "until": 3
+   },
+   {
+    "ph": "2F",
+    "step": 3,
+    "until": 3
+   },
+   {
+    "ph": "21",
+    "step": 3,
+    "until": 3
+   },
+   {
+    "ph": "2F",
+    "step": 3,
+    "until": 3
+   },
+   {
+    "ph": "22",
+    "step": 3,
+    "until": 3
+   },
+   {
+    "ph": "2F",
+    "step": 3,
+    "until": 3
+   },
+   {
+    "ph": "23",
+    "step": 3,
+    "until": 3
+   },
+   {
+    "ph": "2F",
+    "step": 3,
+    "until": 3
+   },
+   {
+    "ph": "24",
+    "tsp": "00",
+    "step": 4
+   },
+   {
+    "ph": "25",
+    "tsp": "00",
+    "step": 4
+   },
+   {
+    "ph": "24",
+    "tsp": "FC",
+    "step": 4
+   },
+   {
+    "ph": "25",
+    "tsp": "FC",
+    "step": 4
+   },
+   {
+    "ph": "24",
+    "tsp": "F9",
+    "step": 4
+   },
+   {
+    "ph": "25",
+    "tsp": "F9",
+    "step": 4
+   },
+   {
+    "ph": "24",
+    "tsp": "FB",
+    "step": 4
+   },
+   {
+    "ph": "25",
+    "tsp": "FB",
+    "step": 4
+   }
+  ],
+  "01": [
+   {
+    "ph": "10",
+    "step": 5
+   },
+   {
+    "ph": "10",
+    "step": 5
+   },
+   {
+    "ph": "10",
+    "step": 5
+   },
+   {
+    "ph": "10",
+    "step": 5
+   },
+   {
+    "ph": "10",
+    "step": 5
+   },
+   {
+    "ph": "10",
+    "step": 5
+   },
+   {
+    "ph": "10",
+    "step": 5
+   },
+   {
+    "ph": "11",
+    "step": 5
+   }
+  ],
+  "06": [
+   {
+    "ph": "60",
+    "step": 5
+   },
+   {
+    "ph": "60",
+    "step": 5
+   },
+   {
+    "ph": "60",
+    "step": 5
+   },
+   {
+    "ph": "60",
+    "step": 5
+   },
+   {
+    "ph": "60",
+    "step": 5
+   },
+   {
+    "ph": "60",
+    "step": 5
+   },
+   {
+    "ph": "60",
+    "step": 5
+   },
+   {
+    "ph": "60",
+    "step": 5
+   }
+  ],
+  "04": [
+   {
+    "ph": "40",
+    "step": 7
+   },
+   {
+    "ph": "41",
+    "step": 7
+   },
+   {
+    "ph": "42",
+    "step": 7
+   },
+   {
+    "ph": "42",
+    "step": 7
+   },
+   {
+    "ph": "43",
+    "step": 7
+   },
+   {
+    "ph": "43",
+    "step": 7
+   },
+   {
+    "ph": "44",
+    "step": 7
+   },
+   {
+    "ph": "45",
+    "step": 7
+   }
+  ],
+  "05": [
+   {
+    "ph": "50",
+    "step": 8
+   },
+   {
+    "ph": "5F",
+    "step": 8
+   },
+   {
+    "ph": "5F",
+    "step": 8
+   },
+   {
+    "ph": "5F",
+    "step": 8
+   },
+   {
+    "ph": "5F",
+    "step": 8
+   },
+   {
+    "ph": "5F",
+    "step": 8
+   },
+   {
+    "ph": "5F",
+    "step": 8
+   },
+   {
+    "ph": "5F",
+    "step": 8
+   }
+  ],
+  "FE": [
+   {
+    "ph": "FD",
+    "step": 9
+   },
+   {
+    "ph": "FE",
+    "step": 9
+   },
+   {
+    "ph": "FE",
+    "step": 9
+   },
+   {
+    "ph": "FE",
+    "step": 9
+   },
+   {
+    "ph": "FE",
+    "step": 9
+   },
+   {
+    "ph": "FE",
+    "step": 9
+   },
+   {
+    "ph": "FE",
+    "step": 9
+   },
+   {
+    "ph": "FE",
+    "step": 9
+   }
+  ],
+  "80": [
+   {
+    "ph": "80",
+    "step": 9
+   },
+   {
+    "ph": "8F",
+    "step": 9
+   },
+   {
+    "ph": "81",
+    "step": 9
+   },
+   {
+    "ph": "8F",
+    "step": 9
+   },
+   {
+    "ph": "82",
+    "step": 9
+   },
+   {
+    "ph": "8F",
+    "step": 9
+   },
+   {
+    "ph": "8F",
+    "step": 9
+   },
+   {
+    "ph": "83",
+    "step": 9
+   }
+  ]
+ },
+ "phrases": {
+  "30": {
+   "rows": {
+    "0": {
+     "n": "D-3",
+     "v": "64",
+     "i": "03",
+     "fx": [
+      {
+       "cmd": "CRD",
+       "val": "00",
+       "step": 3
+      }
+     ],
+     "step": 2
+    }
+   },
+   "about": "The one note the pad plays. No bank sounds the D itself: every interval is above it."
+  },
+  "31": {
+   "rows": {
+    "0": {
+     "fx": [
+      {
+       "cmd": "CRD",
+       "val": "01",
+       "step": 3
+      }
+     ]
+    }
+   }
+  },
+  "32": {
+   "rows": {
+    "0": {
+     "fx": [
+      {
+       "cmd": "CRD",
+       "val": "02",
+       "step": 3
+      }
+     ]
+    }
+   }
+  },
+  "33": {
+   "rows": {
+    "0": {
+     "fx": [
+      {
+       "cmd": "CRD",
+       "val": "03",
+       "step": 3
+      }
+     ]
+    }
+   }
+  },
+  "34": {
+   "rows": {
+    "0": {
+     "fx": [
+      {
+       "cmd": "CRD",
+       "val": "04",
+       "step": 3
+      }
+     ]
+    }
+   }
+  },
+  "35": {
+   "rows": {
+    "0": {
+     "fx": [
+      {
+       "cmd": "CRD",
+       "val": "05",
+       "step": 3
+      }
+     ]
+    }
+   }
+  },
+  "3F": {
+   "rows": {},
+   "about": "Empty on purpose: the chord keeps sounding through this bar."
+  },
+  "3E": {
+   "rows": {
+    "0": {
+     "n": "OFF",
+     "step": 9
+    }
+   },
+   "about": "An OFF: the pad starts its two-bar release."
+  },
+  "20": {
+   "rows": {
+    "0": {
+     "n": "D-2",
+     "v": "64",
+     "i": "02",
+     "step": 3
+    }
+   }
+  },
+  "21": {
+   "rows": {
+    "0": {
+     "n": "A#1",
+     "v": "64",
+     "i": "02",
+     "step": 3
+    }
+   }
+  },
+  "22": {
+   "rows": {
+    "0": {
+     "n": "G-1",
+     "v": "64",
+     "i": "02",
+     "step": 3
+    }
+   }
+  },
+  "23": {
+   "rows": {
+    "0": {
+     "n": "A-1",
+     "v": "64",
+     "i": "02",
+     "step": 3
+    }
+   }
+  },
+  "2F": {
+   "rows": {},
+   "about": "Empty on purpose: the root keeps sounding through this bar."
+  },
+  "24": {
+   "rows": {
+    "0": {
+     "n": "D-2",
+     "v": "64",
+     "i": "02",
+     "fx": [
+      {
+       "cmd": "PSL",
+       "val": "06",
+       "step": 4
+      },
+      {
+       "cmd": "GRV",
+       "val": "01",
+       "step": 5
+      }
+     ],
+     "step": 4
+    },
+    "6": {
+     "n": "D-3",
+     "v": "28",
+     "i": "02",
+     "step": 4
+    },
+    "11": {
+     "n": "D-2",
+     "v": "20",
+     "i": "02",
+     "step": 4
+    },
+    "12": {
+     "n": "A-2",
+     "v": "50",
+     "i": "02",
+     "step": 4
+    }
+   },
+   "about": "Written in D. The chain's TSP column moves it to the other roots."
+  },
+  "25": {
+   "rows": {
+    "0": {
+     "n": "D-2",
+     "v": "64",
+     "i": "02",
+     "step": 4
+    },
+    "6": {
+     "n": "D-3",
+     "v": "28",
+     "i": "02",
+     "step": 4
+    },
+    "10": {
+     "n": "A-2",
+     "v": "48",
+     "i": "02",
+     "step": 4
+    },
+    "13": {
+     "n": "D-3",
+     "v": "24",
+     "i": "02",
+     "step": 4
+    }
+   }
+  },
+  "10": {
+   "rows": {
+    "0": {
+     "n": "D-2",
+     "v": "70",
+     "i": "06",
+     "fx": [
+      {
+       "cmd": "GRV",
+       "val": "01",
+       "step": 5
+      }
+     ],
+     "step": 5
+    },
+    "4": {
+     "n": "D-4",
+     "v": "68",
+     "i": "07",
+     "step": 5
+    },
+    "10": {
+     "n": "D-2",
+     "v": "58",
+     "i": "06",
+     "step": 5
+    },
+    "12": {
+     "n": "D-4",
+     "v": "68",
+     "i": "07",
+     "step": 5
+    },
+    "15": {
+     "n": "D-4",
+     "v": "20",
+     "i": "07",
+     "step": 5
+    }
+   }
+  },
+  "11": {
+   "rows": {
+    "0": {
+     "n": "D-2",
+     "v": "70",
+     "i": "06",
+     "step": 5
+    },
+    "4": {
+     "n": "D-4",
+     "v": "68",
+     "i": "07",
+     "step": 5
+    },
+    "10": {
+     "n": "D-2",
+     "v": "58",
+     "i": "06",
+     "step": 5
+    },
+    "12": {
+     "n": "D-4",
+     "v": "68",
+     "i": "07",
+     "step": 5
+    },
+    "13": {
+     "n": "D-4",
+     "v": "20",
+     "i": "07",
+     "step": 5
+    },
+    "14": {
+     "n": "D-4",
+     "v": "30",
+     "i": "07",
+     "step": 5
+    },
+    "15": {
+     "n": "D-4",
+     "v": "44",
+     "i": "07",
+     "step": 5
+    }
+   },
+   "about": "Bar 8: the ghost notes build into the top of the loop."
+  },
+  "60": {
+   "rows": {
+    "0": {
+     "n": "C-6",
+     "v": "60",
+     "i": "08",
+     "fx": [
+      {
+       "cmd": "GRV",
+       "val": "01",
+       "step": 5
+      }
+     ],
+     "step": 5
+    },
+    "2": {
+     "n": "C-6",
+     "v": "30",
+     "i": "08",
+     "step": 5
+    },
+    "3": {
+     "n": "C-6",
+     "v": "18",
+     "i": "08",
+     "step": 5
+    },
+    "4": {
+     "n": "C-6",
+     "v": "60",
+     "i": "08",
+     "step": 5
+    },
+    "6": {
+     "n": "C-6",
+     "v": "30",
+     "i": "08",
+     "step": 5
+    },
+    "8": {
+     "n": "C-6",
+     "v": "60",
+     "i": "08",
+     "step": 5
+    },
+    "10": {
+     "n": "C-6",
+     "v": "30",
+     "i": "08",
+     "step": 5
+    },
+    "11": {
+     "n": "C-6",
+     "v": "18",
+     "i": "08",
+     "step": 5
+    },
+    "12": {
+     "n": "C-6",
+     "v": "60",
+     "i": "08",
+     "step": 5
+    },
+    "14": {
+     "n": "C-6",
+     "v": "30",
+     "i": "08",
+     "step": 5
+    }
+   },
+   "about": "Rows 3 and B are the swung ones: groove 01 makes every odd row a tick late."
+  },
+  "40": {
+   "rows": {
+    "0": {
+     "n": "D-6",
+     "v": "60",
+     "i": "05",
+     "step": 7
+    },
+    "2": {
+     "n": "A-5",
+     "v": "40",
+     "i": "05",
+     "step": 7
+    },
+    "4": {
+     "n": "E-6",
+     "v": "60",
+     "i": "05",
+     "step": 7
+    },
+    "6": {
+     "n": "C-6",
+     "v": "40",
+     "i": "05",
+     "fx": [
+      {
+       "cmd": "CHA",
+       "val": "8F",
+       "step": 7
+      }
+     ],
+     "step": 7
+    },
+    "8": {
+     "n": "F-6",
+     "v": "60",
+     "i": "05",
+     "step": 7
+    },
+    "10": {
+     "n": "E-6",
+     "v": "40",
+     "i": "05",
+     "step": 7
+    },
+    "12": {
+     "n": "A-5",
+     "v": "60",
+     "i": "05",
+     "fx": [
+      {
+       "cmd": "CHA",
+       "val": "8F",
+       "step": 7
+      }
+     ],
+     "step": 7
+    },
+    "14": {
+     "n": "C-6",
+     "v": "40",
+     "i": "05",
+     "step": 7
+    }
+   }
+  },
+  "41": {
+   "rows": {
+    "0": {
+     "n": "E-6",
+     "v": "60",
+     "i": "05",
+     "step": 7
+    },
+    "2": {
+     "n": "A-5",
+     "v": "40",
+     "i": "05",
+     "step": 7
+    },
+    "4": {
+     "n": "D-6",
+     "v": "60",
+     "i": "05",
+     "fx": [
+      {
+       "cmd": "CHA",
+       "val": "8F",
+       "step": 7
+      }
+     ],
+     "step": 7
+    },
+    "6": {
+     "n": "C-6",
+     "v": "40",
+     "i": "05",
+     "step": 7
+    },
+    "8": {
+     "n": "F-6",
+     "v": "60",
+     "i": "05",
+     "step": 7
+    },
+    "10": {
+     "n": "E-6",
+     "v": "40",
+     "i": "05",
+     "step": 7
+    },
+    "12": {
+     "n": "C-6",
+     "v": "60",
+     "i": "05",
+     "step": 7
+    },
+    "14": {
+     "n": "A-5",
+     "v": "40",
+     "i": "05",
+     "step": 7
+    }
+   }
+  },
+  "42": {
+   "rows": {
+    "0": {
+     "n": "F-5",
+     "v": "60",
+     "i": "05",
+     "step": 7
+    },
+    "2": {
+     "n": "C-6",
+     "v": "40",
+     "i": "05",
+     "step": 7
+    },
+    "4": {
+     "n": "A-5",
+     "v": "60",
+     "i": "05",
+     "step": 7
+    },
+    "6": {
+     "n": "D-6",
+     "v": "40",
+     "i": "05",
+     "fx": [
+      {
+       "cmd": "CHA",
+       "val": "8F",
+       "step": 7
+      }
+     ],
+     "step": 7
+    },
+    "8": {
+     "n": "C-6",
+     "v": "60",
+     "i": "05",
+     "step": 7
+    },
+    "10": {
+     "n": "F-5",
+     "v": "40",
+     "i": "05",
+     "fx": [
+      {
+       "cmd": "CHA",
+       "val": "8F",
+       "step": 7
+      }
+     ],
+     "step": 7
+    },
+    "12": {
+     "n": "A-5",
+     "v": "60",
+     "i": "05",
+     "step": 7
+    },
+    "14": {
+     "n": "C-6",
+     "v": "40",
+     "i": "05",
+     "step": 7
+    }
+   }
+  },
+  "43": {
+   "rows": {
+    "0": {
+     "n": "D-6",
+     "v": "60",
+     "i": "05",
+     "step": 7
+    },
+    "2": {
+     "n": "A-5",
+     "v": "40",
+     "i": "05",
+     "step": 7
+    },
+    "4": {
+     "n": "A#5",
+     "v": "60",
+     "i": "05",
+     "fx": [
+      {
+       "cmd": "CHA",
+       "val": "8F",
+       "step": 7
+      }
+     ],
+     "step": 7
+    },
+    "6": {
+     "n": "F-6",
+     "v": "40",
+     "i": "05",
+     "step": 7
+    },
+    "8": {
+     "n": "D-6",
+     "v": "60",
+     "i": "05",
+     "step": 7
+    },
+    "10": {
+     "n": "A-5",
+     "v": "40",
+     "i": "05",
+     "step": 7
+    },
+    "12": {
+     "n": "A#5",
+     "v": "60",
+     "i": "05",
+     "fx": [
+      {
+       "cmd": "CHA",
+       "val": "8F",
+       "step": 7
+      }
+     ],
+     "step": 7
+    },
+    "14": {
+     "n": "F-5",
+     "v": "40",
+     "i": "05",
+     "step": 7
+    }
+   }
+  },
+  "44": {
+   "rows": {
+    "0": {
+     "n": "G-5",
+     "v": "60",
+     "i": "05",
+     "step": 7
+    },
+    "2": {
+     "n": "D-6",
+     "v": "40",
+     "i": "05",
+     "step": 7
+    },
+    "4": {
+     "n": "A#5",
+     "v": "60",
+     "i": "05",
+     "step": 7
+    },
+    "6": {
+     "n": "E-6",
+     "v": "40",
+     "i": "05",
+     "fx": [
+      {
+       "cmd": "CHA",
+       "val": "8F",
+       "step": 7
+      }
+     ],
+     "step": 7
+    },
+    "8": {
+     "n": "D-6",
+     "v": "60",
+     "i": "05",
+     "step": 7
+    },
+    "10": {
+     "n": "G-5",
+     "v": "40",
+     "i": "05",
+     "step": 7
+    },
+    "12": {
+     "n": "A#5",
+     "v": "60",
+     "i": "05",
+     "step": 7
+    },
+    "14": {
+     "n": "D-6",
+     "v": "40",
+     "i": "05",
+     "step": 7
+    }
+   }
+  },
+  "45": {
+   "rows": {
+    "0": {
+     "n": "E-6",
+     "v": "60",
+     "i": "05",
+     "step": 7
+    },
+    "2": {
+     "n": "A#5",
+     "v": "40",
+     "i": "05",
+     "step": 7
+    },
+    "4": {
+     "n": "C#6",
+     "v": "60",
+     "i": "05",
+     "step": 7
+    },
+    "6": {
+     "n": "G-5",
+     "v": "40",
+     "i": "05",
+     "step": 7
+    },
+    "8": {
+     "n": "E-6",
+     "v": "60",
+     "i": "05",
+     "step": 7
+    },
+    "10": {
+     "n": "C#6",
+     "v": "40",
+     "i": "05",
+     "fx": [
+      {
+       "cmd": "CHA",
+       "val": "8F",
+       "step": 7
+      }
+     ],
+     "step": 7
+    },
+    "12": {
+     "n": "A#5",
+     "v": "60",
+     "i": "05",
+     "step": 7
+    },
+    "14": {
+     "n": "C#6",
+     "v": "40",
+     "i": "05",
+     "step": 7
+    }
+   }
+  },
+  "50": {
+   "rows": {
+    "0": {
+     "n": "C-4",
+     "v": "50",
+     "i": "0B",
+     "step": 8
+    }
+   }
+  },
+  "5F": {
+   "rows": {},
+   "about": "Empty: the loop keeps playing."
+  },
+  "FD": {
+   "rows": {
+    "0": {
+     "n": "OFF",
+     "step": 9
+    }
+   },
+   "about": "An OFF on row 0 stops whatever the track was playing."
+  },
+  "FE": {
+   "rows": {},
+   "about": "Empty."
+  },
+  "80": {
+   "rows": {
+    "0": {
+     "fx": [
+      {
+       "cmd": "DJC",
+       "val": "60",
+       "step": 9
+      }
+     ]
+    }
+   }
+  },
+  "81": {
+   "rows": {
+    "0": {
+     "fx": [
+      {
+       "cmd": "DJC",
+       "val": "40",
+       "step": 9
+      }
+     ]
+    }
+   }
+  },
+  "82": {
+   "rows": {
+    "0": {
+     "fx": [
+      {
+       "cmd": "DJC",
+       "val": "30",
+       "step": 9
+      }
+     ]
+    }
+   }
+  },
+  "83": {
+   "rows": {
+    "0": {
+     "fx": [
+      {
+       "cmd": "DJC",
+       "val": "48",
+       "step": 9
+      }
+     ]
+    },
+    "4": {
+     "fx": [
+      {
+       "cmd": "DJC",
+       "val": "58",
+       "step": 9
+      }
+     ]
+    },
+    "8": {
+     "fx": [
+      {
+       "cmd": "DJC",
+       "val": "68",
+       "step": 9
+      }
+     ]
+    },
+    "12": {
+     "fx": [
+      {
+       "cmd": "DJC",
+       "val": "80",
+       "step": 9
+      }
+     ]
+    }
+   },
+   "about": "Opens back up a beat at a time; 80 is fully open."
+  },
+  "8F": {
+   "rows": {},
+   "about": "Empty: the filter stays where it was put."
+  }
+ },
+ "instruments": {
+  "02": {
+   "type": "MACROSYN",
+   "name": "ROOTS",
+   "step": 3,
+   "params": [
+    [
+     "SHAPE",
+     "SINE TRIANGLE"
+    ],
+    [
+     "TIMBRE",
+     "00"
+    ],
+    [
+     "COLOR",
+     "10"
+    ],
+    [
+     "DEGRADE",
+     "00"
+    ],
+    [
+     "REDUX",
+     "00"
+    ],
+    [
+     "FILTER",
+     "LOWPASS"
+    ],
+    [
+     "CUTOFF",
+     "50"
+    ],
+    [
+     "RES",
+     "00"
+    ],
+    [
+     "AMP",
+     "00"
+    ],
+    [
+     "LIM",
+     "CLIP"
+    ],
+    [
+     "PAN",
+     "80"
+    ],
+    [
+     "DRY",
+     "80"
+    ],
+    [
+     "MFX",
+     "00"
+    ],
+    [
+     "DEL",
+     "00"
+    ],
+    [
+     "REV",
+     "00"
+    ]
+   ],
+   "mods": [
+    {
+     "slot": 1,
+     "type": "ADSR ENV",
+     "dest": "VOLUME",
+     "step": 3,
+     "p": {
+      "AMT": "FF",
+      "ATK": "→0.5s",
+      "DEC": "00",
+      "SUS": "FF",
+      "REL": "→1.0s"
+     },
+     "sec": {
+      "ATK": 0.5,
+      "REL": 1.0
+     }
+    },
+    {
+     "slot": 2,
+     "type": "LFO",
+     "dest": "CUTOFF",
+     "step": 3,
+     "p": {
+      "OSC": "SIN",
+      "TRIG": "FREE",
+      "AMT": "20",
+      "FREQ": "80"
+     }
+    }
+   ]
+  },
+  "03": {
+   "type": "HYPERSYNTH",
+   "name": "TIDE PAD",
+   "step": 2,
+   "params": [
+    [
+     "SHAPE",
+     "SOFT SAW"
+    ],
+    [
+     "SCALE",
+     "00"
+    ],
+    [
+     "CHORD",
+     "00"
+    ],
+    [
+     "SHIFT",
+     "80"
+    ],
+    [
+     "SWARM",
+     "08"
+    ],
+    [
+     "WIDTH",
+     "C0"
+    ],
+    [
+     "SUBOSC",
+     "80"
+    ],
+    [
+     "FILTER",
+     "LOWPASS"
+    ],
+    [
+     "CUTOFF",
+     "80"
+    ],
+    [
+     "RES",
+     "20"
+    ],
+    [
+     "AMP",
+     "00"
+    ],
+    [
+     "LIM",
+     "CLIP"
+    ],
+    [
+     "PAN",
+     "80"
+    ],
+    [
+     "DRY",
+     "B0"
+    ],
+    [
+     "MFX",
+     "20"
+    ],
+    [
+     "DEL",
+     "10"
+    ],
+    [
+     "REV",
+     "90"
+    ]
+   ],
+   "banks": [
+    {
+     "bank": "00",
+     "iv": [
+      "03",
+      "0A",
+      "0E",
+      "13",
+      "18"
+     ],
+     "step": 2,
+     "shape": "F3 C4 E4 A4 D5",
+     "use": "Dm9 over D"
+    },
+    {
+     "bank": "01",
+     "iv": [
+      "03",
+      "0A",
+      "0E",
+      "13",
+      "1A"
+     ],
+     "step": 3,
+     "shape": "F3 C4 E4 A4 E5",
+     "use": "Dm9 over D, the 9th on top"
+    },
+    {
+     "bank": "02",
+     "iv": [
+      "03",
+      "0A",
+      "0F",
+      "13",
+      "18"
+     ],
+     "step": 3,
+     "shape": "F3 C4 F4 A4 D5",
+     "use": "B♭maj9 over B♭"
+    },
+    {
+     "bank": "03",
+     "iv": [
+      "03",
+      "08",
+      "0F",
+      "13",
+      "18"
+     ],
+     "step": 3,
+     "shape": "F3 B♭3 F4 A4 D5",
+     "use": "Gm9 over G"
+    },
+    {
+     "bank": "04",
+     "iv": [
+      "02",
+      "08",
+      "0E",
+      "11",
+      "18"
+     ],
+     "step": 3,
+     "shape": "E3 B♭3 E4 G4 D5",
+     "use": "A7sus4♭9 over A"
+    },
+    {
+     "bank": "05",
+     "iv": [
+      "02",
+      "08",
+      "0E",
+      "11",
+      "17"
+     ],
+     "step": 3,
+     "shape": "E3 B♭3 E4 G4 C♯5",
+     "use": "A7♭9 over A"
+    }
+   ],
+   "mods": [
+    {
+     "slot": 1,
+     "type": "ADSR ENV",
+     "dest": "VOLUME",
+     "step": 2,
+     "p": {
+      "AMT": "FF",
+      "ATK": "→2.9s",
+      "DEC": "00",
+      "SUS": "FF",
+      "REL": "→5.7s"
+     },
+     "sec": {
+      "ATK": 2.857,
+      "REL": 5.714
+     }
+    },
+    {
+     "slot": 2,
+     "type": "LFO",
+     "dest": "CUTOFF",
+     "step": 2,
+     "p": {
+      "OSC": "SIN",
+      "TRIG": "FREE",
+      "AMT": "40",
+      "FREQ": "80"
+     }
+    },
+    {
+     "slot": 3,
+     "type": "TRIG ENV",
+     "dest": "VOLUME",
+     "step": 6,
+     "p": {
+      "AMT": "neg.",
+      "ATK": "00",
+      "HOLD": "03",
+      "DEC": "12",
+      "SRC": "06"
+     },
+     "amt": -0.55
+    }
+   ]
+  },
+  "05": {
+   "type": "MACROSYN",
+   "name": "TIDE BELL",
+   "step": 7,
+   "params": [
+    [
+     "SHAPE",
+     "20 STRUCK BELL"
+    ],
+    [
+     "TIMBRE",
+     "50"
+    ],
+    [
+     "COLOR",
+     "30"
+    ],
+    [
+     "DEGRADE",
+     "00"
+    ],
+    [
+     "REDUX",
+     "00"
+    ],
+    [
+     "FILTER",
+     "LOWPASS"
+    ],
+    [
+     "CUTOFF",
+     "C0"
+    ],
+    [
+     "RES",
+     "00"
+    ],
+    [
+     "AMP",
+     "00"
+    ],
+    [
+     "LIM",
+     "CLIP"
+    ],
+    [
+     "PAN",
+     "80"
+    ],
+    [
+     "DRY",
+     "A0"
+    ],
+    [
+     "MFX",
+     "00"
+    ],
+    [
+     "DEL",
+     "50"
+    ],
+    [
+     "REV",
+     "60"
+    ]
+   ],
+   "mods": []
+  },
+  "06": {
+   "type": "MACROSYN",
+   "name": "KICK",
+   "step": 5,
+   "demo": false,
+   "params": [
+    [
+     "SHAPE",
+     "22 KICK"
+    ],
+    [
+     "TIMBRE",
+     "60"
+    ],
+    [
+     "COLOR",
+     "30"
+    ],
+    [
+     "DEGRADE",
+     "00"
+    ],
+    [
+     "REDUX",
+     "00"
+    ],
+    [
+     "FILTER",
+     "LOWPASS"
+    ],
+    [
+     "CUTOFF",
+     "FF"
+    ],
+    [
+     "RES",
+     "00"
+    ],
+    [
+     "AMP",
+     "20"
+    ],
+    [
+     "LIM",
+     "CLIP"
+    ],
+    [
+     "PAN",
+     "80"
+    ],
+    [
+     "DRY",
+     "E0"
+    ],
+    [
+     "MFX",
+     "00"
+    ],
+    [
+     "DEL",
+     "00"
+    ],
+    [
+     "REV",
+     "00"
+    ]
+   ],
+   "mods": []
+  },
+  "07": {
+   "type": "MACROSYN",
+   "name": "SNARE",
+   "step": 5,
+   "demo": false,
+   "params": [
+    [
+     "SHAPE",
+     "24 SNARE"
+    ],
+    [
+     "TIMBRE",
+     "40"
+    ],
+    [
+     "COLOR",
+     "90"
+    ],
+    [
+     "DEGRADE",
+     "00"
+    ],
+    [
+     "REDUX",
+     "00"
+    ],
+    [
+     "FILTER",
+     "LOWPASS"
+    ],
+    [
+     "CUTOFF",
+     "FF"
+    ],
+    [
+     "RES",
+     "00"
+    ],
+    [
+     "AMP",
+     "10"
+    ],
+    [
+     "LIM",
+     "CLIP"
+    ],
+    [
+     "PAN",
+     "80"
+    ],
+    [
+     "DRY",
+     "C0"
+    ],
+    [
+     "MFX",
+     "00"
+    ],
+    [
+     "DEL",
+     "00"
+    ],
+    [
+     "REV",
+     "30"
+    ]
+   ],
+   "mods": []
+  },
+  "08": {
+   "type": "MACROSYN",
+   "name": "HAT",
+   "step": 5,
+   "demo": false,
+   "params": [
+    [
+     "SHAPE",
+     "23 CYMBAL"
+    ],
+    [
+     "TIMBRE",
+     "C0"
+    ],
+    [
+     "COLOR",
+     "E0"
+    ],
+    [
+     "DEGRADE",
+     "00"
+    ],
+    [
+     "REDUX",
+     "00"
+    ],
+    [
+     "FILTER",
+     "HIGHPASS"
+    ],
+    [
+     "CUTOFF",
+     "80"
+    ],
+    [
+     "RES",
+     "00"
+    ],
+    [
+     "AMP",
+     "00"
+    ],
+    [
+     "LIM",
+     "CLIP"
+    ],
+    [
+     "PAN",
+     "80"
+    ],
+    [
+     "DRY",
+     "A0"
+    ],
+    [
+     "MFX",
+     "00"
+    ],
+    [
+     "DEL",
+     "00"
+    ],
+    [
+     "REV",
+     "18"
+    ]
+   ],
+   "mods": [
+    {
+     "slot": 1,
+     "type": "AHD ENV",
+     "dest": "VOLUME",
+     "p": {
+      "AMT": "FF",
+      "ATK": "00",
+      "HOLD": "00",
+      "DEC": "06"
+     }
+    }
+   ]
+  },
+  "0B": {
+   "type": "SAMPLER",
+   "name": "FIELD",
+   "step": 8,
+   "demo": false,
+   "params": [
+    [
+     "SAMPLE",
+     "(your recording)"
+    ],
+    [
+     "SLICE",
+     "00"
+    ],
+    [
+     "PLAY",
+     "FWDLOOP"
+    ],
+    [
+     "START",
+     "00"
+    ],
+    [
+     "LOOP ST.",
+     "00"
+    ],
+    [
+     "LEN",
+     "FF"
+    ],
+    [
+     "DETUNE",
+     "80"
+    ],
+    [
+     "DEGRADE",
+     "00"
+    ],
+    [
+     "FILTER",
+     "HIGHPASS"
+    ],
+    [
+     "CUTOFF",
+     "30"
+    ],
+    [
+     "RES",
+     "00"
+    ],
+    [
+     "AMP",
+     "00"
+    ],
+    [
+     "LIM",
+     "CLIP"
+    ],
+    [
+     "PAN",
+     "80"
+    ],
+    [
+     "DRY",
+     "60"
+    ],
+    [
+     "MFX",
+     "00"
+    ],
+    [
+     "DEL",
+     "00"
+    ],
+    [
+     "REV",
+     "40"
+    ]
+   ],
+   "mods": []
+  }
+ },
+ "harmony": [
+  {
+   "bar": 1,
+   "chord": "Dm9",
+   "roman": "i",
+   "bass": "D",
+   "upper": "F C E A D",
+   "move": "The top voice steps up to E",
+   "step": 3
+  },
+  {
+   "bar": 2,
+   "chord": "Dm9",
+   "roman": "i",
+   "bass": "D",
+   "upper": "F C E A E",
+   "move": "E steps up to F, the top falls back to D; the bass drops a major third",
+   "step": 3
+  },
+  {
+   "bar": 3,
+   "chord": "B♭maj9",
+   "roman": "♭VI",
+   "bass": "B♭",
+   "upper": "F C F A D",
+   "hold": 2,
+   "move": "One voice steps down, C to B♭",
+   "step": 3
+  },
+  {
+   "bar": 5,
+   "chord": "Gm9",
+   "roman": "iv",
+   "bass": "G",
+   "upper": "F B♭ F A D",
+   "hold": 2,
+   "move": "Three voices step down; the top D holds",
+   "step": 3
+  },
+  {
+   "bar": 7,
+   "chord": "A7sus4♭9",
+   "roman": "V",
+   "bass": "A",
+   "upper": "E B♭ E G D",
+   "move": "The top D falls a half step",
+   "step": 3
+  },
+  {
+   "bar": 8,
+   "chord": "A7♭9",
+   "roman": "V",
+   "bass": "A",
+   "upper": "E B♭ E G C♯",
+   "move": "Four voices step up, E holds: home",
+   "step": 3
+  }
+ ]
 }

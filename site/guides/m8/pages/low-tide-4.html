@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Low Tide 4: the bassline</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../songs/low-tide.json" step="4" label="Pad and bassline"></m8-player>
+
+<p class="kicker">Low Tide · step 4 of 10</p>
+<h1>The bassline</h1>
+
+<p>The roots from step 3 grow into a bassline. Same track, same instrument (02, the
+<a href="page:roots">Roots</a> card), new phrases. Rather than write the figure four times, you
+write it once in D and let the chain move it to the other roots.</p>
+
+<m8-roll tracks="2,3"></m8-roll>
+
+<div class="listen">The bass now moves inside each bar: the root, a quiet octave above it on the
+"and" of 2, a ghost of the root just before beat 4, the fifth on 4. Every two bars it slides down
+into the new root instead of jumping there.</div>
+
+<h2>The figure, in two phrases</h2>
+<p>Two bars per root, so two phrases: 24 for the first bar of each pair, 25 for the second. Both
+are written on D. Count the rows in sixteenths: row 0 is beat 1, 4 is beat 2, 8 is beat 3, C is
+beat 4.</p>
+
+<table class="values">
+  <thead><tr><th>Row</th><th>Beat</th><th>Phrase 24</th><th>Phrase 25</th></tr></thead>
+  <tbody>
+    <tr><td>0</td><td>1</td><td>D-2, the root, V 64, with <code>PSL 06</code></td><td>D-2, V 64, no slide</td></tr>
+    <tr><td>6</td><td>"and" of 2</td><td>D-3, octave ghost, V 28</td><td>D-3, V 28</td></tr>
+    <tr><td>A</td><td>"and" of 3</td><td></td><td>A-2, the fifth, V 48</td></tr>
+    <tr><td>B</td><td>a 16th before 4</td><td>D-2, ghost, V 20</td><td></td></tr>
+    <tr><td>C</td><td>4</td><td>A-2, the fifth, V 50</td><td></td></tr>
+    <tr><td>D</td><td>a 16th after 4</td><td></td><td>D-3, ghost, V 24</td></tr>
+  </tbody>
+</table>
+
+<ol class="do">
+  <li>Go to chain 02 (track 2). Clear its rows (<kbd>EDIT</kbd>+<kbd>OPTION</kbd> on each) and enter
+  the eight rows below. <kbd>EDIT</kbd> on an empty row inserts a phrase number;
+  <kbd>EDIT</kbd>+arrows dials it to 24 or 25.</li>
+  <li>In phrase 24 and 25, enter the notes from the table, every one with instrument
+  <code>02</code>.</li>
+  <li>On phrase 24 row 0, FX1: <code>PSL 06</code>. <kbd>EDIT</kbd>+<kbd>UP</kbd> on FX1 opens the FX
+  help list.</li>
+</ol>
+<m8-phrase phrase="24" compact></m8-phrase>
+<m8-phrase phrase="25" compact></m8-phrase>
+
+<p>Only root, octave and fifth. The chain transposes the figure chromatically, and those three are
+the same in every chord of this loop. A seventh or a third would come out wrong on one of them
+(C over D is a minor seventh; moved down to B♭ it becomes A♭, against the pad's A).</p>
+
+<h2>The chain moves it: TSP</h2>
+<p>The chain's second column, <b>TSP</b>, transposes a phrase in semitones for that row only. One
+pair of phrases then plays all four roots:</p>
+<m8-chain chain="02" compact></m8-chain>
+<ul>
+  <li><code>00</code>: D. <code>FC</code>: down 4 semitones, B♭. <code>F9</code>: down 7, G.
+  <code>FB</code>: down 5, A.</li>
+  <li>Read the way the M8 reads its relative FX commands, values from <code>80</code> to
+  <code>FF</code> count down from zero: <code>FF</code> is −1, <code>FC</code> is −4.</li>
+  <li>The roots land exactly where step 3 had them: D-2, A#1, G-1, A-1.</li>
+</ul>
+
+<p class="unverified">That TSP counts down the same way. The manual describes TSP only as "an
+optional note transpose in semitones"; FF-as-minus-one is how its relative commands work.
+<b>Report back:</b> what does the help line say for TSP <code>FC</code>?</p>
+
+<h2>The slide: PSL</h2>
+<p><code>PSL</code> (pitch slide) glides into the note on its row from the note before, over a
+number of ticks. <code>06</code> is six ticks, one row. It's on row 0 of phrase 24 only, so the
+bass slides when a new root arrives (bars 1, 3, 5 and 7) and lands cleanly in the bar after. On
+6.6.3 a retrigger resets PSL, so it doesn't leak into the rest of the bar.</p>
+
+<p>The slides are big ones: from the fifth of one chord down to the next root, as much as a
+seventh. At six ticks it reads as a swoop, not a smear.</p>
+
+<div class="listen">Mute T3 and play the bass alone. Bar 1: root, ghost, ghost, fifth. Bar 2, the
+same idea answered. Into bar 3, the swoop down to B♭. The ghosts should be felt more than
+heard; if they pop out, lower their V.</div>
+
+<h2>Things to try</h2>
+<ul>
+  <li><code>PSL 0C</code>: a slower, lazier slide.</li>
+  <li>TIMBRE 30 on instrument 02, so the bass speaks on a phone speaker (see the
+  <a href="page:roots">Roots</a> card).</li>
+  <li>Delete the row B ghost and hear how much plainer the bar gets. In step 5 swing will push that
+  row late, which is where most of the groove comes from.</li>
+</ul>
+
+<p>Next: <a href="page:low-tide-5">step 5, drums and swing</a>.</p>
+</main>
+</body>
+</html>

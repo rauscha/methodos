@@ -124,7 +124,6 @@ m8-player {
   font: 700 0.7rem/1 system-ui, sans-serif; letter-spacing: 0.05em; text-transform: uppercase;
   border: 1.5px solid var(--m8-ink); border-radius: 4px; padding: 1px 4px; color: var(--m8-ink);
 }
-.m8-unknown { text-decoration: none; cursor: help; font-weight: 800; }
 
 .m8-params { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0 16px; margin: 4px 0; font-size: 0.85rem; }
 .m8-params div { display: flex; justify-content: space-between; gap: 8px; border-bottom: 1px solid var(--m8-faint); padding: 2px 0; }

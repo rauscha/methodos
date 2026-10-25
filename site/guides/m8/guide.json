@@ -37,7 +37,7 @@
           "id": "low-tide-2",
           "title": "The pad sound",
           "file": "pages/low-tide-2.html",
-          "summary": "Hypersynth on one held chord: a bar-long swell and an eight-bar filter tide.",
+          "summary": "Hypersynth on one held note: an open Dm9, a small detune, a one-bar swell and an eight-bar filter tide.",
           "tags": [
             "hypersynth",
             "envelope",
@@ -52,14 +52,115 @@
           "id": "low-tide-3",
           "title": "The chords",
           "file": "pages/low-tide-3.html",
-          "summary": "Rootless chord banks over a roots track, eight bars that resolve home.",
+          "summary": "Six open chord banks over one held note, switched with CRD so nothing re-attacks. A quiet roots track underneath.",
           "tags": [
             "harmony",
             "hypersynth",
             "chains"
           ],
           "links": [
-            "tide-pad"
+            "tide-pad",
+            "roots"
+          ]
+        },
+        {
+          "id": "low-tide-4",
+          "title": "The bassline",
+          "file": "pages/low-tide-4.html",
+          "summary": "One two-bar figure written in D, moved to every root by the chain's TSP column, with a slide into each new root.",
+          "tags": [
+            "bass",
+            "chains",
+            "transpose",
+            "slide"
+          ],
+          "links": [
+            "roots"
+          ]
+        },
+        {
+          "id": "low-tide-5",
+          "title": "Drums and swing",
+          "file": "pages/low-tide-5.html",
+          "summary": "A no-sample beat from Macrosynth drum models, and a 07/05 groove on the drums and bass only.",
+          "tags": [
+            "drums",
+            "groove",
+            "swing"
+          ],
+          "links": [
+            "drum-kit"
+          ]
+        },
+        {
+          "id": "low-tide-6",
+          "title": "The duck",
+          "file": "pages/low-tide-6.html",
+          "summary": "A trig envelope on the pad, fired by the kick: the pad breathes on every hit.",
+          "tags": [
+            "trig envelope",
+            "sidechain",
+            "modulation"
+          ],
+          "links": [
+            "tide-pad",
+            "drum-kit"
+          ]
+        },
+        {
+          "id": "low-tide-7",
+          "title": "The arp",
+          "file": "pages/low-tide-7.html",
+          "summary": "A bell arp written by hand through each chord, with chance and a dotted-eighth echo.",
+          "tags": [
+            "arp",
+            "chance",
+            "delay"
+          ],
+          "links": [
+            "struck-bell",
+            "tables"
+          ]
+        },
+        {
+          "id": "low-tide-8",
+          "title": "Texture",
+          "file": "pages/low-tide-8.html",
+          "summary": "Record a sound where you are on the M8's mic and loop it low under everything.",
+          "tags": [
+            "sampler",
+            "recording",
+            "texture"
+          ],
+          "links": [
+            "field-loop",
+            "sampling"
+          ]
+        },
+        {
+          "id": "low-tide-9",
+          "title": "Arrange it",
+          "file": "pages/low-tide-9.html",
+          "summary": "Seven song rows: intro, entries, a breakdown where the DJ filter closes, and an outro.",
+          "tags": [
+            "song view",
+            "arrangement",
+            "dj filter"
+          ]
+        },
+        {
+          "id": "low-tide-10",
+          "title": "The mix",
+          "file": "pages/low-tide-10.html",
+          "summary": "Balance, a side-only low cut for the wide pad, the reverb sends, and the limiter.",
+          "tags": [
+            "mix",
+            "eq",
+            "limiter"
+          ],
+          "links": [
+            "tables",
+            "sampling"
           ]
         }
       ]
@@ -69,7 +170,36 @@
       "title": "Techniques",
       "description": "Hands-on walkthroughs of Tables and sampling.",
       "layout": "steps",
-      "pages": []
+      "pages": [
+        {
+          "id": "tables",
+          "title": "Tables",
+          "file": "pages/tables.html",
+          "summary": "A table arp: TABLE TIC, the N and V columns, HOP, TBL, and why a table follows the root but not the chord.",
+          "tags": [
+            "tables",
+            "arp"
+          ],
+          "links": [
+            "low-tide-7"
+          ]
+        },
+        {
+          "id": "sampling",
+          "title": "Sampling",
+          "file": "pages/sampling.html",
+          "summary": "Load and the pitch limit, start and loop, slices, recording, resampling, and the Zoom M4 route for pitching down.",
+          "tags": [
+            "sampler",
+            "slices",
+            "recording"
+          ],
+          "links": [
+            "low-tide-8",
+            "field-loop"
+          ]
+        }
+      ]
     },
     {
       "id": "patches",
@@ -81,7 +211,7 @@
           "id": "tide-pad",
           "title": "Tide pad",
           "file": "pages/tide-pad.html",
-          "summary": "Warm, wide Hypersynth pad: one-bar swell, two-bar fade, eight-bar filter tide.",
+          "summary": "Warm, wide Hypersynth pad on one held note: one-bar swell, two-bar fade, eight-bar filter tide.",
           "tags": [
             "hypersynth",
             "pad",
@@ -92,7 +222,7 @@
           "id": "roots",
           "title": "Roots",
           "file": "pages/roots.html",
-          "summary": "Soft, round sine-triangle roots under a rootless pad. Low Tide, track 2.",
+          "summary": "A quiet near-sine floor that breathes with the pad. Low Tide, track 2.",
           "tags": [
             "macrosynth",
             "bass",
@@ -100,6 +230,7 @@
           ],
           "links": [
             "low-tide-3",
+            "low-tide-4",
             "tide-pad"
           ]
         },
@@ -146,21 +277,27 @@
           "id": "struck-bell",
           "title": "Struck bell",
           "file": "pages/struck-bell.html",
-          "summary": "A small pitched bell with a dotted-eighth echo. Candidate for Low Tide's arp.",
+          "summary": "A small pitched bell with a dotted-eighth echo. Low Tide’s arp voice.",
           "tags": [
             "macrosynth",
             "arp",
             "bell"
+          ],
+          "links": [
+            "low-tide-7"
           ]
         },
         {
           "id": "drum-kit",
           "title": "No-sample drum kit",
           "file": "pages/drum-kit.html",
-          "summary": "808-style kick, snare and hats from Macrosynth models. No samples needed.",
+          "summary": "808-style kick, snare and hats from Macrosynth models. Low Tide’s beat; no samples needed.",
           "tags": [
             "macrosynth",
             "drums"
+          ],
+          "links": [
+            "low-tide-5"
           ]
         },
         {
@@ -193,6 +330,10 @@
             "sampler",
             "texture",
             "recording"
+          ],
+          "links": [
+            "low-tide-8",
+            "sampling"
           ]
         }
       ]
@@ -206,7 +347,9 @@
     "patches/faded-polaroid.json",
     "patches/field-loop.json",
     "patches/glass-keys.json",
+    "patches/sampling.json",
     "patches/struck-bell.json",
+    "patches/table-arp.json",
     "songs/low-tide.json"
   ]
 }

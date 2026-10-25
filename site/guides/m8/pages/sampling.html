@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sampling</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../patches/sampling.json" silent="No demo sound: samples are yours, so the browser has nothing to play. The phrase below still shows the chop."></m8-player>
+
+<p class="kicker">Technique</p>
+<h1>Sampling</h1>
+
+<p>The Sampler instrument plays a WAV file from the SD card, records one, edits it, and cuts it into
+slices. This page goes in the order you'd meet it: loading a sample and the pitch limit; start,
+loop and length; slices; recording on the M8; resampling the M8's own tracks; and the Zoom M4
+route for pitching a sound a long way down.</p>
+
+<h2>1. Load a sample, and the pitch limit</h2>
+<ol class="do">
+  <li>On a free instrument, set <b>TYPE</b> to <b>SAMPLER</b>. Press <kbd>EDIT</kbd> on <b>LOAD</b>,
+  to the right of SAMPLE, to open the file browser.</li>
+  <li>Directories start with <code>/</code>. <kbd>PLAY</kbd> previews the highlighted file;
+  <kbd>EDIT</kbd> loads it; <kbd>OPTION</kbd> leaves.</li>
+  <li>Once one is loaded, <kbd>EDIT</kbd>+<kbd>LEFT</kbd>/<kbd>RIGHT</kbd> on the sample's name steps
+  through the other files in its folder, a quick way to audition.</li>
+</ol>
+<p>Only uncompressed PCM WAV, mono or stereo, 8 to 32 bit, with a path under 128 characters.
+Because samples stream from the SD card, notes <b>above C-4</b> are limited by bit depth and
+channels. If a sample won't play high, make it smaller in the sample editor: <b>MONO</b>,
+<b>16-BIT</b>, or <b>DOWNSAMPLE</b> (half the rate). 16-bit is the manual's recommendation.</p>
+
+<p class="unverified">Which note plays a sample at its own pitch. The pitch limit starting above
+C-4 suggests C-4 is where a sample plays as recorded; the Low Tide pages use it. <b>Report
+back:</b> does a sample sound at its own pitch on C-4?</p>
+
+<h2>2. Start, loop, length</h2>
+<ul>
+  <li><b>START</b> is where playback begins, <b>LEN</b> how much plays. Both can be moved by FX
+  commands, which is how one long sample becomes many sounds.</li>
+  <li><b>PLAY</b> picks direction and looping: FWD, REV, FWDLOOP, REVLOOP, the ping-pong modes (FWD PP,
+  REV PP), and the OSC modes, which ignore START and don't restart on a new note.</li>
+  <li><b>LOOP ST.</b> is where a looping mode goes back to. The sample editor's <b>XFADE LOOP</b>
+  smooths the seam.</li>
+  <li><b>DETUNE</b>: 80 is in tune; the first digit moves semitones, the second sixteenths of one.</li>
+  <li><b>REPITCH/BPM</b> plays a loop at the song's tempo by changing its pitch; STEPS/BPM tells the
+  M8 how long the loop is.</li>
+</ul>
+
+<h2>3. Slices</h2>
+<p>Slices cut a sample into pieces you play from the note column: the first slice on
+<code>C-1</code>, the second on <code>C#1</code>, and on up. Two ways to make them:</p>
+<ul>
+  <li><b>SLICE</b> in the instrument view cuts the sample into equal lengths.</li>
+  <li><b>Markers</b>, saved in the WAV file. In the sample editor, <b>PROCESS</b> has SLICE:AUTO
+  (finds the hits), SLICE:SILENC (cuts at the gaps) and SLICE:[0–128] (equal divisions). Or chop by
+  ear: with the cursor on a slice marker, press <kbd>PLAY</kbd>, then tap <kbd>EDIT</kbd> on each
+  hit ("lazy chop"). Then set SLICE to <code>01 FILE</code> to play the markers.</li>
+</ul>
+<m8-instrument inst="0D" show="params"></m8-instrument>
+<m8-phrase phrase="D0"></m8-phrase>
+<p>A sliced drum loop re-ordered: slices 1 to 5 on C-1 to E-1, played in a new pattern, with
+velocity for accents. The <code>SLI</code> command cues a slice from the FX column instead.</p>
+
+<p class="unverified">SLICE's values. The manual names <code>01 FILE</code> for markers and says
+SLICE also makes equal sections, but not what the other values read. <b>Report back:</b> what does
+SLICE show for the first few values after 01?</p>
+
+<h2>4. Record on the M8</h2>
+<p><kbd>EDIT</kbd> on <b>REC.</b> opens the sample editor ready to record. Low Tide's
+<a href="page:low-tide-8">step 8</a> walks through a field recording on the mic. The parts that
+matter:</p>
+<ul>
+  <li><b>SRC</b>: <b>MIC</b> (Model:02), the line inputs (L&amp;R, INL, INR), USB, ALL, or a track
+  (TR1 to TR8, for an External Instrument's audio).</li>
+  <li><b>VOL</b> sets the input level; <b>ARM</b> waits until the input crosses a threshold before
+  it starts, so you don't trim silence.</li>
+  <li>Start with the <b>power button</b> to keep the key click out of a mic recording.</li>
+  <li>Then SELECT, PROCESS (CROP, NORMALIZE, FADE IN/OUT, XFADE LOOP, REVERSE…), NAME, SAVE.
+  <kbd>OPTION</kbd> leaves the editor.</li>
+</ul>
+
+<h2>5. Resample the M8 itself</h2>
+<p>You can turn any part of the song into a sample, then chop it, reverse it, or pitch it like any
+other.</p>
+<ol class="do">
+  <li>In the Song view, <kbd>SHIFT</kbd>+<kbd>OPTION</kbd> and move to select the rows and tracks
+  you want.</li>
+  <li>Double-tap <kbd>EDIT</kbd>. Choose <b>QUICK RENDER</b> (offline, the tracks only) or
+  <b>REALTIME</b> (also records the line and USB inputs).</li>
+  <li>A new instrument appears holding the sample, and it becomes the default for new notes.</li>
+</ol>
+<p>Low Tide idea: resample the pad's eight bars, reverse the sample, and use it as a swell into
+the breakdown.</p>
+<p>For files to take home, Project view, <b>RENDER</b> writes a mix or one file per track to
+/Renders.</p>
+
+<h2>6. Pitching down a long way: the Zoom M4 route</h2>
+<p>The M8 plays a sample lower by playing it slower, which also takes its top end down. An octave
+down, a sample recorded at 44.1 kHz has nothing left above about 11 kHz, and sounds dull and
+grainy. For a sound you mean to pitch down a lot (a voice into a drone, a cymbal into a wash):</p>
+<ol class="do">
+  <li>Record it on the <b>Zoom M4</b> at <b>96 kHz, 32-bit float</b>. That captures detail up to
+  about 48 kHz, well past hearing, and float can't clip.</li>
+  <li>On the desktop, transpose it down. An octave down at 96 kHz still has content up to about
+  24 kHz: the whole audible range.</li>
+  <li>Export at 44.1 or 48 kHz, <b>16-bit</b>, mono if it doesn't need to be stereo, and copy it to
+  the SD card's /Samples folder.</li>
+  <li>On the M8, play it near its own pitch. The heavy lifting has been done.</li>
+</ol>
+<p>For the M8's own mic recordings on the trip, none of this is needed: they're for textures that
+sit low in the mix, where a little dullness is welcome.</p>
+</main>
+</body>
+</html>

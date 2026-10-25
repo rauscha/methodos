@@ -15,49 +15,53 @@
 <h1>No-sample drum kit</h1>
 
 <p>Kick, snare and hats from three Macrosynth drum models, so a beat needs no SD card and no
-samples. The pattern is the one planned for Low Tide: kick on 1 and the "and" of 3, snare on 2
-and 4 with a ghost at the end of the bar, eighth-note hats with the beat accented.</p>
+samples. This is Low Tide's beat (<a href="page:low-tide-5">step 5</a>): kick on 1 and the "and"
+of 3, snare on 2 and 4 with a ghost at the end of the bar, eighth-note hats with soft swung
+sixteenths between.</p>
 
-<h2>The kick (track 1)</h2>
+<h2>Kick and snare (track 1)</h2>
+<p>A track plays one note at a time; these two never land on the same row, so they share. Kick is
+instrument 06, snare 07.</p>
+<m8-phrase phrase="10"></m8-phrase>
 <m8-instrument inst="06" show="params"></m8-instrument>
-<m8-phrase phrase="11" compact></m8-phrase>
 <ul>
   <li><b>SHAPE 22 KICK</b>: an 808 bass drum circuit. <b>TIMBRE</b> is the decay, <b>COLOR</b> the
   tone (brightness). The note you type tunes it.</li>
   <li><b>AMP 20, LIM CLIP</b>: a little drive for punch.</li>
 </ul>
-
-<h2>The snare (track 2)</h2>
 <m8-instrument inst="07" show="params"></m8-instrument>
-<m8-phrase phrase="12" compact></m8-phrase>
 <ul>
   <li><b>SHAPE 24 SNARE</b>: the 808 snare. <b>TIMBRE</b> balances its two tones, <b>COLOR</b> is
   the noise ("snappy").</li>
   <li>Row F, velocity 20: the ghost note. Quiet on purpose; it leads into the next bar.</li>
 </ul>
 
-<h2>The hats (track 3)</h2>
+<h2>Hats (track 6)</h2>
+<m8-phrase phrase="60"></m8-phrase>
 <m8-instrument inst="08" show="params mods"></m8-instrument>
-<m8-phrase phrase="13" compact></m8-phrase>
 <ul>
   <li><b>SHAPE 23 CYMBAL</b>: raw cymbal material. <b>COLOR</b> balances metallic squares
   against noise; <b>TIMBRE</b> sets a band-pass filter's cutoff.</li>
-  <li><b>AHD on volume, DEC 06.</b> The cymbal model drones, so the envelope makes the hit.
-  06 is six ticks, one row: a closed hat. Try 18 (a beat) for an open one.</li>
+  <li><b>AHD on volume, DEC 06.</b> The cymbal model drones, so the envelope makes the hit. AHD
+  counts ticks, so 06 is one row: a closed hat. Try 18 (a beat) for an open one.</li>
   <li><b>HIGHPASS at 80</b>: keeps the hats out of the kick's way.</li>
-  <li>Velocity 60 on the beat, 30 off it: the accents are the groove.</li>
+  <li>Velocity 60 on the beat, 30 off it, 18 on rows 3 and B: the accents are the groove.</li>
 </ul>
 
 <h2>Swing</h2>
-<p>Low Tide swings its drums and bass but not its pad. Groove 00 is every track's default, so
-leave it alone and use groove 01. In the groove view (<kbd>SHIFT</kbd>+<kbd>UP</kbd> from the
-phrase), on groove 01, set rows 0 and 1 to <b>07</b> and <b>05</b>: the first of each pair of
-rows gets 7 ticks, the second 5, still 12 together. Then put <code>GRV 01</code> on row 0 of each
-drum phrase.</p>
+<p>Groove 00 is every track's default, so leave it alone and use groove 01. In the groove view
+(<kbd>SHIFT</kbd>+<kbd>UP</kbd> from the phrase), on groove 01, set rows 0 and 1 to <b>07</b> and
+<b>05</b>: the first of each pair of rows gets 7 ticks, the second 5, still 12 together. Then put
+<code>GRV 01</code> on row 0 of the drum phrases. Only odd rows move, so the swing lives in the
+quiet hats on rows 3 and B and the snare ghost on F.</p>
 
-<p class="unverified">Values are a starting point, not tried on an M8. Do KICK and SNARE decay on
-their own, or do they need a volume envelope like the hats? Which note sounds right for the kick
-(D-2 here is a guess)?</p>
+<h2>Ducking other parts</h2>
+<p>To make a pad or bass breathe on the kick, give it a trig envelope with <b>SRC 06</b>, the kick
+instrument. SRC 80 would mean all of track 1, snare included. See
+<a href="page:low-tide-6">Low Tide, step 6</a>.</p>
+
+<p class="unverified">Values are a starting point, not tried on an M8. <b>Report back:</b> does the
+kick at TIMBRE 60 die away on its own before beat 2?</p>
 </main>
 </body>
 </html>

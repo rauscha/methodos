@@ -14,93 +14,111 @@
 <p class="kicker">Low Tide · step 3 of 10</p>
 <h1>The chords</h1>
 
-<p>Now the pad gets its eight bars, and a second track holds the roots underneath. The pad plays
-rootless shapes, as in Faded Polaroid. Only four shapes cover all six chords, because two
-chords share one.</p>
+<p>Now the pad gets its eight bars, and a second track holds the roots underneath. The pad keeps
+playing the one D-3 from step 2. Each chord is a bank of intervals above it, and a command on an
+empty row switches banks while the note keeps sounding.</p>
 
 <m8-roll tracks="2,3"></m8-roll>
 <m8-progression list></m8-progression>
 
-<div class="listen">Press Play and watch the NOW mark move down the list. Bars 1 and 3 have the
-same pad notes in the roll, but the root under them changes, and so does the chord.</div>
+<div class="listen">Press Play and watch the NOW mark move down the list. The pad never re-attacks:
+each chord melts into the next. In the roll, bar 1 to bar 3 moves one note, E up to F, and the
+chord changes anyway because the root under it falls from D to B♭.</div>
 
-<h2>Four more chord banks</h2>
-<p>Back in instrument 03, fill banks 01 to 04. Bank 00 is already F A C E from step 2.</p>
+<h2>Five more chord banks</h2>
+<p>Back in instrument 03, on the CHORD row: move the cursor onto the bank number, set it to
+<code>01</code> with <kbd>EDIT</kbd>+arrows, then fill that bank's slots. Repeat for banks 02 to 05.
+Bank 00 is already Dm9 from step 2. Every interval counts up from the D-3 in the phrase.</p>
 
 <m8-instrument inst="03" show="banks"></m8-instrument>
 
-<p>Bank 01 does double duty: F A C D is Dm7 over a D root and B♭maj9 over a B♭. Banks 03 and 04
-are played on E-3 rather than F-3. Both stay close to the shapes before them, so the voices only
-move by steps.</p>
+<p>The voicings are open on purpose, after your note from the plane that tight chords turned the
+swarming saws into a buzz. No two neighboring notes are closer than a minor third, and most are
+a fourth or more apart. Voice leading stays smooth anyway: from one bank to the next, most voices
+hold and the rest move by a step.</p>
 
-<p>Bank 02 puts A and B♭ a semitone apart inside detuned saw pairs, which may beat and sound
-sour rather than lush. If it does, try the three-note version <code>00 05 09</code> (F B♭ D,
-same top note) and keep whichever you like.</p>
+<ul>
+  <li>Banks 00 and 01 are both Dm9; 01 lifts the top voice to E for bar 2.</li>
+  <li>Banks 04 and 05 drop to E3 at the bottom and keep five voices, so the chord doesn't thin out
+  on the dominant. Bank 05's C♯ is the loop's one bright note.</li>
+  <li>Every bank uses five slots. Remove the sixth with <kbd>OPTION</kbd>+<kbd>EDIT</kbd>, as in step 2, or it plays the held D.</li>
+</ul>
 
-<h2>Changing banks from the phrase</h2>
-<p>Each chord change is a new phrase with one row: the note, instrument 03, and the chord-bank
-command in FX1. The copies of the M8's screen show that command as <b>???</b>. Its three-letter name
-is in the FX help list: put the cursor on FX1 and press <kbd>EDIT</kbd>+<kbd>UP</kbd>.</p>
+<h2>Changing banks with CRD</h2>
+<p>You found the command on 6.6.3: <code>CRD</code>. Its value picks the bank, and on a row with
+no note it leaves the held note sounding: no re-attack. That's the
+whole trick. Phrase 30 strikes D-3 once; every later bar changes the chord with <code>CRD</code>
+alone, and the ADSR never starts again.</p>
 
-<p>You found in Faded Polaroid that <code>COL</code> is relative. The chord-bank command might be
-too, and here it doesn't matter. The instrument's own CHORD is bank 00, and every bank used is
-above it, so "set to 03" and "add 03" land in the same place. It's the same trick as setting COLOR
-to 80 for Faded Polaroid.</p>
-
-<p class="unverified">The name of the chord-bank command, and whether it exists. Hypersynth's
-manual entry lists CHORD as a parameter, and the manual says almost every parameter has an FX
-command, but doesn't name this one. <b>Do this first, before entering the phrases:</b> on a
-phrase that uses instrument 03, put the cursor on FX1 and press <kbd>EDIT</kbd>+<kbd>UP</kbd>.
-<b>Report back:</b> a photo of that list. If there's no bank command, see the fallback at the end
-of this page.</p>
-
-<p class="unverified">A cheaper route, if the command is absolute: leave the I column empty on
-phrases 31 to 34. The manual says an empty I column changes the note without retriggering the
-instrument, so the envelope never restarts and the chord just changes. (With no I column,
-relative commands aren't reset either, so if the command turns out to be relative, keep I=03.)
-<b>Report back:</b> does the chord change cleanly with I empty?</p>
-
-<h3>The pad's phrases</h3>
-<p>Phrase 30 from step 2 gets the bank command. For 31 to 34: in the chain, <kbd>EDIT</kbd> on an
-empty row inserts a phrase number, then <kbd>EDIT</kbd>+<kbd>UP</kbd>/<kbd>RIGHT</kbd> dials it to
-31. (<kbd>EDIT</kbd> twice makes a new phrase at the lowest free number instead; that works too,
-if you don't mind different numbers from these pages.)</p>
+<ol class="do">
+  <li>In phrase 30, on row 0, put the cursor on FX1, press <kbd>EDIT</kbd>+<kbd>UP</kbd> to open the
+  FX help list, pick <b>CRD</b>, and set it to <code>00</code>. That puts the loop back on bank 00
+  each time it comes round.</li>
+  <li>In the chain, make phrases 31 to 35. <kbd>EDIT</kbd> on an empty row inserts a phrase number;
+  <kbd>EDIT</kbd>+<kbd>UP</kbd>/<kbd>RIGHT</kbd> dials it. (<kbd>EDIT</kbd> twice makes a new phrase
+  at the lowest free number instead; that works too, if you don't mind different numbers.)</li>
+  <li>In each of them, row 0 has <b>no note and no instrument</b>, just <code>CRD</code> in FX1 with
+  the bank number.</li>
+</ol>
 <m8-phrase phrase="30" compact></m8-phrase>
-<m8-phrase phrase="31,32,33,34"></m8-phrase>
+<m8-phrase phrase="31,32,33,34,35"></m8-phrase>
 
 <h3>The pad's chain</h3>
-<p>Phrase 30 appears twice (bars 1 and 3), and phrase 3F, an empty phrase, fills the bars where the
-chord holds. An empty phrase has no notes and no OFF, so the chord before it keeps sounding. An
-empty <i>row</i> in the chain would be different: it ends the chain.</p>
+<p>Phrase 3F, an empty phrase, fills bars 4 and 6, where the chord holds. An empty phrase has no
+notes and no OFF, so whatever was sounding keeps sounding. An empty <i>row</i> in the chain would
+be different: it ends the chain.</p>
 <m8-chain chain="03" compact></m8-chain>
 
 <h2>The roots: track 2</h2>
-<p>A round, plain bass that just holds each root. Step 4 turns it into a real bassline.</p>
+<p>A low floor that holds each root and hides inside the pad: you should feel the chord change
+more than hear a bass. Step 4 builds the bassline on this same instrument.</p>
 <ol class="do">
   <li>In the Song view, track 2, row 00: chain <code>02</code>.</li>
   <li>In the chain: phrases 20, 2F, 21, 2F, 22, 2F, 23, 2F. Phrase 2F stays empty, like 3F.</li>
   <li>In phrases 20 to 23, one note on row 0, instrument <code>02</code>.</li>
   <li>Instrument 02: TYPE MACROSYN, SHAPE SINE TRIANGLE. A sine and a triangle into a wavefolder;
-  COLOR balances the two, TIMBRE folds them. Kept low, it's a soft, round tone.</li>
+  COLOR balances the two, TIMBRE folds them. Set them as below.</li>
 </ol>
 <m8-chain chain="02" compact></m8-chain>
 <m8-phrase phrase="20,21,22,23"></m8-phrase>
 <m8-instrument inst="02" show="params"></m8-instrument>
+<ul>
+  <li><b>TIMBRE 00, COLOR 10</b>: no folding and almost pure sine, so it has few harmonics to
+  poke out above the pad.</li>
+  <li><b>CUTOFF 50, RES 00, AMP 00</b>: rounds off what's left.</li>
+  <li><b>DRY 80, REV 00</b>: quiet, and dry. Reverb on the low end turns to mud; step 10 has the
+  EQ trick that keeps the pad's own low end out of its way.</li>
+</ul>
+<p>If it's still too present, lower <b>DRY</b> first. An EQ low shelf (step 10) is the second
+knob.</p>
+
+<h3>Two mods so it breathes with the pad</h3>
+<m8-instrument inst="02" show="mods"></m8-instrument>
+<ul>
+  <li><b>MOD 1, ADSR on VOLUME</b>: ATK until the help line reads about <b>0.5 s</b>, SUS FF, REL
+  about <b>1.0 s</b>. The soft attack is heard when a root comes in from silence (the very start,
+  and in step 9 when the bass enters after a rest). Between roots there's no OFF, so since 6.6
+  the next note resumes from full level and the floor doesn't dip.</li>
+  <li><b>MOD 2, LFO on CUTOFF</b>: OSC SIN, TRIG FREE, AMT 20, FREQ 80. The same eight-bar tide as
+  the pad, smaller, so the roots darken and open with it and read as part of the pad.</li>
+</ul>
+
+<p class="unverified">Whether the two tides line up. Both LFOs are FREE, so each keeps its own
+phase, and the manual doesn't say where a FREE LFO starts. <b>Report back:</b> playing from the
+top, do the pad and the roots darken together?</p>
 
 <p>The M8 spells every flat as a sharp, so B♭1 is entered as <code>A#1</code>.</p>
 
-<div class="listen">Mute T2 on the strip and listen to bars 1 and 3: the same pad notes, which
-sound like the same chord. Unmute it and they're different chords. Then listen to the end of bar 8
-into bar 1, where every pad voice steps up at once.</div>
+<div class="listen">Mute T2 on the strip and listen to bars 1 and 3: nearly the same pad notes,
+which sound like nearly the same chord. Unmute it and they're different chords. Then listen to
+the end of bar 8 into bar 1, where four pad voices step up at once and the C♯ lands on D.</div>
 
-<h2>If there's no chord-bank command</h2>
-<p>Clone instrument 03 once per bank (in a phrase's I column, <kbd>SHIFT</kbd>+<kbd>OPTION</kbd>
-then <kbd>EDIT</kbd> copies the current instrument to a new number), set each clone's CHORD to
-its bank, and switch instruments in the I column instead. It works, but each new instrument
-probably starts its envelope from silence (the 6.6 smooth retrigger is described for the same
-instrument; whether it carries across instruments is unverified), so every chord change would
-swell in from nothing. With an attack that long, you'd
-hear a gap. Shortening ATK to about 18 hides most of it.</p>
+<h2>If it still buzzes</h2>
+<ul>
+  <li>Lower <b>SWARM</b> first (step 2 starts it at 08). That's the detune, and the main cause.</li>
+  <li>Then lower <b>WIDTH</b> a little, or close <b>CUTOFF</b>: buzz lives in the upper harmonics.</li>
+  <li>DARK SAW or TRIANGLE as the SHAPE takes the edge off every voice at once.</li>
+</ul>
 </main>
 </body>
 </html>
