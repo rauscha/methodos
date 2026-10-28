@@ -167,6 +167,24 @@ class Book:
                 block.append(sp)
             root.append(block)
 
+        # A list of short name/value pairs (a device's parameter screen) reads better as a
+        # table, two pairs to a row, than as a tall column on a small screen.
+        for dl in root.find_all('dl'):
+            pairs = []
+            for dt_ in dl.find_all('dt'):
+                dd = dt_.find_next_sibling('dd')
+                pairs.append((dt_.get_text(' ', strip=True), dd.get_text(' ', strip=True) if dd else ''))
+            if not pairs or max(len(k) + len(v) for k, v in pairs) > 28:
+                continue
+            table = soup.new_tag('table')
+            for i in range(0, len(pairs), 2):
+                tr = soup.new_tag('tr')
+                for k, v in pairs[i:i + 2]:
+                    th = soup.new_tag('th'); th.string = k; td = soup.new_tag('td'); td.string = v
+                    tr.append(th); tr.append(td)
+                table.append(tr)
+            dl.replace_with(table)
+
         # boxes keep their label words; give them a plain border
         for el in root.find_all(class_=list(BOX_CLASSES)):
             cls = el.get('class') or []
