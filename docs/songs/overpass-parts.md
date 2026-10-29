@@ -2,8 +2,9 @@
 
 **DRAFT, 2026-10-29.** The second sheet in the relay (plan, parts, instrument settings, pages),
 written from `docs/m8-songs-plan.md` (itself a DRAFT). Andrew has reviewed neither. This sheet
-has every note and every phrase FX; it has no instrument parameter values, and no table values
-(those are `??` for the settings agent).
+has every note and every phrase FX; it has no instrument parameter values. The table values and
+the `??` FX values were filled in by the third sheet, `docs/songs/overpass-instruments.md`
+(2026-10-29), which also records every change it made here.
 
 **Written on these defaults until he answers the plan's open questions:**
 
@@ -54,7 +55,7 @@ No values here; the settings agent writes them in `docs/songs/overpass-instrumen
 |---|---|---|---|
 | 0A | GLASS KEYS | FM synth | the Glass keys card: an electric piano, a glassy tine over a round body. Steps 2–4 only |
 | 05 | STAB MIN9 | Sampler | the Cm9 chord rendered from four tracks of 0A; played on A, D, E |
-| 08 | STAB MAJ9 | Sampler | the Cmaj9 render; a clone of 05, so it carries a copy of 05's table; played on F and G |
+| 08 | STAB MAJ9 | Sampler | the Cmaj9 render in a copy of 05 (made at step 4; table 05 is copied into its table at step 7); played on F and G |
 | 04 | FM SUB | FM synth | a second FM patch: round, rubbery, a soft knock at the front; short notes |
 | 0B | SUB HOLD | FM synth | 04 cloned with an envelope that sustains until the next note or an OFF (the B section's held notes) |
 | 01 | KICK | Sampler | one sliced kit or break; this instrument plays the kick slices |
@@ -741,11 +742,13 @@ Staff: | Em9 1 |
 
 #### Phrase 5D · track 5 · Am9, the last stab (outro) · step 10
 
+05's own envelope is a short stab; DE1 lengthens it for this note only (settings sheet).
+
 Staff: | Am9 1 |
 
 | Row | N | V | I | FX1 | FX2 | FX3 | Step | Note |
 |-----|---|---|---|-----|-----|-----|------|------|
-| 0 | A-3 | 58 | 05 |  |  |  | 10 | let it ring out |
+| 0 | A-3 | 58 | 05 | DE1 60 |  |  | 10 | DE1 60 stretches this one stab's decay to about a bar: it rings out |
 
 ### Track 6: the voice (instruments 06, 09 and 0C)
 
@@ -1034,21 +1037,34 @@ Staff: | no new note (whatever is sounding carries on) |
 A table that counts: **TIC 00** advances it one row per stab, so it doesn't run in time at all.
 Three rows, then back to the top. The A section plays five stabs every two bars, so the three-row
 cycle lines up with the bar only every six bars: over an eight-bar loop, the same stab never gets
-the same treatment twice in a row. Like a hand on keys: one firm, one lazy, one reaching. Values are
-the settings agent's (`??`); all three differences should be small.
+the same treatment twice in a row. Like a hand on keys: one firm, one lazy, one reaching. Values
+from the settings sheet (`docs/songs/overpass-instruments.md`); all three differences are small.
 
 ### Table 05 · step 7
 
 | Row | N | V | FX1 | FX2 | FX3 | What it does |
 |---|---|---|---|---|---|---|
-| 0 | 00 | ?? | CUT ?? | FIN ?? | | the firm hit: full level, the brightest of the three, in tune |
-| 1 | 00 | ?? | CUT ?? | FIN ?? | | the lazy hit: a little softer, a little darker, a few cents flat |
-| 2 | 00 | ?? | CUT ?? | FIN ?? | | the reach: between the two in level and brightness, a hair sharp |
-| 3 | | | HOP 00 | | | back to row 0 |
+| 0 | 00 | 7F | | | | the firm hit: the instrument as set (CUTOFF B0, in tune), full level |
+| 1 | 00 | 64 | CUT 98 | FIN F9 | | the lazy hit: a little softer, a little darker, about 5 cents flat |
+| 2 | 00 | 72 | CUT A4 | FIN 03 | HOP 00 | the reach: between the two, about 2 cents sharp; then back to row 0 |
+| 3 to F | | | | | | empty |
 
-`CUT` stands for the Sampler's filter-cutoff command; the settings agent should use whatever the
-FX help screen names it. 08 STAB MAJ9 is made by cloning 05, so its own table (08) starts as a copy
-of this one.
+**Changed from the parts' first draft:** the `HOP 00` sits in row 2's FX3, not on a row of its
+own, so three stabs make exactly one cycle whether or not a HOP row would take a trigger of its
+own. Row 0 has no commands: every stab carries instrument 05, which resets its parameters
+(manual, Relative and Absolute FX Commands), so the firm hit is the instrument itself.
+
+`CUT` stands for the Sampler's filter-cutoff command; the manual doesn't list it. To get the right
+command whatever it is called, highlight CUTOFF in instrument 05 and press SHIFT+RIGHT: the table
+opens with that command as the default (manual, Instrument View). The values are written as
+absolute; if the help line says the command is relative, type `E8` for `98` and `F4` for `A4`
+(the same results from CUTOFF B0). FIN is relative (changelog), but since each stab resets it, the
+values are the same either way. If the Sampler's fine-pitch command turns out to be named for its
+DETUNE parameter instead (80 = in tune, the second digit sixteenths of a semitone), use `7F` for
+the flat hit and `81` for the sharp one.
+
+08 STAB MAJ9 is a copy of 05 made at step 5, before this table exists, so at step 7 table 05 is
+copied into table 08 by hand (the settings sheet has the keys). 08's TBL. TIC is 00 too.
 
 ## 9. Harmony check
 
@@ -1106,6 +1122,9 @@ His call on all of them.
 9. **Em9's stab is E-4** (top B5, a step above "about A5"), so its F♯ is the voice's F♯5.
 10. **A2 states the hook three and a half times** (bar 4 is silent), so the voice "only ever says
     half a phrase" at least once a loop.
+11. **Added by the settings sheet:** `DE1 60` on the outro's last stab (phrase 5D), because 05's
+    envelope is a short stab and the parts want that one to ring out; and the table's `HOP 00` moved
+    into row 2 (section 8).
 
 ## 11. Depends on device behavior not yet settled
 
@@ -1123,20 +1142,27 @@ Each becomes an Unverified box on the pages, with its fallback.
 - **Slice notes** count up from C-1 (manual); with slice markers, SLICE's value is `01 FILE`
   (Sampling page, unverified).
 - **TIC 00 and the groove:** the plan expects TIC 00 to be safe with swing (the phrase's swung notes
-  trigger it). **Whether the HOP row takes a stab of its own:** if the cycle turns out to be four
-  stabs long with a plain one in it, move `HOP 00` into row 2's FX3 and leave row 3 empty.
+  trigger it). The HOP now shares row 2 with that row's other commands, so the question of whether
+  a HOP row takes a stab of its own doesn't arise. **Whether a HOP on the same row lets that row's
+  other commands run first:** if the reach never sounds (a two-stab cycle), move `HOP 00` back to a
+  row 3 of its own.
 - **RET's span:** written as if a RET keeps retriggering until the next note or a KIL. If it only
   fills its own row, write the clap on every row of phrase 23 with the same RETs.
 - **PLAY REV:** where a backward sample starts, and so how long each backward swell lasts. The B
   fragments want swells of about a beat to a bar; the last one (phrase 69) should end close to the
   next downbeat. Fallback: trim LEN or START on 09 until it does.
-- **Groove 00 can be edited** like any other groove. Fallback: `GRV 01` on row 0 of every phrase on
+- **Groove 00 can be edited:** settled. The manual's own groove examples are all GROOVE 00, and its
+  swing instructions edit it. (Since an early firmware the project view can also name a different
+  default groove.) Fallback, if the project points elsewhere: `GRV 01` on row 0 of every phrase on
   tracks 1–6.
 - **A held FWDLOOP sample keeps playing through rows whose chain has no note** (chain 71).
   Fallback: retrigger the rain at the top of every row (chain 70 everywhere), as Low Tide does.
-- **Whether a cloned instrument keeps its table** (08 from 05). Fallback: `TBL 05` on the first B
-  stab.
-- **NTH, PVB, FIN in tables** aren't used here.
+- **Whether a copied instrument brings its table** (08 from 05): no longer matters, since 08 is
+  copied before the table exists and table 05 is copied into 08 by hand at step 7. Fallback: `TBL 05`
+  on the first B stab.
+- **NTH and PVB** aren't used here. **DE1 on the last stab** (phrase 5D): written as "lengthen mod
+  slot 1's decay for this note"; the manual lists DE[1-2] as envelope-decay offsets but not which
+  slot "1" is. Fallback: a copy of 05 with a long decay (DEC 60) for that one note.
 
 ## 12. For the settings agent
 
@@ -1150,7 +1176,8 @@ Each becomes an Unverified box on the pages, with its fallback.
 - **0C VOICE DUB:** a big delay send; a dotted-eighth delay time suits 124 BPM and the 2-step
   rhythm.
 - **Groove 00:** a heavy sixteenth swing, more than Low Tide's 07/05.
-- **Table 05:** values for every `??`; TABLE TIC is TIC 00.
+- **Table 05:** values for every `??`; TABLE TIC is TIC 00. **Done:** see section 8 and
+  `docs/songs/overpass-instruments.md`.
 - **Velocities** set the balance inside each part; the levels between parts are yours. The rain
   stays below the hats.
 

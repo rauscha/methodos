@@ -86,6 +86,9 @@ stab("5A", "Am9, one stab (breakdown)", 10, [(0, "A-3", "50", "")])
 stab("5B", "Dm9, one stab (breakdown)", 10, [(0, "D-4", "50", "")])
 stab("5C", "Em9, one stab (breakdown)", 10, [(0, "E-4", "50", "")])
 stab("5D", "Am9, the last stab (outro)", 10, [(0, "A-3", "58", "let it ring out")])
+P["5D"].rows[0].fx = ["DE1 60"]
+P["5D"].rows[0].note = "DE1 60 stretches this one stab's decay to about a bar: it rings out"
+P["5D"].about = "05's own envelope is a short stab; DE1 lengthens it for this note only (settings sheet)."
 
 # ---------------- track 6: the voice (06 forward, 09 reversed clone, 0C dub clone)
 ph("60", 6, "the hook, bar 1", 9, [Row(0, "E-4", "60", "06"), Row(3, "E-4", "48", "06", note="the stutter"), Row(4, "OFF", note="hard cut"),

@@ -2,8 +2,9 @@
 
 **DRAFT, 2026-10-29.** The second sheet in the relay (plan, parts, instrument settings, pages),
 written from `docs/m8-songs-plan.md` (itself a DRAFT). Andrew has reviewed neither. This sheet
-has every note and every phrase FX; it has no instrument parameter values, and no table values
-(those are `??` for the settings agent).
+has every note and every phrase FX; it has no instrument parameter values. The table values and
+the `??` FX values were filled in by the third sheet, `docs/songs/faded-polaroid-instruments.md`
+(2026-10-29), which also records every change it made here.
 
 **Written on these defaults until he answers the plan's open questions:**
 
@@ -251,25 +252,32 @@ written out, so transposing a phrase would break them.
 
 A table that shapes every note in time: a small scoop up into pitch, then nothing, then a
 vibrato that only starts once the note has held for a while. Short notes finish before the
-vibrato arrives; long notes bloom. The values are the settings agent's (`??`), and so is TABLE
-TIC. **The timing goal:** the scoop is over by the end of the first sixteenth (6 ticks), and row 8
-arrives about a beat into the note (24 ticks). An eighth note (12 ticks) stays plain.
+vibrato arrives; long notes bloom. Values from the settings sheet
+(`docs/songs/faded-polaroid-instruments.md`). **TABLE TIC is `03`** (the screen says TBL. TIC):
+three ticks a row, so rows 0 to 2 (the scoop) take the first sixteenth (6 ticks) and row 8
+arrives 24 ticks in, one beat into the note. An eighth note (12 ticks) gets to row 4 and stays
+plain.
+
+**FIN is relative** (changelog: "FM, Macro, and Wavsynth had relative FIN command wrap back to
+-1"), so rows 1 and 2 add back what row 0 took away: −16, +8, +8, and the note lands on pitch.
+A note with an instrument number resets it, so every note starts from zero. One FIN step is
+1/128 of a semitone (the manual: FIN spans −1 to +1 semitone); `F0` is about 12 cents flat.
 
 ### Table 04 (the lead's own table) · step 7
 
 | Row | N | V | FX1 | FX2 | FX3 | What it does |
 |---|---|---|---|---|---|---|
-| 0 | 00 | ?? | FIN ?? | | | the breath: starts a little flat and a little soft |
-| 1 | 00 | ?? | FIN ?? | | | halfway up to pitch |
-| 2 | 00 | ?? | FIN ?? | | | on pitch, full level |
+| 0 | 00 | 50 | FIN F0 | | | the breath: starts about 12 cents flat and at two-thirds level |
+| 1 | 00 | 68 | FIN 08 | | | halfway up to pitch (about 6 cents flat) |
+| 2 | 00 | 7F | FIN 08 | | | on pitch, full level |
 | 3 to 7 | | | | | | empty: the note holds still; these rows are the wait |
-| 8 | | | PVB ?? | | | the vibrato starts, narrow |
-| 9 | | | PVB ?? | | | the vibrato at its full width |
+| 8 | | | PVB 52 | | | the vibrato starts, narrow |
+| 9 | | | PVB 54 | | | the vibrato at its full width |
 | A | | | HOP 09 | | | stay on row 9 for as long as the note lasts |
+| B to F | | | | | | empty |
 
-If FIN turns out to be relative (it adds to the current value rather than setting it), rows 1
-and 2 have to add back what row 0 took away; the settings agent should write the values either
-way and say which.
+PVB's speed (first digit) and depth (second) have no published scale: `5` and `2`–`4` are a
+starting point, set by ear toward about five wobbles a second, never wider than a quarter tone.
 
 ### Table 81 (a free table, for A4) · step 7
 
@@ -277,6 +285,17 @@ The same rows with a deeper vibrato in rows 8 and 9 and a slightly bigger scoop 
 long notes carry `TBL 81`; the breakdown's first note carries `TBL 04` to come back. The number
 81 is a suggestion: on the M8, EDIT twice on a TBL value picks the next unused table, and the
 Tables page already uses 80.
+
+| Row | N | V | FX1 | FX2 | FX3 | What it does |
+|---|---|---|---|---|---|---|
+| 0 | 00 | 48 | FIN E8 | | | a deeper breath: about 19 cents flat, a little softer |
+| 1 | 00 | 64 | FIN 0C | | | halfway up |
+| 2 | 00 | 7F | FIN 0C | | | on pitch, full level |
+| 3 to 7 | | | | | | empty: the wait |
+| 8 | | | PVB 54 | | | the vibrato starts |
+| 9 | | | PVB 57 | | | wider than table 04's |
+| A | | | HOP 09 | | | hold on row 9 |
+| B to F | | | | | | empty |
 
 ## 9. Harmony check
 
@@ -348,6 +367,9 @@ Things this sheet does differently from the plan, each for a reason; his call on
    top of the song). The plan left track 8 free.
 10. **Wording only:** the hook "rises a sixth in three notes" in the plan; A5 to E6 is a fifth. His
     arp spans G3 to F♯5, not D4 to F♯5 (his bars 3 and 4 start on B3 and G3); nothing moved.
+11. **Added by the settings sheet:** `NTH 40` on the fill rows of phrase 50; the values of tables 04
+    and 81 (section 8); and the memory is rendered from a spare song row holding only chains 01
+    and 03, rather than with track 2 muted. No note moved.
 
 ## 11. Depends on device behavior not yet settled
 
@@ -359,20 +381,24 @@ Each becomes an Unverified box on the pages, with its fallback.
 - **The blown/fluted model's name on 6.6.3, and whether it speaks on an eighth note.** The hook's
   pickups are eighths. Fallback: the settings agent picks the nearest model that speaks quickly;
   the parts don't change.
-- **FIN and PVB in a table's FX columns.** Fallback: the scoop as an AHD on PITCH in a mod slot,
-  and the vibrato written into the phrases instead: `PVB ??` on an empty row about a beat after
-  each long note (row C after a long note on row 8; row A after a long note on row 6).
+- **PVB in a table's FX columns,** and whether re-reading row 9 through the HOP restarts the
+  vibrato every two rows (it would stutter). Fallback for the stutter: move the HOP to row B as
+  `HOP 0A`, so the table idles on empty rows after row 9. Fallback if PVB does nothing in a table:
+  the vibrato written into the phrases instead, `PVB 54` on an empty row about a beat after each
+  long note (row C after a long note on row 8; row A after a long note on row 6). FIN is settled:
+  it is relative (changelog), and the table is written for that.
 - **Whether TBL stays set after the next note.** Written to work either way: A4 puts `TBL 81` on
   every long note, and the breakdown's first note puts `TBL 04` back.
 - **Whether PSL stays on for later notes.** Written as if it applies to its own row only. If it
   stays on, add `PSL 00` to the note after each slide.
-- **NTH's counting** (the manual defers to the help line). Fallback: chain 05 as
+- **NTH's counting** (the manual defers to the help line). `NTH 40` is written for "the left side
+  plays on every fourth pass"; read the help line when you enter it. Fallback: chain 05 as
   `50 50 50 51 50 50 50 51`, with the fill written out in phrase 51.
-- **Rendering the A section** for the memory: render one pass of his loop (four bars of row 01)
-  with **track 2 muted**, because half speed would put the bass at D1 to G0, below hearing and full
-  of mud. Unverified: whether QUICK RENDER honors mutes. Fallback: blank track 2's cell in a spare
-  song row and render that. Then crop the sample to exactly four bars (6.6 fixed a quick-render
-  length error, so check), so half speed fills exactly eight.
+- **Rendering the A section** for the memory: render his loop **without the bass**, because half
+  speed would put the bass at D1 to G0, below hearing and full of mud. The settings sheet does it
+  from a spare song row holding only chains 01 and 03 (no question of whether QUICK RENDER honors
+  mutes), then crops the sample to exactly four bars (6.6 fixed a quick-render length error, so
+  check), so half speed fills exactly eight.
 - **C-4 plays a sample at its own pitch** (the Sampling page's open check). The memory is played on
   C-3, an octave below whatever note does.
 - **PLAY REV:** where a backward sample starts (its end, or START), for 0A.
@@ -393,7 +419,8 @@ Each becomes an Unverified box on the pages, with its fallback.
 - 09 FADED: PLAY FWD (not a loop), dulled and a little grainy (filter, DEGRADE), quiet. 0A: a clone
   of 09 with PLAY REV.
 - Velocities in the phrases set the balance inside each part; the levels between parts are yours.
-- Tables 04 and 81: values for every `??`, TABLE TIC, and whether FIN is relative.
+- Tables 04 and 81: values for every `??`, TABLE TIC, and whether FIN is relative. **Done:** see
+  section 8 and `docs/songs/faded-polaroid-instruments.md`.
 
 ## 13. For the builder
 

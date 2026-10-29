@@ -121,7 +121,7 @@ def drums(num, title, step, kick, snare, fill, nth, about=""):
     for r, v in snare:
         rows.append((r, Row(r, "C-4", v, "06")))
     for r, v in fill:
-        rows.append((r, Row(r, "C-4", v, "06", fx=["NTH ??"] if nth else [], note="fill: every fourth pass" if nth else "fill")))
+        rows.append((r, Row(r, "C-4", v, "06", fx=["NTH 40"] if nth else [], note="fill: every fourth pass" if nth else "fill")))
     rows = [x for _, x in sorted(rows, key=lambda t: t[0])]
     ph(num, 5, title, step, rows, drum={}, about=about)
     P[num].drum = None
