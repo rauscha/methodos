@@ -7,6 +7,8 @@
 // Each page is opened in headless Chromium at the given width, in light mode (e-ink is
 // paper). Then: every canvas becomes a PNG beside the page; custom elements become plain
 // divs with what they drew; what the page hides, scripts, players and live readouts go.
+// The page is switched to book mode first (html.book), so .book-only text shows and
+// .app-only text hides, in the text and in the pictures.
 // --shoot takes a CSS selector: each matching element (outermost only) is replaced by a
 // picture of itself, for layouts a small reader can't draw (tracker screens, wide tables).
 // Pictures come out at width x scale pixels: 400 x 1.2 = 480, the Xteink X4's width, with
@@ -54,6 +56,9 @@ const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/cs
   for (const s of guide.sections ?? []) for (const p of s.pages ?? []) {
     await page.goto(base + p.file, { waitUntil: 'networkidle' });
     await page.waitForTimeout(600); // let panels lay out and draw their resting frame
+    // Book mode: the guide's CSS shows .book-only and hides .app-only under html.book.
+    await page.evaluate(() => document.documentElement.classList.add('book'));
+    await page.waitForTimeout(100);
     const stem0 = path.basename(p.file, path.extname(p.file));
     if (shoot) {
       const handles = await page.$$(shoot);

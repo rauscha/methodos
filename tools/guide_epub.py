@@ -16,6 +16,16 @@ works in the app is translated:
   links off the guide keep their text only.
 - Labels drawn by CSS (step numbers, route marks) become words or plain numbering.
 
+Book-only and app-only text: an element with class "app-only" is left out of the book,
+and one with class "book-only" is kept (the guide's own CSS hides it in the app:
+`html:not(.book) .book-only { display: none }`). An optional epub.json beside guide.json
+shapes the book without touching the guide:
+
+    {"order": ["start", "songs", ...],   section ids in book order; unlisted ones follow
+     "omit": ["map", ...],               section or page ids to leave out
+     "title": ..., "subtitle": ..., "description": ...,   overrides for the title page
+     "note": "..."}                      the title page's small print (HTML)
+
 Nothing here knows about any one guide or subject.
 """
 import argparse
@@ -87,6 +97,19 @@ class Book:
     def __init__(self, guide_dir, width):
         self.dir = Path(guide_dir)
         self.guide = json.loads((self.dir / 'guide.json').read_text())
+        bj = self.dir / 'epub.json'
+        self.book = json.loads(bj.read_text()) if bj.exists() else {}
+        for key in ('title', 'subtitle', 'description'):
+            if self.book.get(key):
+                self.guide[key] = self.book[key]
+        omit = set(self.book.get('omit', []))
+        order = self.book.get('order', [])
+        rank = lambda sec: order.index(sec.get('id')) if sec.get('id') in order else len(order)
+        sections = [sec for sec in self.guide.get('sections', []) if sec.get('id') not in omit]
+        sections = sorted(sections, key=rank)  # stable: unlisted sections keep their order
+        for sec in sections:
+            sec['pages'] = [p for p in sec.get('pages', []) if p.get('id') not in omit]
+        self.guide['sections'] = sections
         self.width = width
         self.images = {}      # source path -> epub name
         self.image_data = {}  # epub name -> bytes
@@ -152,6 +175,8 @@ class Book:
         src = self.dir / page['file']
         soup = BeautifulSoup(src.read_text(encoding='utf-8'), 'html.parser')
         root = soup.find('main') or soup.body or soup
+        for el in root.select('.app-only'):
+            el.decompose()
         for el in root.find_all(['script', 'style', 'link', 'noscript', 'iframe', 'canvas', 'svg', 'video', 'audio', 'input', 'button', 'form']):
             el.decompose()
         for c in root.find_all(string=lambda s: isinstance(s, Comment)):
@@ -306,7 +331,8 @@ class Book:
         parts = [f'<h1>{html.escape(title)}</h1>']
         if g.get('subtitle'): parts.append(f'<p class="kicker">{html.escape(g["subtitle"])}</p>')
         if g.get('description'): parts.append(f'<p>{html.escape(g["description"])}</p>')
-        parts.append(f'<p class="note">Made from the Methodos guide on {dt.date.today():%Y-%m-%d}. '
+        parts.append(f'<p class="note">{self.book["note"]}</p>' if self.book.get('note') else
+                     f'<p class="note">Made from the Methodos guide on {dt.date.today():%Y-%m-%d}. '
                      'Spoilers sit at the end of each chapter. Maps and players are only in the app.</p>')
         files = [('title.xhtml', xhtml(title, '\n'.join(parts)))]
         nav_tree = []  # (label, href, children)
