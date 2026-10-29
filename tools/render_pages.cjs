@@ -12,7 +12,8 @@
 // --shoot takes a CSS selector: each matching element (outermost only) is replaced by a
 // picture of itself, for layouts a small reader can't draw (tracker screens, wide tables).
 // Pictures come out at width x scale pixels: 400 x 1.2 = 480, the Xteink X4's width, with
-// text a fifth larger than on a phone. Needs Playwright; it is
+// text a fifth larger than on a phone. A table taller than a screen (700 CSS px) is cut
+// between rows, header repeated, into screen-sized pictures; hidden elements are skipped. Needs Playwright; it is
 // found through PLAYWRIGHT_DIR (default ~/repos/backlot), and Chromium through CHROMIUM
 // (default the Playwright cache).
 const { createRequire } = require('module');
@@ -65,16 +66,49 @@ const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/cs
       let k = 0;
       for (const h of handles) {
         const outer = await h.evaluate((e, sel) => !e.parentElement?.closest(sel), shoot);
-        if (!outer) continue;
-        const name = `${stem0}-shot${++k}.png`;
-        await h.screenshot({ path: path.join(out, path.dirname(p.file), name) });
-        await h.evaluate((e, name) => {
-          const img = document.createElement('img');
-          img.src = name; img.alt = e.querySelector('figcaption, caption')?.textContent.trim() ?? '';
-          img.setAttribute('data-shot', '');
-          e.replaceWith(img);
-        }, name);
-        shotCount++;
+        if (!outer || !(await h.isVisible())) continue; // nested, or hidden in book mode
+        // A table taller than a screen is cut between rows into screen-sized pieces, each
+        // with the header row repeated, and each piece becomes its own picture.
+        const pieces = await h.evaluate((e, maxH) => {
+          if (e.localName !== 'table' || e.getBoundingClientRect().height <= maxH) return 1;
+          const rows = [...e.rows];
+          const head = e.tHead?.rows[0] ?? (rows[0]?.querySelector('th') && !rows[0].querySelector('td') ? rows[0] : null);
+          const body = rows.filter((r) => r !== head);
+          const headH = head ? head.getBoundingClientRect().height : 0;
+          const groups = [[]];
+          let used = headH;
+          for (const r of body) {
+            const rh = r.getBoundingClientRect().height;
+            if (groups.at(-1).length && used + rh > maxH) { groups.push([]); used = headH; }
+            groups.at(-1).push(r); used += rh;
+          }
+          if (groups.length < 2) return 1;
+          const parts = groups.map((g) => {
+            const t = e.cloneNode(false);
+            if (e.caption) t.appendChild(e.caption.cloneNode(true));
+            if (head) t.appendChild(head.cloneNode(true));
+            const tb = document.createElement('tbody');
+            g.forEach((r) => tb.appendChild(r.cloneNode(true)));
+            t.appendChild(tb);
+            t.setAttribute('data-piece', '');
+            return t;
+          });
+          parts.forEach((t) => e.before(t));
+          e.remove();
+          return parts.length;
+        }, 700);
+        const targets = pieces > 1 ? await page.$$('table[data-piece]') : [h];
+        for (const t of targets) {
+          const name = `${stem0}-shot${++k}.png`;
+          await t.screenshot({ path: path.join(out, path.dirname(p.file), name) });
+          await t.evaluate((e, name) => {
+            const img = document.createElement('img');
+            img.src = name; img.alt = e.querySelector('figcaption, caption')?.textContent.trim() ?? '';
+            img.setAttribute('data-shot', '');
+            e.replaceWith(img);
+          }, name);
+          shotCount++;
+        }
       }
     }
     const shots = await page.evaluate(() => {

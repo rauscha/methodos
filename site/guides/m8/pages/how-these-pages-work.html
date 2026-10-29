@@ -11,17 +11,28 @@
 <p class="kicker">Start here</p>
 <h1>How these pages work</h1>
 
-<p>Every page in this guide is something to read with the M8 in your hands. Some pages are mostly
+<p>Every page in this guide is something to read with the M8 in your hands. <span class="app-only">Some pages are mostly
 text. The ones that build a song also have a strip across the top that plays the song so far, and
-pictures that move with it.</p>
+pictures that move with it.</span></p>
 
-<h2>The strip at the top</h2>
-<p><b>Play</b> starts the song from the top and loops it. <b>Stop</b> sends every note an OFF, so
+<div class="book-only">
+<h2>How to use this book</h2>
+<p>Low Tide comes first: one song in ten steps, each adding to the song on your M8, so do them in
+order. Then two techniques, Tables and Sampling. The patch cards are at the back, to look up.</p>
+<p>The pictures are the M8's own screens and drawings of what the notes do. A <b>Listen for</b>
+box says what to listen for on your M8 once that step is in.</p>
+<p>The text spells flats with a plain b (Bbmaj9, A7b9) and sharps with # (C#), because this
+reader's font has neither sign; the pictures show the real ones. The M8 itself writes every flat
+as a sharp: Bb1 is entered as A#1.</p>
+</div>
+
+<h2 class="app-only">The strip at the top</h2>
+<p class="app-only"><b>Play</b> starts the song from the top and loops it. <b>Stop</b> sends every note an OFF, so
 you can watch and hear the releases ring out. Each track you can hear has a button that mutes it;
 a muted track is struck through and drawn with a dashed outline. The strip stays at the top while
 you scroll.</p>
 
-<p class="demo-note">The sound is a stand-in made in the browser, not the M8: the notes, not the
+<p class="demo-note app-only">The sound is a stand-in made in the browser, not the M8: the notes, not the
 tone. It plays the same notes, envelopes and filter moves the page tells you to enter, so it's right
 about <i>what</i> happens and <i>when</i>. Drums and samples make no sound in it (a browser tone
 would only misrepresent them), but their phrases still draw, and the kick still makes the pad
@@ -31,21 +42,18 @@ duck.</p>
 <ul>
   <li><b>Copies of the M8's screens</b> (song, phrase, chain, table, instrument) show exactly what
   to type. A row or value marked <span style="border:1.5px solid;border-radius:4px;padding:0 4px;font:700 0.7rem system-ui">NEW</span>,
-  with a bar in the left margin, is what this step adds. While the song plays, a ▶ cursor and bold
-  type mark the row the M8 would be on. A row with no note shows <code>---</code> in the note
+  with a bar in the left margin, is what this step adds. <span class="app-only">While the song plays, a ▶ cursor and bold type mark the row the M8 would be on. </span>A row with no note shows <code>---</code> in the note
   columns and only its command.</li>
   <li><b>The piano roll</b> shows every track as notes on a keyboard, with the chord names along the
   top. The pad's notes are outlined and hatched, everything else is solid, and the pad's top voice
   is drawn as a thick line, so you can follow the melody hidden in the chords. When a held chord
   changes without being struck again, the roll starts a new block.</li>
-  <li><b>The progression</b> shows each chord with its Roman numeral. The chord sounding now is
-  filled dark and marked "now"; the next one has a thick outline and says "next". Each card says how
+  <li><b>The progression</b> shows each chord with its Roman numeral. <span class="app-only">The chord sounding now is filled dark and marked "now"; the next one has a thick outline and says "next". Each card says</span><span class="book-only">Each line says</span> how
   the harmony moves on.</li>
   <li><b>Envelopes</b> draw the shape, with the note's length underneath and a mark where the OFF
-  arrives. A dot rides the shape as the song plays. The duck (step 6) is drawn over one bar, with a
+  arrives. <span class="app-only">A dot rides the shape as the song plays. </span>The duck (step 6) is drawn over one bar, with a
   solid triangle under each kick.</li>
-  <li><b>Filters</b> show the cutoff moving over time, and the filter's curve laid over what the
-  track is actually playing.</li>
+  <li><b>Filters</b> show the cutoff moving over time, and the filter's curve<span class="app-only"> laid over what the track is actually playing</span>.</li>
 </ul>
 
 <h2>Units</h2>
@@ -72,7 +80,7 @@ other dashed boxes can wait.</p>
   <li>The SWARM value you like on the held chord, somewhere around 04 to 10. <i>(step 2)</i></li>
   <li>The duck: the trig envelope AMT whose help line reads about minus half. <i>(step 6)</i></li>
   <li>The delay: what the help line says for TIME <code>0C</code>. <i>(step 7)</i></li>
-  <li>After pressing Play on any step: did any picture tell you something the words didn't?
+  <li><span class="app-only">After pressing Play on any step</span><span class="book-only">Reading the book</span>: did any picture tell you something the words didn't?
   Which one?</li>
 </ol>
 

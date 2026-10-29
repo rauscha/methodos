@@ -1048,7 +1048,7 @@ class M8Roll extends Panel {
     if (!this.querySelector('.m8-readout')) {
       this.innerHTML = `<p class="m8-legend">${this.tracks.map((t) => {
         const kind = this.notes.find((x) => x.track === t.n)?.inst === 'HYPERSYNTH' ? 'outlined, hatched blocks; the top voice is the thick line' : 'solid blocks';
-        return `<span>T${t.n} ${t.name}: ${kind}</span>`;
+        return `<span>T${t.n} ${t.name}: ${kind}<span class="book-only">.</span></span>`;
       }).join('')}</p><p class="m8-readout" aria-live="off"></p>`;
     }
     this.draw(null);
@@ -1176,7 +1176,7 @@ class M8Progression extends Panel {
     this.innerHTML = `<ol class="m8-prog ${this.hasAttribute('list') ? 'm8-prog-list' : ''}">${hs.map((h, i) => `
       <li data-i="${i}">
         <span class="m8-roman">${h.roman}</span>
-        <span class="m8-chord">${h.chord}</span>
+        <span class="m8-chord">${h.chord}<span class="book-only">:</span></span>
         <span class="m8-sub">bar${h.hold ? 's' : ''} ${h.bar}${h.hold ? '–' + (h.bar + h.hold - 1) : ''} · root ${h.bass} · pad ${h.upper}</span>
         <span class="m8-move">→ ${h.move}</span>
         <span class="m8-state"></span>
@@ -1240,7 +1240,7 @@ class M8Envelope extends Panel {
         items = `${time('ATK')}${p.DEC != null ? (sec.DEC != null ? time('DEC') : `<li><b>DEC ${p.DEC}</b> ${hex(p.DEC) ? '' : '= no decay: straight to the sustain level'}</li>`) : ''}${p.SUS != null ? `<li><b>SUS ${p.SUS}</b> = hold at ${Math.round(hex(p.SUS) / 2.55)}% while the note is held</li>` : ''}${time('REL')}`;
       } else {
         const t = (k) => p[k] == null ? '' : `<li><b>${k} ${p[k]}</b> = ${hex(p[k])} ticks${hex(p[k]) ? ` = ${(hex(p[k]) / 6).toFixed(2).replace(/\.00$/, '')} row${hex(p[k]) === 6 ? '' : 's'}, ${(hex(p[k]) * tk).toFixed(2)} s` : ''}</li>`;
-        items = `${t('ATK')}${t('HOLD')}${t('DEC')}${this.kind === 'trig' ? `<li><b>SRC ${p.SRC}</b> = fires on every note of ${this.srcName}</li><li><b>AMT</b>: negative, so it pulls the level down (the demo dips it to ${Math.round((1 + this.ahd.amt) * 100)}%)</li>` : ''}`;
+        items = `${t('ATK')}${t('HOLD')}${t('DEC')}${this.kind === 'trig' ? `<li><b>SRC ${p.SRC}</b> = fires on every note of ${this.srcName}</li><li><b>AMT</b>: negative, so it pulls the level down<span class="app-only"> (the demo dips it to ${Math.round((1 + this.ahd.amt) * 100)}%)</span></li>` : ''}`;
       }
       this.insertAdjacentHTML('beforeend', `<ul class="m8-facts">${items}</ul><p class="m8-readout" aria-live="off"></p>`);
     }
@@ -1463,3 +1463,9 @@ customElements.define('m8-roll', M8Roll);
 customElements.define('m8-progression', M8Progression);
 customElements.define('m8-envelope', M8Envelope);
 customElements.define('m8-filter', M8Filter);
+
+// Book mode (tools/render_pages.cjs adds html.book before its snapshot): app-only parts are
+// removed outright, not just hidden, so no hidden panel is left for the snapshot to picture.
+new MutationObserver(() => {
+  if (document.documentElement.classList.contains('book')) document.querySelectorAll('.app-only').forEach((e) => e.remove());
+}).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });

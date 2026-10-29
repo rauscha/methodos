@@ -166,3 +166,10 @@ m8-player {
 .m8-prog-list .m8-sub { grid-area: sub; }
 .m8-prog-list .m8-move { grid-area: move; margin: 0; }
 .m8-prog-list li.m8-next { padding: 4.5px 8.5px; }
+
+/* ---- book mode (tools/render_pages.cjs adds html.book before it snapshots a page for the EPUB) */
+html:not(.book) .book-only { display: none; }
+html.book .app-only { display: none; }
+/* The player strip is live-only; hidden, it also stays out of the screen pictures it would
+   otherwise overlap (it is sticky). */
+html.book m8-player { display: none; }

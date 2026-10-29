@@ -340,6 +340,7 @@
     }
   ],
   "files": [
+    "epub.json",
     "kit/m8kit.css",
     "kit/m8kit.js",
     "patches/acid-bass.json",
