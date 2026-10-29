@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Faded Polaroid 4: the arp</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../songs/faded-polaroid.json" step="4" label="Chords, roots and your arp"></m8-player>
+
+<p class="kicker">Faded Polaroid · step 4 of 10</p>
+<h1>The arp</h1>
+
+<p>Your arp from the session, unchanged: eighth notes through each chord's upper notes, on a
+Wavsynth triangle that plucks and fades. This step is about the sound, the
+<a href="page:polaroid-arp">Polaroid arp</a> card, and about one thing the notes already do right:
+they sit on even rows.</p>
+
+<m8-roll tracks="1,3"></m8-roll>
+
+<div class="listen"><span class="label book-only">Listen for</span>Each note is a soft "doong" whose
+bright edge is gone almost at once, fading before the next eighth or two. Under it, very slowly,
+the pitch wobbles, like a stretched tape: you should barely notice it, and miss it if it stopped.</div>
+
+<h2>Your four phrases</h2>
+<p>Eight eighth notes a bar, on rows 0, 2, 4 … E, velocity <code>60</code> on the beat and
+<code>48</code> off it, every note on instrument <code>01</code>. Read as a staff:</p>
+<table class="values">
+  <thead><tr><th>Phrase</th><th>Chord</th><th>Eighths, rows 0 to E</th></tr></thead>
+  <tbody>
+    <tr><td>10</td><td>Dmaj9</td><td>D4 A4 E5 F♯4 C♯5 A4 F♯4 E5</td></tr>
+    <tr><td>11</td><td>Aadd9</td><td>C♯4 E4 B4 A4 C♯5 E4 B4 E5</td></tr>
+    <tr><td>12</td><td>Bm9</td><td>B3 F♯4 C♯5 D4 A4 F♯4 D5 C♯5</td></tr>
+    <tr><td>13</td><td>Gmaj9</td><td>G3 D4 A4 B4 F♯5 D4 B4 A4</td></tr>
+  </tbody>
+</table>
+<p>It moves through each chord's color notes, ninths and sevenths, more than up a triad. Bar 1
+plays the root, then the fifth, the ninth, the third, the seventh.</p>
+<m8-phrase phrase="10"></m8-phrase>
+<ol class="do">
+  <li>Song view, track 1, row 00: chain <code>01</code>. In it: <code>10 11 12 13 10 11 12 13</code>.</li>
+  <li>If your phrases are already on your M8 under other numbers, use them. Otherwise enter phrase
+  10, then clone it for 11 to 13 (on its number in the chain, <kbd>SHIFT</kbd>+<kbd>OPTION</kbd> then
+  <kbd>EDIT</kbd>) and change the notes.</li>
+</ol>
+<m8-chain chain="01" compact></m8-chain>
+
+<h2>Why even rows matter</h2>
+<p>In step 5 a swing groove arrives on the drums. A swing groove changes how long each row of a
+<i>pair</i> lasts, so it moves only the odd rows (1, 3, 5 …) late. Every arp note is on an even row,
+so even if the arp's track used the groove, nothing in it would move. The arp stays straight
+while the drums lilt around it.</p>
+
+<h2>Instrument 01: Polaroid arp</h2>
+<m8-instrument inst="01" show="params"></m8-instrument>
+<ul>
+  <li><b>SHAPE TRIANGLE, WARP 18</b>: a soft, hollow fundamental, pushed slightly to one side: the
+  woody asymmetry.</li>
+  <li><b>SCAN 00</b>: the row after WARP. The card asked whether your screen says SCAN or MIRROR;
+  the changelog settles it ("Wavsynth MIRROR parameter renamed SCAN").</li>
+  <li><b>CUTOFF A0, RES 12</b>: never glassy; a small nasal edge.</li>
+  <li><b>MFX 30, DEL 28, REV 48</b>: the haze. Get it sounding right dry first.</li>
+</ul>
+
+<h3>Three mods, all in ticks or steps</h3>
+<m8-instrument inst="01" show="mods"></m8-instrument>
+<m8-envelope inst="01" mod="1"></m8-envelope>
+<ul>
+  <li><b>MOD 1, AHD on VOLUME: ATK 01, HOLD 01, DEC 18.</b> One tick up, one tick held, then a
+  fade over 24 ticks, one beat. The next note arrives half a beat later and takes over the track,
+  so you hear the first half of each fade: a pluck, not a drone.</li>
+  <li><b>MOD 2, AHD on CUTOFF: AMT 20, DEC 10.</b> A little brightness at the start of each note
+  that closes in 16 ticks, two-thirds of a beat. That's the "doong".</li>
+  <li><b>MOD 3, LFO on PITCH: SIN, FREE, AMT 01, FREQ 80.</b> FREQ is a length: 80 reads "8 PHRASES",
+  so one wobble every eight bars. AMT 01 is the smallest step. Any more and it's seasick.</li>
+</ul>
+<p class="demo-note app-only">The demo plays the pluck's volume shape; it doesn't bend the pitch or
+move the filter.</p>
+
+<h2>Things to try</h2>
+<ul>
+  <li>DEC 0C instead of 18: drier, more like a music box.</li>
+  <li>SIZE from 20 toward 50 for more grain.</li>
+  <li>Mute track 3 and play the arp over the bass alone: the chords are all there in the arp.</li>
+</ul>
+
+<p>Next: <a href="page:faded-polaroid-5">step 5, the drums</a>.</p>
+</main>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overpass 2: one FM voice</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../songs/overpass.json" step="3" label="Preview: the chord you build in step 3, on a plain tone"></m8-player>
+
+<p class="kicker">Overpass · step 2 of 10</p>
+<h1>One FM voice</h1>
+
+<p>The stabs start as an electric piano made on the FM synth: a glassy tine at the front of each
+note, gone within a beat, over a round body that rings out over the bar. It's the
+<a href="page:glass-keys">Glass keys</a> card, Glass Garden's second chance, with one value changed.
+This step builds it and explains what each part of an FM patch does, since FM is the M8's hardest
+instrument.</p>
+
+<p class="demo-note app-only">The demo plays the notes and the envelope on a plain tone. FM is your
+M8's.</p>
+
+<h2>How the FM synth works</h2>
+<p>Four <b>operators</b>, A to D, each a simple wave. In FM, one operator (a <b>modulator</b>) bends the
+pitch of another (a <b>carrier</b>) so fast that you don't hear a bend: you hear new harmonics. You only
+hear the carriers. The <b>ALGO</b> decides which operator bends which; there are 12 (manual, FM Synth).</p>
+<ul>
+  <li><b>RATIO</b>: each operator's frequency relative to the note. 2.00 is an octave up, 0.50 an octave
+  down.</li>
+  <li><b>LEV</b> and <b>FB</b>: its level, and how much it feeds back into itself. On a modulator, more
+  level means more harmonics: brighter. On a carrier, it's just louder.</li>
+  <li><b>MOD</b>: two slots per operator. Each assigns one of the four <b>MOD1</b>–<b>MOD4</b> values to one
+  of the operator's settings. <code>LEV</code> "controls the level from 00 to the currently set level"
+  (manual); RAT, PIT and FBK do the same for ratio, pitch and feedback.</li>
+  <li><b>MOD1</b> to <b>MOD4</b> are the instrument's own rows. Point a mod slot (an envelope, an LFO) at
+  one of them, and through the operator's MOD slot it moves that operator.</li>
+</ul>
+
+<h2>Instrument 0A: Glass keys</h2>
+<ol class="do">
+  <li>Instrument <code>0A</code>: TYPE <b>FMSYNTH</b>, NAME GLASS KEYS.</li>
+  <li><b>ALGO</b> <code>07</code>, which draws as <b>[A&gt;B]+[C&gt;D]</b>: two pairs side by side. A bends B, C bends
+  D, and you hear B and D.</li>
+  <li>The four operator rows as below. With the cursor in an operator's row, <kbd>SHIFT</kbd>+<kbd>OPTION</kbd>
+  copies it and <kbd>SHIFT</kbd>+<kbd>EDIT</kbd> pastes it on another, which saves typing.</li>
+  <li>MOD1 <code>00</code>, CUTOFF <code>FF</code>, DRY <code>C0</code>, and the sends MFX, DEL, REV all
+  <code>00</code>.</li>
+</ol>
+<m8-instrument inst="0A" show="params ops"></m8-instrument>
+<ul>
+  <li><b>A into B, both at ratio 1.00, A at level 30</b>: a gentle bend of B, the round body you hear.
+  More A level makes it reedier.</li>
+  <li><b>C at ratio 14.00 into D at 1.00</b>: a modulator fourteen times the note's frequency puts a
+  cluster of high, slightly bell-like partials on D. That's the glass.</li>
+  <li><b>C's MOD slot set to <code>1 LEV</code></b>: C's level follows MOD1. At MOD1 00, C is silent
+  until something raises MOD1.</li>
+  <li><b>The sends at 00</b>: this instrument is only ever heard rendered (step 4), and a dry render makes
+  clean stabs. The stab instruments add their own space.</li>
+</ul>
+
+<h3>Two envelopes: the body and the tine</h3>
+<p><kbd>SHIFT</kbd>+<kbd>UP</kbd> from the instrument opens its mod slots.</p>
+<m8-instrument inst="0A" show="mods"></m8-instrument>
+<m8-envelope inst="0A" mod="2"></m8-envelope>
+<ul>
+  <li><b>MOD 1, AHD on VOLUME: AMT FF, ATK 00, HOLD 00, DEC 60.</b> The whole note fades over 96 ticks,
+  one bar (1.94 s at 124 BPM): it rings out.</li>
+  <li><b>MOD 2, AHD on MOD1: AMT FF, ATK 00, HOLD 00, DEC 0C.</b> It lifts MOD1 to full and lets it fall
+  to nothing in 12 ticks, an eighth (0.24 s). Through C's <code>1 LEV</code> slot, the glass is only on the
+  attack, as on a real tine.</li>
+</ul>
+
+<h3>The one change from the card: MOD1 FF to 00</h3>
+<p>The card had MOD1 at <code>FF</code>. An M8 mod adds to the value it moves (as the arp's cutoff
+envelope adds to its CUTOFF), so with MOD1 already at full, the envelope on it has nowhere to go and
+the tine never fades. At <code>00</code>, the envelope takes C from full to nothing in an eighth. The
+card is updated to match.</p>
+
+<p class="unverified">How an FM mod slot reaches an operator. The card's routing (MOD 2's DEST set to
+<code>MOD1</code>, and C's MOD slot to <code>1 LEV</code>) is the reading of the manual, which says what
+the operator slots do but not how a mod slot's DEST names them. <b>Report back:</b> what DEST choices does
+a mod slot show on an FM instrument?</p>
+
+<p class="unverified">MOD1 <code>00</code> as the base. If the tine is silent, MOD1 at 00 may be holding
+C shut: raise MOD1 a little until it speaks. <b>Report back:</b> does the tine fade in an eighth?</p>
+
+<div class="listen"><span class="label book-only">Listen for</span>Preview it with
+<kbd>EDIT</kbd>+<kbd>PLAY</kbd> in the instrument view, on a C. A bright "tink" right at the front, gone
+before you can name it, then a round, soft note that dies away over about two seconds. If you hear
+glass all the way through, the envelope isn't reaching C. Then flip ALGO to <code>0B</code> (A+B+C+D:
+every operator heard, none bending another) and back, to hear the difference FM makes.</div>
+
+<h2>Things to try</h2>
+<ul>
+  <li>C's ratio at 7.00 or 3.50: a different glass.</li>
+  <li>MOD 2's DEC at 18, a beat: a longer shimmer.</li>
+  <li>A little FB on A: a dirtier, harder body.</li>
+</ul>
+
+<p>Next: <a href="page:overpass-3">step 3, four tracks, one chord</a>.</p>
+</main>
+</body>
+</html>

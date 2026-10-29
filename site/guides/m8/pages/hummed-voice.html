@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hummed voice</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../patches/hummed-voice.json" silent="No demo sound: the sample is your own voice. The roll shows the hook as typed."></m8-player>
+
+<p class="kicker">Patch card · Sampler · voice</p>
+<h1>Hummed voice</h1>
+
+<p>One hummed "ooh" on C, recorded on the M8's mic, played as a melody: breathy, close, a little lo-fi,
+and chopped, every note starting at the front of the hum and cut hard by the next. A backward copy swells
+in; a dub copy throws single notes into the delay. Overpass's hook (<a href="page:overpass-9">step 9</a>
+has the recording step by step).</p>
+
+<h2>Record it</h2>
+<ol class="do">
+  <li>A reference tone on C (a Wavsynth SINE holding C-5 in a spare row) and headphones on.</li>
+  <li>On a free instrument: TYPE SAMPLER, <kbd>EDIT</kbd> on <b>REC.</b>, SRC <code>MIC</code>, VOL set by humming.</li>
+  <li>Start with the power button; hum one "ooh" on the C in head voice for 3 or 4 seconds, ending softly.</li>
+  <li>SELECT from the start of the hum to about 1.8 s; CROP; MONO: MIX; NORMALIZE; a short fade at the end;
+  NAME <code>VOICE C</code>; SAVE.</li>
+  <li>Tune DETUNE against the reference until C-4 and the tone sound as one.</li>
+</ol>
+
+<h2>The instrument</h2>
+<m8-instrument inst="06"></m8-instrument>
+<ul>
+  <li><b>PLAY FWD, not looping</b>: each note from the front of the hum.</li>
+  <li><b>ADSR on VOLUME</b>, ATK about 0.005 s, REL about 0.030 s by the help line: a tiny fade each way, so
+  hard cuts and OFFs don't click.</li>
+  <li><b>DEGRADE 10, CUTOFF C0</b>: lo-fi, the hiss off, the breath kept.</li>
+  <li>Copies: <b>09</b> with PLAY REV (DRY B0, REV 60), every note a swell; <b>0C</b> with DEL C0, REV 30, for
+  throws into the delay.</li>
+</ul>
+
+<h2>Play it</h2>
+<m8-roll tracks="5,6"></m8-roll>
+<m8-phrase phrase="60" compact></m8-phrase>
+<p>Typed E-4 to A-4; with a C5 hum it sounds an octave up, E5 to A5, above the stabs. The same few pitches
+over different chords: over Am9 the long C is the third, over Dm9 the opening is the ninth, eleventh and
+fifth.</p>
+
+<h2>Try</h2>
+<ul>
+  <li>A different vowel ("aah", "mm") as a second sample, swapped in on one bar.</li>
+  <li>If humming isn't for you: a Macrosynth VOWEL FOF holding a long "ooh", rendered and used the same way.</li>
+</ul>
+
+<p class="unverified">Not yet tried: where PLAY REV starts, whether A-4 plays on a mono 16-bit sample (the
+pitch limit), and how a recording stops. Does A-4 play?</p>
+</main>
+</body>
+</html>

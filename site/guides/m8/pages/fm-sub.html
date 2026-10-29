@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FM sub</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../patches/fm-sub.json" label="The Overpass bassline; the stabs draw but don't sound"></m8-player>
+
+<p class="kicker">Patch card · FM synth · bass</p>
+<h1>FM sub</h1>
+
+<p>A deep, round bass with a soft knock at the front of each note and no buzz. FM used the opposite way
+from the <a href="page:glass-keys">Glass keys</a>: a modulator at the note's own frequency, and an envelope
+on it so fast you hear it as an attack, not a tone. Overpass's bass (<a href="page:overpass-8">step 8</a>).</p>
+
+<p class="demo-note app-only">The browser plays the notes, slides and volume envelope on a plain tone; the
+FM is your M8's.</p>
+
+<m8-instrument inst="04" show="params ops"></m8-instrument>
+
+<h2>Why these values</h2>
+<ul>
+  <li><b>ALGO 07 [A&gt;B]+[C&gt;D]</b>: A bends B; C bends D. You hear B and D.</li>
+  <li><b>A at ratio 1.00, level 60, MOD slot <code>1 LEV</code></b>: a modulator at the note's own
+  frequency, so the bend stays harmonic and rubbery. Its level follows MOD1, which sits at 00.</li>
+  <li><b>C at level 00</b>: off, so D is a plain sine, the clean fundamental under the rubber.</li>
+  <li><b>CUTOFF 70</b>: the upper partials off. <b>PAN 80, DRY D0, sends 00</b>: mono, center, dry.</li>
+</ul>
+<m8-instrument inst="04" show="mods"></m8-instrument>
+<m8-envelope inst="04" mod="2"></m8-envelope>
+<ul>
+  <li><b>MOD 1, AHD on VOLUME: ATK 01, HOLD 05, DEC 06</b>: an eighth note long, one tick of attack so the
+  sine doesn't click.</li>
+  <li><b>MOD 2, AHD on MOD1: DEC 04</b>: A's level from full to nothing in 4 ticks. That burst of harmonics
+  is the knock.</li>
+</ul>
+
+<h2>Play it</h2>
+<m8-roll tracks="4,5"></m8-roll>
+<m8-phrase phrase="41" compact></m8-phrase>
+<p>Short notes, rests between them, an octave pop, and a <code>PSL 03</code> slide into each new root an
+eighth early.</p>
+
+<h2>A held version: SUB HOLD</h2>
+<p>For long notes, copy it and change MOD 1 to an <b>ADSR</b> on VOLUME (ATK about 0.01 s, REL about 0.48 s,
+SUS FF, by the help line): it holds until the next note or an OFF. Overpass's B section uses it as
+<b>0B</b>, and both carry a trig envelope that ducks them under the kick.</p>
+
+<h2>Try</h2>
+<ul>
+  <li>MOD 2's DEC at 08: a longer knock, nearer a plucked string.</li>
+  <li>A little FB on A: grit.</li>
+</ul>
+
+<p class="unverified">Not yet tried on an M8, like the Glass keys: how a mod slot's DEST reaches an
+operator's MOD slot, and MOD1 00 as the base the envelope lifts. Does the knock come and go in a few ticks?</p>
+</main>
+</body>
+</html>

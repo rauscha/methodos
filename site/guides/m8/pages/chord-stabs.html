@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chord stabs</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../patches/chord-stabs.json" silent="No demo sound: the stabs are your own renders. The roll shows the four notes each stab sounds."></m8-player>
+
+<p class="kicker">Patch card · Sampler · chord memory</p>
+<h1>Chord stabs</h1>
+
+<p>A four-note chord in one sample, played on every root: short, round, a little worn, the tine of an
+FM electric piano softened by rendering. Overpass's stabs (<a href="page:overpass-4">step 4</a> makes the
+renders, <a href="page:overpass-5">step 5</a> plays them, <a href="page:overpass-7">step 7</a> adds the
+table). The trick is the deep-house one called chord memory: the shape never changes, only its root.</p>
+
+<m8-roll tracks="4,5"></m8-roll>
+
+<h2>Two renders, built on C</h2>
+<table class="values">
+  <thead><tr><th>Instrument</th><th>Sample</th><th>On C-4 it sounds</th><th>Typed on</th></tr></thead>
+  <tbody>
+    <tr><td>05 STAB MIN9</td><td>CM9</td><td>E♭4 B♭4 D5 G5</td><td>A-3 Am9, D-4 Dm9, E-4 Em9</td></tr>
+    <tr><td>08 STAB MAJ9</td><td>CMAJ9</td><td>E4 B4 D5 G5</td><td>F-3 Fmaj9, G-3 Gmaj9</td></tr>
+  </tbody>
+</table>
+<p>Each is the <a href="page:glass-keys">Glass keys</a> FM patch on four tracks, one note each (third,
+seventh, ninth, fifth: rootless), rendered with QUICK RENDER, cropped to four beats, normalized, made mono
+and faded. Built on C, the note you type names the chord. The bass plays the roots.</p>
+
+<h2>The instrument</h2>
+<m8-instrument inst="05"></m8-instrument>
+<ul>
+  <li><b>TBL. TIC 00</b>: the table moves one row per stab (below).</li>
+  <li><b>DEGRADE 10, LOWPASS B0, RES 10</b>: worn and round, the tine softened.</li>
+  <li><b>AHD on VOLUME, HOLD 02, DEC 10</b>: 18 ticks, three-quarters of a beat: a hit and a little ring. 08
+  holds longer (HOLD 08, DEC 28, half a bar) for fewer, longer stabs.</li>
+  <li><b>AHD on CUTOFF, AMT 18, DEC 0C</b>: a small brightening that closes in an eighth.</li>
+  <li><b>MFX 18</b>: width for a mono sample. <b>REV 38</b> (50 on 08).</li>
+</ul>
+
+<h2>A table that counts</h2>
+<m8-table table="05"></m8-table>
+<p>At TIC 00 each stab moves the table on a row: firm, lazy (softer, darker, a few cents flat), reach (in
+between, a touch sharp), and back. Three against five stabs every two bars lines up only every six bars.
+Row 0 needs no commands: a note with an instrument number resets the instrument.</p>
+
+<h2>Play it</h2>
+<m8-phrase phrase="50" compact></m8-phrase>
+<p>Stabs on the "a" of 1, the "and" of 2 and the "and" of 4, between the kicks: the 2-step grid.</p>
+
+<h2>Try</h2>
+<ul>
+  <li>Render a third shape, and keep three chords in three instruments.</li>
+  <li>DEC 30 on MOD 1: longer stabs that ring into each other.</li>
+</ul>
+
+<p class="unverified">Not yet tried: that C-4 plays a sample at its own pitch, the Sampler's cutoff and
+fine-pitch commands in the table, and a HOP sharing a row. Does A-3 on 05 sound Am9 in tune against the
+bass?</p>
+</main>
+</body>
+</html>

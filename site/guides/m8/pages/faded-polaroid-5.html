@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Faded Polaroid 5: the drums</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../songs/faded-polaroid.json" step="5" label="Your loop with the bass figure; the drums draw but don't sound"></m8-player>
+
+<p class="kicker">Faded Polaroid · step 5 of 10</p>
+<h1>The drums</h1>
+
+<p>A soft, dusty beat from three factory samples, as if taped off the radio. Low Tide's drums were
+Macrosynth models; these are the Sampler. Kick and snare share track 5, the hats get track 6, and
+a light swing touches those two tracks only. The bass grows a small figure to go with the kick.</p>
+
+<p class="demo-note app-only">The demo plays no drums: a browser tone would only misrepresent a
+sample. Their phrases still light up as the song plays.</p>
+
+<h2>Three samples</h2>
+<ol class="do">
+  <li>Instrument <code>05</code>: TYPE <b>SAMPLER</b>. <kbd>EDIT</kbd> on <b>LOAD</b>, to the right of
+  SAMPLE, opens the file browser; <kbd>PLAY</kbd> previews, <kbd>EDIT</kbd> loads. Find a soft, round
+  kick with no click in the factory samples.</li>
+  <li>Once one is loaded, <kbd>EDIT</kbd>+<kbd>LEFT</kbd>/<kbd>RIGHT</kbd> on its name steps through
+  the other files in its folder: the quick way to audition.</li>
+  <li>The same for <code>06</code> (a brushed rim, or a muffled clap) and <code>07</code> (a closed hat
+  or a shaker). Any will do: the settings below dull them all.</li>
+</ol>
+
+<table class="values">
+  <thead><tr><th>Setting</th><th>05 KICK</th><th>06 SNARE</th><th>07 HAT</th></tr></thead>
+  <tbody>
+    <tr><td>TRANSP.</td><td>OFF</td><td>OFF</td><td>OFF</td></tr>
+    <tr><td>DEGRADE</td><td>18</td><td>18</td><td>20</td></tr>
+    <tr><td>CUTOFF (LOWPASS)</td><td>90</td><td>A0</td><td>80</td></tr>
+    <tr><td>PAN</td><td>80</td><td>80</td><td>90</td></tr>
+    <tr><td>DRY</td><td>C0</td><td>B0</td><td>90</td></tr>
+    <tr><td>REV</td><td>08</td><td>28</td><td>10</td></tr>
+    <tr><td>MOD 1 AHD, HOLD</td><td>04</td><td>03</td><td>00</td></tr>
+    <tr><td>MOD 1 AHD, DEC</td><td>08</td><td>0C</td><td>06</td></tr>
+  </tbody>
+</table>
+<ul>
+  <li><b>TRANSP. OFF</b>: the manual's advice for percussion. No transpose can ever move a drum.</li>
+  <li><b>DEGRADE</b> is the grit; a little more on the hat, where it reads as dust. Any DEGRADE above 00
+  also turns off interpolation (manual).</li>
+  <li><b>LOWPASS</b> on all three: dusty means the top is gone.</li>
+  <li><b>MOD 1 on each is an AHD on VOLUME</b>, AMT FF, ATK 00. The envelopes, in ticks, keep each hit short whatever the sample's own tail: the kick
+  12 ticks (an eighth), the snare 15, the hat 6 (one row: closed).</li>
+  <li>Everything else stays at the Sampler's defaults: SLICE 00, PLAY FWD, START 00, LEN FF,
+  DETUNE 80, RES 00, AMP 00, LIM CLIP, MFX and DEL 00.</li>
+</ul>
+<m8-instrument inst="05"></m8-instrument>
+
+<h2>The beat</h2>
+<table class="values">
+  <thead><tr><th>Part</th><th>Rows</th><th>Count</th></tr></thead>
+  <tbody>
+    <tr><td>Kick (05)</td><td>0, A</td><td>1, and the "and" of 3</td></tr>
+    <tr><td>Snare (06)</td><td>4, C</td><td>2 and 4</td></tr>
+    <tr><td>Fill (06)</td><td>D, E, F</td><td>three near-whispers rising into the next bar, every fourth bar</td></tr>
+    <tr><td>Hat (07)</td><td>even rows, ghosts on 3 and B</td><td>eighths, the off-beats softer</td></tr>
+  </tbody>
+</table>
+<ol class="do">
+  <li>Song view, track 5, row 00: chain <code>05</code>, phrase <code>50</code> on all eight rows. Track 6:
+  chain <code>06</code>, phrase <code>60</code> eight times.</li>
+  <li>Phrase 50: every note is <code>C-4</code>. Instrument 05 is the kick, 06 the snare.</li>
+  <li><code>GRV 01</code> in FX1 on row 0 of phrase 50 and phrase 60 (the groove, below).</li>
+  <li>On the fill rows D, E and F: <code>NTH 40</code> in FX1 (next section).</li>
+</ol>
+<m8-phrase phrase="50"></m8-phrase>
+<m8-phrase phrase="60"></m8-phrase>
+
+<h2>A fill every fourth bar: NTH</h2>
+<p><code>NTH</code> is a conditional trigger: it skips what's to its left (the note) or right (the
+other FX), depending on how many times the phrase has looped (manual). Written here as
+<code>NTH 40</code>, "the note plays on every fourth pass", so the same one-bar phrase plays the plain
+beat three times and the fill on the fourth. The manual leaves the counting to the help line.</p>
+<p class="unverified">How NTH counts. <code>40</code> is written for "the note plays every fourth
+pass". When you enter it, read the help line; if it says the note is <i>skipped</i> every fourth time,
+try <code>NTH 04</code>. Failing that, the fallback is phrase 51, the fill written out without NTH,
+with chain 05 as <code>50 50 50 51 50 50 50 51</code>. <b>Report back:</b> what does the help line say
+for <code>NTH 40</code>?</p>
+<m8-phrase phrase="51" compact></m8-phrase>
+
+<h2>The swing: groove 01, two tracks only</h2>
+<ol class="do">
+  <li>From any phrase, <kbd>SHIFT</kbd>+<kbd>UP</kbd> opens the Groove view. <kbd>OPTION</kbd>+<kbd>RIGHT</kbd>
+  moves to groove 01, so 00 stays straight for everything else.</li>
+  <li>On row 0, <kbd>EDIT</kbd>+<kbd>UP</kbd>/<kbd>DOWN</kbd> changes rows 0 and 1 together, until they
+  read <code>07</code> and <code>05</code>. Rows 2 to F stay <code>--</code>, so the pair repeats.</li>
+  <li>The <code>GRV 01</code> on row 0 of phrases 50 and 60 puts tracks 5 and 6 on it. A GRV holds
+  until another one.</li>
+</ol>
+<figure class="m8-screen" aria-label="Groove 01">
+  <figcaption><span class="m8-title">GROOVE 01</span><span class="m8-note">the manual's common swing setting</span></figcaption>
+  <table class="m8-grid"><tbody>
+    <tr class="m8-row-new"><th scope="row">0</th><td class="m8-is-new">07</td><td class="m8-newcol"><span class="m8-new">new</span></td></tr>
+    <tr class="m8-row-new"><th scope="row">1</th><td class="m8-is-new">05</td><td></td></tr>
+    <tr><th scope="row">2</th><td class="m8-dim">--</td><td></td></tr>
+    <tr><th scope="row">…</th><td class="m8-dim">--</td><td></td></tr>
+  </tbody></table>
+</figure>
+<p>7 + 5 = 12, the same as 6 + 6, so a bar still lasts a bar. The hats' two ghosts on rows 3 and B
+land a tick late; that's the lilt. Since 6.5 the groove view also shows the swing as a percentage.
+If 07/05 sounds too lilting, set the groove to 48 PPQN and use <code>0D 0B</code>, about 54%.</p>
+
+<h2>The bass grows a figure</h2>
+<p>With the kick on the "and" of 3, the bass gets a quiet octave there, and a soft step into the next
+root on the last eighth. The next root scoops in from it with <code>PSL 02</code>. Chain 21 replaces
+chain 02 on track 2.</p>
+<table class="values">
+  <thead><tr><th>Phrase</th><th>Row 0, with PSL 02</th><th>Row A, V 24</th><th>Row E, V 30</th></tr></thead>
+  <tbody>
+    <tr><td>24</td><td>D-2</td><td>D-3</td><td>B-1, steps down to A</td></tr>
+    <tr><td>25</td><td>A-1</td><td>A-2</td><td>C#2, steps down to B</td></tr>
+    <tr><td>26</td><td>B-1</td><td>B-2</td><td>A-1, steps down to G</td></tr>
+    <tr><td>27</td><td>G-1</td><td>G-2</td><td>E-2, steps down to D</td></tr>
+  </tbody>
+</table>
+<p>Row 0 is V <code>70</code>. Staff, bar 1: D2 for a half and an eighth, D3 a quarter, B1 an eighth.
+The B1 and the E2 in bar 4 are passing notes, the sixth of their chord, there for one quiet eighth.</p>
+<m8-chain chain="21" compact></m8-chain>
+<m8-phrase phrase="24" compact></m8-phrase>
+<p><code>PSL</code> glides into its note from the one before over a number of ticks; <code>02</code> is a
+quick scoop. Since 6.6.3 a note with an instrument number resets PSL (changelog), so it doesn't leak into
+the rest of the bar.</p>
+
+<div class="listen"><span class="label book-only">Listen for</span>The beat should feel more than
+hear itself: a pillow of a kick, a snare like a brush, the hats barely there. Every fourth bar three
+whispers rise into the next downbeat. The arp doesn't swing; only the hats' ghosts do.</div>
+
+<h2>Things to try</h2>
+<ul>
+  <li>DEGRADE 30 on the snare for a cheaper radio.</li>
+  <li><code>08 04</code> in groove 01: heavier, a shuffle.</li>
+</ul>
+
+<p>Next: <a href="page:faded-polaroid-6">step 6, the lead</a>.</p>
+</main>
+</body>
+</html>

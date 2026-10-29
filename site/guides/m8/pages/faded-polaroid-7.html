@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Faded Polaroid 7: the lead's table</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../songs/faded-polaroid.json" step="7" label="The hook varied, with its tables"></m8-player>
+
+<p class="kicker">Faded Polaroid · step 7 of 10</p>
+<h1>The lead's table</h1>
+
+<p>A real flute player doesn't hold a note still. The note starts with a little scoop up into
+pitch, and if it's held, a vibrato blooms after a while. Short notes stay plain. One table does all
+of that for every note the lead plays, running on its own clock inside each note. The
+<a href="page:tables">Tables</a> page used a table as an arp; this one is movement inside a note.</p>
+
+<div class="listen"><span class="label book-only">Listen for</span>On the long notes: a tiny lift into
+pitch right at the start, then stillness, then, about a beat in, a slow vibrato that keeps going
+until the note ends. On the eighth notes, nothing: they're over before the vibrato arrives. If the
+vibrato sounds like a wobble on a stretched tape, it's too wide.</div>
+
+<h2>The clock: TBL. TIC 03</h2>
+<p>A table's rows run at the instrument's <b>TBL. TIC</b>, in ticks per row, for as long as the note
+plays. Instrument 04 is set to <code>03</code> (step 6): three ticks a row. A sixteenth is six ticks
+and a beat 24, so:</p>
+<table class="values">
+  <thead><tr><th>Rows</th><th>Ticks into the note</th><th>What happens</th></tr></thead>
+  <tbody>
+    <tr><td>0–2</td><td>0–6</td><td>the scoop up into pitch: over in a sixteenth</td></tr>
+    <tr><td>3–7</td><td>9–21</td><td>nothing: the wait. An eighth note (12 ticks) ends here, plain</td></tr>
+    <tr><td>8–9</td><td>24–27</td><td>a beat in: the vibrato starts, then widens</td></tr>
+    <tr><td>A</td><td>30</td><td><code>HOP 09</code>: back to row 9 for as long as the note lasts</td></tr>
+  </tbody>
+</table>
+
+<h2>Table 04, the lead's own</h2>
+<p>From instrument 04, <kbd>SHIFT</kbd>+<kbd>RIGHT</kbd> opens its table. Enter the rows below;
+<kbd>EDIT</kbd>+<kbd>UP</kbd> on an FX cell opens the FX help list.</p>
+<m8-table table="04"></m8-table>
+<ul>
+  <li><b>N 00</b> on rows 0–2: no transpose. <b>V</b> 50, 68, 7F: V multiplies the phrase's velocity,
+  so the note starts at about two-thirds and swells to full in a sixteenth. That's the breath.</li>
+  <li><b><code>FIN</code></b> fine-tunes the note, across −1 to +1 semitone (manual), so one step is
+  about 1/128 of a semitone. On a Macrosynth it's <b>relative</b> (changelog: "FM, Macro, and Wavsynth
+  had relative FIN command wrap back to -1"), so the rows add up: <code>F0</code> is −16, about 12 cents
+  flat, then <code>08</code> and <code>08</code> bring it back. The note lands on pitch. A note with an
+  instrument number resets it, so every note starts from zero.</li>
+  <li><b><code>PVB XY</code></b> is vibrato: speed X, depth Y (manual). <code>52</code> starts it narrow,
+  <code>54</code> is its full width. The manual gives no scale for either; set them by ear toward about
+  five wobbles a second, never wider than a quarter tone.</li>
+  <li><b><code>HOP 09</code></b> in a table jumps to row 9, "X number of times" (manual); X = 0 jumps for
+  good, so the table idles on the vibrato.</li>
+</ul>
+
+<p class="unverified">PVB in a table, and the HOP re-reading it. The manual says a table's FX columns
+are "identical" to a phrase's, but "some commands have a different behavior". If the vibrato restarts
+in pulses every two rows, move the HOP to row B as <code>HOP 0A</code>, so the table idles on empty rows
+after row 9. If PVB does nothing in a table, write <code>PVB 54</code> into the phrases instead, on an
+empty row about a beat after each long note. <b>Report back:</b> on a long note, is the vibrato smooth,
+or does it restart in pulses?</p>
+
+<p class="unverified">PVB's speed and depth scale. <code>52</code> and <code>54</code> are a starting
+point, not tried. <b>Report back:</b> what do 52 and 54 sound like: too fast, too wide?</p>
+
+<h2>Table 81: the second telling</h2>
+<p>When the hook comes back (A4, the fifth song row) it's told again with more feeling: a deeper scoop
+and a wider vibrato, from a second table chosen with <code>TBL</code>. TBL sets the table for the
+instrument from a phrase. 81 is any free table; the Tables page already uses 80.</p>
+<m8-table table="81"></m8-table>
+<ol class="do">
+  <li>In phrase 45, row 8, put the cursor on FX2 and pick <b>TBL</b>. <kbd>EDIT</kbd> twice on its value
+  gives the next unused table. If it offers a number other than 81, use that number everywhere below.</li>
+  <li>Open it and type the rows: as table 04, with <code>48</code> and <code>FIN E8</code> on row 0 (about 19
+  cents flat), <code>FIN 0C</code> on rows 1 and 2, <code>PVB 54</code> and <code>PVB 57</code> on rows 8 and 9.</li>
+</ol>
+
+<h2>The hook, varied</h2>
+<p>Same harmony, more ornament: the second time a memory is told. Chain 42 replaces chain 04 in row 00
+for now; the arrangement in step 10 uses both.</p>
+<table class="values">
+  <thead><tr><th>Bar</th><th>Phrase</th><th>What's new</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>45</td><td>an F♯5 pickup on the "and" of 1; a slower slide into E6, <code>PSL 06</code>, and <code>TBL 81</code></td></tr>
+    <tr><td>2</td><td>46</td><td>a sixteenth turn, C♯6 D6 B5; a small fall into B5, <code>PSL 02</code></td></tr>
+    <tr><td>3</td><td>47</td><td>an A5 pickup; <code>PSL 06</code> into D6</td></tr>
+    <tr><td>4</td><td>48</td><td>a small fall into A5, <code>PSL 03</code></td></tr>
+  </tbody>
+</table>
+<p>Staff, bar 1: an eighth rest, F♯5, A5, D6 eighths, E6 half tied over. Bar 2: E6 quarter (the
+tie), C♯6 and D6 sixteenths, B5 for two and a half beats.</p>
+<ol class="do">
+  <li>Clone 40 to 43 into 45 to 48 (<kbd>SHIFT</kbd>+<kbd>OPTION</kbd> then <kbd>EDIT</kbd> on each number
+  in a chain), then add the notes and commands below.</li>
+  <li>Chain 42: <code>45 46 47 48 45 46 47 44</code>. Bar 8 is the same second ending as before.</li>
+  <li>Song view, row 00, track 4: chain <code>42</code>.</li>
+</ol>
+<m8-chain chain="42" compact></m8-chain>
+<m8-phrase phrase="45" compact></m8-phrase>
+<m8-phrase phrase="46" compact></m8-phrase>
+<m8-phrase phrase="47" compact></m8-phrase>
+<m8-phrase phrase="48" compact></m8-phrase>
+
+<p>Every long note carries <code>TBL 81</code>, and the breakdown's first note (step 10) carries
+<code>TBL 04</code> to come back. Written that way, it works whether TBL lasts until the next note or
+until the next TBL (the Tables page asks which).</p>
+
+<p class="demo-note app-only">The demo runs both tables' V column (the breath) at TBL. TIC 03. FIN and
+PVB are your M8's.</p>
+
+<h2>Things to try</h2>
+<ul>
+  <li>HOP 09 moved to row 6: the vibrato arrives after an eighth, and every note wobbles.</li>
+  <li>TBL. TIC 02: everything a third sooner.</li>
+  <li>Drop rows 0–2 from table 81: a vibrato with no scoop, more like a singer.</li>
+</ul>
+
+<p>Next: <a href="page:faded-polaroid-8">step 8, the B section</a>.</p>
+</main>
+</body>
+</html>

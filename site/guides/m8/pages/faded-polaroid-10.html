@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Faded Polaroid 10: arrange and mix</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../songs/faded-polaroid.json" step="10" label="The whole song, nine song rows"></m8-player>
+
+<p class="kicker">Faded Polaroid · step 10 of 10</p>
+<h1>Arrange and mix</h1>
+
+<p>Everything exists; now it becomes a song. Nine rows of eight bars: the memory alone, your loop,
+the beat, the hook, the fade, the hook again, a breakdown at the memory's speed, the hook's last
+time, and an outro that rewinds and freezes. Then the mix: one room, a shimmer on the lead's tail,
+and a limiter.</p>
+
+<m8-song></m8-song>
+
+<table class="values">
+  <thead><tr><th>Row</th><th>Section</th><th>What happens</th></tr></thead>
+  <tbody>
+    <tr><td>00</td><td>Intro</td><td>The memory alone, half speed. <code>XRZ 00</code> on track 8 thaws the freeze from the end.</td></tr>
+    <tr><td>01</td><td>A1</td><td>Your loop: arp, roots, chords.</td></tr>
+    <tr><td>02</td><td>A2</td><td>The beat and the bass figure.</td></tr>
+    <tr><td>03</td><td>A3</td><td>The hook; the arp steps back under it.</td></tr>
+    <tr><td>04</td><td>B</td><td>The fade: two bars a chord, the borrowed Gm9, the counter-line.</td></tr>
+    <tr><td>05</td><td>A4</td><td>The hook varied, with table 81.</td></tr>
+    <tr><td>06</td><td>Breakdown</td><td>The memory, quieter, under your loop slowed to match it; the hook's reach, once.</td></tr>
+    <tr><td>07</td><td>A5</td><td>The hook's last time, reaching E6 at the very end.</td></tr>
+    <tr><td>08</td><td>Outro</td><td>D6 over Dmaj9; the memory backward; the reverb freezes.</td></tr>
+  </tbody>
+</table>
+
+<div class="listen"><span class="label book-only">Listen for</span><span class="app-only">Press Play
+and let it run; the strip reads the song row. </span><span class="book-only">Play from row 00 and let
+it run. </span>The lead's last two notes: E6 held at the end of row 07, then D6 on the outro's first
+beat. It's the only time the hook lands on a root, and the song has been waiting for it.</div>
+
+<h2>The silence chain: FE in every gap</h2>
+<p>On the M8 an empty song cell (<code>--</code>) doesn't mean silence: the track "will loop back to the
+beginning of its list of chains" (manual), out of step with the others. So every gap in the song above
+holds chain <code>FE</code>, which you made in step 9: an OFF, then seven empty bars. The parts sheet
+draws those cells empty; FE is how the M8 keeps them quiet. Nothing is left ringing into one anyway:
+the drums and bass decay on their own, and the lead and chords end with OFFs in their own chains.</p>
+<m8-chain chain="FE" compact></m8-chain>
+
+<h2>Lay it out</h2>
+<ol class="do">
+  <li>Your workbench rows 00 to 02 become the intro and A rows. First copy row 00 (your full loop) to
+  rows 03, 05 and 07: on row 00, track 1, <kbd>SHIFT</kbd>+<kbd>OPTION</kbd>, move right to track 6,
+  <kbd>OPTION</kbd> copies; on the target row, track 1, <kbd>SHIFT</kbd>+<kbd>EDIT</kbd> pastes. Row 01
+  (the B section) moves to row 04 the same way.</li>
+  <li>Then fill every cell from the song screen above, row by row. Cells that read FE are the silence
+  chain.</li>
+  <li>Make the new chains below by cloning (<kbd>SHIFT</kbd>+<kbd>OPTION</kbd> then <kbd>EDIT</kbd> on a
+  chain number copies it to a new one) and changing their rows.</li>
+</ol>
+
+<h3>The arp steps back: chain 11</h3>
+<p>Under the hook (rows 03, 05, 07), your arp keeps its notes and register but drops back: velocity
+<code>3C</code> on the beat and <code>2C</code> off it, and <code>CHA 8F</code> on rows 6 and E, which gives
+those notes a little over half a chance and always runs the FX. Phrases 14 to 17 are 10 to 13 with
+those changes. Not another octave: down, it muddies the chords; up, it runs into the lead.</p>
+<m8-chain chain="11" compact></m8-chain>
+<m8-phrase phrase="14" compact></m8-phrase>
+
+<h3>The breakdown: everything at the memory's speed</h3>
+<p>Row 06 plays the memory (instrument 09 at V <code>40</code>, chain 71) under your loop. At half speed
+the memory changes chord every two bars, so the live parts slow down to match: the arp plays each of
+your bars twice (chain 13) and the chords strike every other bar (chain 32). Otherwise bar 3 would put
+a live Bm9 over a remembered Aadd9. No bass, no drums.</p>
+<m8-chain chain="13" compact></m8-chain>
+<m8-chain chain="32" compact></m8-chain>
+<p>The lead plays only the reach, once (chain 43): it starts in bar 2, straddling the slowed D-to-A
+change, and leaves B5 hanging. Its first note carries <code>TBL 04</code>, back to the lead's own
+table after table 81 in row 05.</p>
+<m8-chain chain="43" compact></m8-chain>
+<m8-phrase phrase="4D" compact></m8-phrase>
+
+<h3>The resolution: chains 44 and 45</h3>
+<p>Row 07 is the hook as in row 03, except its last bar (phrase 49): B5, A5, then up to E6 on beat 3,
+held. Over Gmaj9 that E is the thirteenth, the one note of the hook outside its chord. The outro's
+first downbeat steps it down to D6 (chain 45, phrase 4E), over Dmaj9 and a D2 bass (chain 25): the
+root, the first and only time.</p>
+<m8-phrase phrase="49" compact></m8-phrase>
+<m8-chain chain="45" compact></m8-chain>
+
+<h3>The outro: rewinding, then a still picture</h3>
+<ul>
+  <li><b>Chords, chain 33:</b> Dmaj9 struck in bar 1 and again, softer, in bar 3 (phrase 3D, V
+  <code>40</code>), then an OFF in bar 5 (phrase 3E). The two-bar AHD has faded by then; the OFF is a
+  safety.</li>
+  <li><b>The memory backward, chain 72:</b> instrument 0A on C-3. Played backward, your progression runs
+  in reverse, two bars a chord: Gmaj9, Bm9, Aadd9, Dmaj9.</li>
+  <li><b>The freeze, chain 81 on track 8:</b> <code>XRZ FF</code> on row 8 of the last bar. XRZ freezes
+  the reverb with any value above <code>00</code> (manual). At that moment the backward memory is swelling
+  into its last chord, Dmaj9, so the freeze holds it as a still picture after the sample cuts off.</li>
+  <li><b>The thaw, chain 80 on track 8, row 00:</b> <code>XRZ 00</code> on row 0. When the song loops back,
+  the frozen chord melts into the intro, which starts on the same D: the song becomes a circle. Stop
+  playback during the freeze to end on the still picture instead.</li>
+</ul>
+<m8-chain chain="33" compact></m8-chain>
+<m8-phrase phrase="81" compact></m8-phrase>
+
+<p class="unverified">The freeze and the thaw. The manual says how to turn XRZ on and off, not
+whether sound arriving at a frozen reverb is added or ignored, or how cleanly the thaw lets go. If the
+thaw is rough, stop playback on the freeze instead. <b>Report back:</b> when the song loops, does the
+freeze let go cleanly at the downbeat?</p>
+
+<h2>The mix</h2>
+<p>The send effects are one per song; each instrument's MFX, DEL and REV decide how much reaches them.
+From the Mixer view, <kbd>SHIFT</kbd>+<kbd>DOWN</kbd> opens the effect settings. These are starting points
+by ear: the manual names the parameters but gives no scales.</p>
+<m8-mix show="reverb"></m8-mix>
+<ul>
+  <li><b>SIZE E0, DECAY C0</b>: a big, soft room, long enough that the lead's held notes leave a trace.</li>
+  <li><b>SHIMMER 30</b>: a pitched-up feedback in the tail (6.2+). The lead sends the most (REV 70), so
+  most of the shimmer is its tail. Keep it low enough that the chords don't sparkle.</li>
+  <li><b>MOD DEPTH 40, MOD FREQ 30</b>: the tail drifts slowly, like the tape. <b>INPUT EQ</b>: cut the
+  lows going in, so the bass and the chords' low notes stay out of the tail.</li>
+</ul>
+<m8-mix show="delay modfx"></m8-mix>
+<ul>
+  <li><b>Delay TIME 0C</b>: a dotted eighth (three rows), as in Low Tide, so the arp's and lead's echoes
+  land between their notes. <b>FEEDBACK 60</b>: two or three repeats.</li>
+  <li><b>ModFX CHORUS</b>: the tape's flutter, mostly on the chords (MFX 30).</li>
+</ul>
+<p class="unverified">That delay TIME <code>0C</code> is a dotted eighth. The manual: "first digit is in
+beats, second digit is in fractions of a beat". If the second digit counts sixteenths of a beat, 0C is
+3/4 of a beat; otherwise set it by ear. <b>Report back:</b> what does the help line say for
+<code>0C</code>?</p>
+
+<h3>Two EQs</h3>
+<p>In an instrument, set EQ to a slot number, then <kbd>EDIT</kbd> on it (or <kbd>SHIFT</kbd>+<kbd>RIGHT</kbd>)
+opens the EQ editor. Set FREQ by watching the help line (whether the screen shows Hz or hex is Low Tide
+step 10's question).</p>
+<m8-mix show="eq"></m8-mix>
+<ul>
+  <li><b>EQ 04, on the lead</b>: a low cut at about 350 Hz. The lead's lowest note is F♯5 (740 Hz); this
+  only takes breath noise and rumble, and keeps them out of the reverb.</li>
+  <li><b>EQ 09, on the memory (09 and 0A)</b>: a low cut at about 150 Hz. At half speed the chords reach
+  down to A2; the cut keeps the intro and breakdown clear of the live bass.</li>
+</ul>
+
+<h3>Balance and the limiter</h3>
+<m8-mix show="mixer"></m8-mix>
+<ol class="do">
+  <li>Leave the eight track volumes and the MX, DE and RE returns where they are, and balance with each
+  instrument's <b>DRY</b>, so its sends stay put.</li>
+  <li>DJF <code>80</code> (off), OTT <code>00</code>.</li>
+  <li><b>LIM</b>: raise it from 00 until the limiter's line on the MIX meter moves only on the loudest rows
+  (A2, A3 and A5). About <code>20</code> is a place to start.</li>
+</ol>
+
+<h2>When you're home</h2>
+<p>Project view, <b>RENDER</b>: <b>MIXED</b> writes one stereo file, <b>STEMS</b> one per track. SONG ROW
+START 00, LAST 08. Leave REVERB, DELAY and LIMITER on.</p>
+
+<p>That's Faded Polaroid, your song, finished. Its new instruments are on the cards
+<a href="page:polaroid-lead">Polaroid lead</a> and <a href="page:faded-memory">The memory</a>. Next song:
+<a href="page:overpass-1">Overpass</a>.</p>
+</main>
+</body>
+</html>

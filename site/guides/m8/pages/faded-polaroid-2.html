@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Faded Polaroid 2: the chords</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../songs/faded-polaroid.json" step="2" label="Your chords, alone"></m8-player>
+
+<p class="kicker">Faded Polaroid · step 2 of 10</p>
+<h1>The chords</h1>
+
+<p>Your chords first, since everything else is written against them. One Macrosynth instrument
+plays all four, one note a bar, and a command beside each note picks the chord's shape. This step
+is mostly about that command, <code>COL</code>, and why it's written the way it is.</p>
+
+<m8-roll tracks="3"></m8-roll>
+<m8-progression list></m8-progression>
+
+<div class="listen"><span class="label book-only">Listen for</span>Each chord swells in softly, holds,
+and is still fading when the next one arrives. The top note steps E, B, C♯, A: four ninths. The
+chords should sound slightly smeared and glassy, not clean like a piano.</div>
+
+<h2>Instrument 10: one Macrosynth, four voices</h2>
+<p>This is your instrument 10 from the session, as your photo of it shows, with COLOR at 80.</p>
+<m8-instrument inst="10" show="params"></m8-instrument>
+<ul>
+  <li><b>SHAPE 28 WAV PARAPHONIC</b>: a four-voice wavetable model. <b>TIMBRE</b> morphs through 16
+  waves; <b>COLOR</b> picks the chord the four voices play, from a set list of chords (manual,
+  Macrosynth models). At COLOR 00 all four play the same note, detuned.</li>
+  <li><b>COLOR 80</b>: the base the <code>COL</code> commands add to. See below.</li>
+  <li><b>CUTOFF 90, RES 40</b>: the top softened, not gone; a little resonance gives the smear a
+  voice.</li>
+  <li><b>MFX 30</b>: the chorus is the width that makes these chords the song's pad. REV stays
+  low (10): the lead's tail will fill the room later.</li>
+  <li>The three rows under the name, <b>TRANSP. ON</b>, <b>TBL. TIC 01</b>, <b>EQ --</b>, are the
+  defaults your photo shows.</li>
+</ul>
+
+<h3>The envelope: two bars at any tempo</h3>
+<m8-instrument inst="10" show="mods"></m8-instrument>
+<m8-envelope inst="10" mod="1"></m8-envelope>
+<p>An AHD on VOLUME, in ticks: ATK 02 (two ticks, a soft start), HOLD 60 and DEC 60. 60 is 96
+ticks, one bar, so each chord holds full for a bar and fades over the next. Because AHD counts
+ticks, that stays two bars at any tempo. In the A section the next chord arrives as the fade
+begins; in the B section (step 8) one strike carries a chord's two bars.</p>
+
+<h2>Relative commands: COL</h2>
+<p>Each bar is one note on row 0, instrument <code>10</code>, with <code>COL</code> in FX1. COL is
+the command for COLOR, and it's <b>relative</b>: it adds to whatever COLOR is.</p>
+<ul>
+  <li>The manual's rule (Relative and Absolute FX Commands): values <code>01</code>–<code>7F</code>
+  add, values <code>80</code>–<code>FF</code> subtract, counting down from <code>FF</code> = −1.</li>
+  <li>A note with an instrument number in the I column resets every parameter to the instrument's
+  own value. So every chord starts again from COLOR 80, and its COL is "80 plus this".</li>
+  <li>You tested it: COLOR 80 with <code>COL B4</code> sounds the same as COLOR 34.
+  <code>B4</code> subtracts 4C, and 80 − 4C = 34.</li>
+</ul>
+<p>An <b>absolute</b> command would set the value outright, whatever the instrument holds. With a
+relative one, a base of 80 in the middle of the range lets you reach any COLOR in one step either
+way.</p>
+
+<table class="values">
+  <thead><tr><th>Bar</th><th>Note, COL</th><th>COLOR lands on</th><th>Sounds</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td><code>F#4</code>, <code>B4</code></td><td>34, minor 7</td><td>F♯4 A4 C♯5 E5: Dmaj9 over D</td></tr>
+    <tr><td>2</td><td><code>A-3</code>, <code>24</code></td><td>A4, major add 9</td><td>A3 C♯4 E4 B4: Aadd9 over A</td></tr>
+    <tr><td>3</td><td><code>D-4</code>, <code>44</code></td><td>C4, major 7</td><td>D4 F♯4 A4 C♯5: Bm9 over B</td></tr>
+    <tr><td>4</td><td><code>B-3</code>, <code>B4</code></td><td>34, minor 7</td><td>B3 D4 F♯4 A4: Gmaj9 over G</td></tr>
+  </tbody>
+</table>
+<p>COLOR picks one of 16 shapes by its first hex digit. Inside each region the shape morphs toward
+the next, and you found <code>x0</code>–<code>x4</code> clean and <code>x8</code> "gnarly". All
+four values land on x4.</p>
+
+<p class="unverified">The shape names for <code>A4</code> and <code>C4</code> come from the Braids
+source and the chat, not your ears; only 34 is tested. If one doesn't sound as named, try the
+neighboring regions' x4 values by ear. <b>Report back:</b> does bar 3 (COLOR landing on C4) sound
+like a major 7?</p>
+
+<h2>Enter it</h2>
+<ol class="do">
+  <li>Song view, track 3, row 00: chain <code>03</code>.</li>
+  <li>In chain 03, rows 0 to 7: phrases <code>30 31 32 33 30 31 32 33</code>. The four bars twice
+  make one eight-bar song row.</li>
+  <li>In each phrase, row 0: the note, V <code>60</code>, I <code>10</code>, and in FX1 the
+  <code>COL</code> from the table. <kbd>EDIT</kbd>+<kbd>UP</kbd> on FX1 opens the FX help list.</li>
+  <li>Instrument 10: set COLOR to <code>80</code> if it isn't, and check the rest against the
+  screen above.</li>
+</ol>
+<m8-chain chain="03" compact></m8-chain>
+<m8-phrase phrase="30,31,32,33"></m8-phrase>
+
+<p class="demo-note app-only">The demo draws and plays the four notes each shape names, on a plain
+tone. Your M8's wavetable voices will sound nothing like it; the notes are what to check.</p>
+
+<h2>Things to try</h2>
+<ul>
+  <li>An x8 value on bar 4 only (<code>COL B8</code>): a smeared turnaround.</li>
+  <li>TIMBRE up or down a little: the same chords on a different wave.</li>
+  <li>DEC 30 instead of 60: each chord gone before the next, so the bars separate.</li>
+</ul>
+
+<p>The patch is the <a href="page:polaroid-chords">Polaroid chords</a> card.
+Next: <a href="page:faded-polaroid-3">step 3, the bass</a>.</p>
+</main>
+</body>
+</html>

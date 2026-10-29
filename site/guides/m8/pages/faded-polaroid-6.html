@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Faded Polaroid 6: the lead</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../songs/faded-polaroid.json" step="6" label="The hook over your loop"></m8-player>
+
+<p class="kicker">Faded Polaroid · step 6 of 10</p>
+<h1>The lead</h1>
+
+<p>The song's hook: a breathy flute-like line, high above everything, that keeps reaching up and
+settling one step short of home. It's the first melody in this guide, so this step is about
+writing one: what the notes do against the chords, and how a few FX commands shape the
+phrasing. The voice is the <a href="page:polaroid-lead">Polaroid lead</a> card.</p>
+
+<m8-roll tracks="3,4"></m8-roll>
+
+<div class="listen"><span class="label book-only">Listen for</span>Two halves with the same rhythm: a
+beat of silence, two eighths reaching up, a long note that slides in. Each half comes to rest on
+the "and" of 2 of its second bar, a small sigh, and neither lands on a root. In bar 8 the line
+climbs instead of settling.</div>
+
+<h2>The hook, as a staff</h2>
+<p>Four bars, played twice; the eighth bar is a second ending. A quarter note is a beat, a phrase
+row a sixteenth.</p>
+<table class="values">
+  <thead><tr><th>Bar</th><th>Chord</th><th>Phrase</th><th>Notes</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>Dmaj9</td><td>40</td><td>quarter rest, A5 eighth, D6 eighth, E6 half, tied into bar 2</td></tr>
+    <tr><td>2</td><td>Aadd9</td><td>41</td><td>E6 quarter (the tie), C♯6 eighth, B5 for two and a half beats</td></tr>
+    <tr><td>3</td><td>Bm9</td><td>42</td><td>quarter rest, B5 eighth, C♯6 eighth, D6 half, tied into bar 4</td></tr>
+    <tr><td>4</td><td>Gmaj9</td><td>43</td><td>D6 quarter (the tie), B5 eighth, A5 for two and a half beats</td></tr>
+    <tr><td>8</td><td>Gmaj9</td><td>44</td><td>D6 quarter (the tie), B5 eighth, A5 eighth, B5 quarter, D6 quarter</td></tr>
+  </tbody>
+</table>
+
+<h3>Why it works</h3>
+<ul>
+  <li><b>It rests on ninths.</b> B over A in bar 2, A over G in bar 4. Your chords put a ninth on
+  top of every bar; the hook joins them. It never lands on a root, so it never quite comes home.
+  The one time it does is the song's last note, in step 10.</li>
+  <li><b>Every note is a chord tone of its bar</b>, so it clashes with nothing. The one rub to
+  listen for is bar 3, where the lead's D6 sits a minor ninth above the chord's top C♯5. If it bites,
+  the cure is in the chord, not the hook.</li>
+  <li><b>Long notes against the arp's eighths.</b> The arp is busy and low; the lead is slow and
+  high, A5 to E6, an octave above the arp's top. The two never fight for the same space.</li>
+</ul>
+
+<h2>Enter it</h2>
+<ol class="do">
+  <li>Song view, track 4, row 00: chain <code>04</code>. In it: <code>40 41 42 43 40 41 42 44</code>.</li>
+  <li>Enter phrases 40 to 44 as below, every note on instrument <code>04</code>.</li>
+</ol>
+<m8-chain chain="04" compact></m8-chain>
+<m8-phrase phrase="40" compact></m8-phrase>
+<m8-phrase phrase="41" compact></m8-phrase>
+<m8-phrase phrase="42" compact></m8-phrase>
+<m8-phrase phrase="43" compact></m8-phrase>
+<m8-phrase phrase="44"></m8-phrase>
+
+<h3>Three commands that shape the phrasing</h3>
+<ul>
+  <li><b>No note on row 0 of 41 and 43.</b> The long note from the bar before keeps sounding across
+  the bar line. That's a tie.</li>
+  <li><b><code>OFF</code> on row 0 of 40 and 42</b> ends the note before, so each half starts after a
+  beat of silence. On the empty note (<code>---</code>), <kbd>OPTION</kbd>+<kbd>EDIT</kbd> inserts one.
+  With the ADSR below, an OFF starts the release.</li>
+  <li><b><code>PSL 04</code></b> on the long notes: a four-tick slide up into E6 and D6 from the note
+  before. A note with an instrument number resets PSL (changelog, 6.6.3), so it slides into that
+  note only.</li>
+</ul>
+
+<h2>Instrument 04: the flute model</h2>
+<p>A Macrosynth on the BLOWN / FLUTED model: a reed or flute physical model where <b>TIMBRE</b> is the
+air pressure and <b>COLOR</b> the geometry of the instrument (manual). It has no filter of its own,
+so the M8's filter is the cassette's soft top.</p>
+<m8-instrument inst="04" show="params"></m8-instrument>
+<ul>
+  <li><b>TIMBRE 60</b>: enough pressure to speak quickly on the eighth-note pickups, short of
+  overblowing. <b>COLOR 40</b>: a short, wooden bore rather than a long metal one; set it by ear.</li>
+  <li><b>DEGRADE 08</b>: a little worn-cassette grain. <b>CUTOFF A8</b>: breathy, not shrill, up here.</li>
+  <li><b>DRY B0, REV 70</b>: soft enough to live above everything, and the song's biggest reverb send,
+  so held notes leave a trace. <b>DEL 30</b>: dotted-eighth echoes between the long notes.</li>
+  <li><b>TBL. TIC 03</b> is for the table in step 7; set it now. <b>EQ 04</b> is a low cut, set up in
+  step 10; leave EQ at <code>--</code> until then if you like.</li>
+</ul>
+
+<p class="unverified">The model's name and number on 6.6.3. <code>1F FLUTED</code> is Braids' model
+order in hex, which matches every number your photos and the cards show (<code>20</code> STRUCK BELL,
+<code>28</code> WAV PARAPHONIC). If it reads otherwise, <code>1E BLOWN</code>, the reed model beside it,
+is the fallback. <b>Report back:</b> what does SHAPE read at 1E and 1F?</p>
+
+<p class="unverified">Whether the flute speaks on an eighth note. The manual doesn't say how
+quickly this model starts. If the pickups in phrase 40 come out late or breathy-only, raise TIMBRE; failing that, use
+<code>03 SINE TRIANGLE</code> with TIMBRE 00, a plain voice that speaks at once. The notes don't change.
+<b>Report back:</b> do the A5 and D6 in phrase 40 speak cleanly?</p>
+
+<h3>Three mods</h3>
+<m8-instrument inst="04" show="mods"></m8-instrument>
+<m8-envelope inst="04" mod="1"></m8-envelope>
+<ul>
+  <li><b>MOD 1, ADSR on VOLUME.</b> ADSR times are seconds. Raise ATK until the help line reads about
+  <b>0.030 s</b> (about one tick), REL until it reads about <b>0.250 s</b>, a short release on OFF.
+  DEC 00 and SUS FF: it holds for as long as the note lasts. Since 6.6 a retrigger resumes from the
+  current level, so one note joins the next: one breath a phrase.</li>
+  <li><b>MOD 2, AHD on TIMBRE: AMT 18, ATK 00, HOLD 00, DEC 06.</b> A puff of extra air pressure for one
+  sixteenth: the breath on the attack.</li>
+  <li><b>MOD 3, LFO on PITCH: SIN, FREE, AMT 01, FREQ 80.</b> The arp's tape wobble, same depth and
+  length: one tape for both.</li>
+</ul>
+<p class="unverified">The hex values for these ADSR times: the hex-to-seconds curve isn't published,
+and you've read three points off the screen (60 = 0.200 s, C2 = 2.869 s, CB = 3.663 s). Set them by
+the help line. <b>Report back:</b> which hex values give 0.030 and 0.250 s?</p>
+
+<p class="demo-note app-only">The demo plays the notes, the slides and the OFFs on a plain tone. The
+breath, the flute and the wobble are your M8's.</p>
+
+<h2>Things to try</h2>
+<ul>
+  <li>TIMBRE 80: more pressure, more air, closer to overblowing.</li>
+  <li><code>PSL 08</code> into the long notes: lazier.</li>
+  <li>Take the OFF out of phrase 42: the two halves join into one long breath.</li>
+</ul>
+
+<p>Next: <a href="page:faded-polaroid-7">step 7, the lead's table</a>.</p>
+</main>
+</body>
+</html>

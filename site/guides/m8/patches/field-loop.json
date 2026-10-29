@@ -139,6 +139,116 @@
     ]
    ],
    "mods": []
+  },
+  "07": {
+   "type": "SAMPLER",
+   "name": "RAIN",
+   "demo": false,
+   "params": [
+    [
+     "TRANSP.",
+     "OFF"
+    ],
+    [
+     "TBL. TIC",
+     "01"
+    ],
+    [
+     "EQ",
+     "07"
+    ],
+    [
+     "SAMPLE",
+     "(Low Tide's FIELD loop, or a new rain recording)"
+    ],
+    [
+     "SLICE",
+     "00"
+    ],
+    [
+     "PLAY",
+     "FWDLOOP"
+    ],
+    [
+     "START",
+     "00"
+    ],
+    [
+     "LOOP ST.",
+     "00"
+    ],
+    [
+     "LEN",
+     "FF"
+    ],
+    [
+     "DETUNE",
+     "80"
+    ],
+    [
+     "DEGRADE",
+     "00"
+    ],
+    [
+     "FILTER",
+     "LOWPASS"
+    ],
+    [
+     "CUTOFF",
+     "70"
+    ],
+    [
+     "RES",
+     "00"
+    ],
+    [
+     "AMP",
+     "00"
+    ],
+    [
+     "LIM",
+     "CLIP"
+    ],
+    [
+     "PAN",
+     "80"
+    ],
+    [
+     "DRY",
+     "58"
+    ],
+    [
+     "MFX",
+     "00"
+    ],
+    [
+     "DEL",
+     "00"
+    ],
+    [
+     "REV",
+     "50"
+    ]
+   ],
+   "mods": [
+    {
+     "slot": 1,
+     "type": "ADSR ENV",
+     "dest": "VOLUME",
+     "p": {
+      "AMT": "FF",
+      "ATK": "→0.5s",
+      "DEC": "00",
+      "SUS": "FF",
+      "REL": "→1s"
+     },
+     "sec": {
+      "ATK": 0.5,
+      "REL": 1.0
+     },
+     "num": "01"
+    }
+   ]
   }
  }
 }

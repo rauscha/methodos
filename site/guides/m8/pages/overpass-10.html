@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overpass 10: arrange and mix</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../songs/overpass.json" step="10" label="The whole song: only the bass sounds in the demo, and the DJ filter moves it"></m8-player>
+
+<p class="kicker">Overpass · step 10 of 10</p>
+<h1>Arrange and mix</h1>
+
+<p>Nine rows of eight bars, about two and a half minutes, arranged the way a beat-led track is: parts
+arriving and leaving in whole rows, a half-time B section, a breakdown that strips back and builds into
+the drop, a dub where the voice is thrown into the delay. Then the mix, with the low end made mono under
+the wide stabs.</p>
+
+<m8-song></m8-song>
+
+<table class="values">
+  <thead><tr><th>Row</th><th>Section</th><th>What happens</th></tr></thead>
+  <tbody>
+    <tr><td>00</td><td>Intro</td><td>Stabs and rain under a closed DJ filter that opens a beat at a time in bar 8.</td></tr>
+    <tr><td>01</td><td>Build</td><td>Hats; the bass, roots only.</td></tr>
+    <tr><td>02</td><td>A1</td><td>The beat and the bassline.</td></tr>
+    <tr><td>03</td><td>A2</td><td>The voice: the hook.</td></tr>
+    <tr><td>04</td><td>B</td><td>Half-time drums, held bass, the major stabs, backward fragments.</td></tr>
+    <tr><td>05</td><td>Breakdown</td><td>One stab a bar, the hook's first bar once, the filter closes; the clap build in bars 7–8.</td></tr>
+    <tr><td>06</td><td>A3, the peak</td><td>Everything; the voice ends on F♯.</td></tr>
+    <tr><td>07</td><td>A4, dub</td><td>No stabs, no rain; the voice thrown into the delay.</td></tr>
+    <tr><td>08</td><td>Outro</td><td>Stabs and rain under a closing filter, ending on one long Am9.</td></tr>
+  </tbody>
+</table>
+
+<div class="listen"><span class="label book-only">Listen for</span><span class="app-only">Press Play and
+let it run; the strip reads the song row. </span><span class="book-only">Play from row 00 and let it run.
+</span>Row 05 into 06: the filter closes over the stabs, the claps roll and tighten, an eighth of silence,
+then everything at once with the filter wide open. That drop is what the whole song is built around.</div>
+
+<h2>The silence chain: FE in every gap</h2>
+<p>As in Faded Polaroid: an empty song cell sends its track back to the start of its list (manual), so
+every gap holds chain <code>FE</code>: phrase <code>FD</code> (an OFF on row 0), then the empty FE seven
+times. Make it once; it goes in every cell the song screen shows as FE.</p>
+<m8-chain chain="FE" compact></m8-chain>
+
+<h2>New chains</h2>
+<p>Clone and change: <kbd>SHIFT</kbd>+<kbd>OPTION</kbd> then <kbd>EDIT</kbd> on a chain number copies it to a
+new one. Your workbench rows 00 and 01 become rows 02 and 04 of the song, so copy them down first.</p>
+<table class="values">
+  <thead><tr><th>Chain</th><th>Track</th><th>Phrases</th><th>What it is</th></tr></thead>
+  <tbody>
+    <tr><td>20</td><td>2</td><td>20 21, four times</td><td>claps, a rim every other bar (no build)</td></tr>
+    <tr><td>11</td><td>1</td><td>12 13, four times</td><td>half-time kick (B)</td></tr>
+    <tr><td>21</td><td>2</td><td>24, eight times</td><td>half-time clap on beat 3, a rim on 4&amp; (B)</td></tr>
+    <tr><td>22</td><td>2</td><td>FE ×6, 22, 23</td><td>silence, then the build (breakdown)</td></tr>
+    <tr><td>41</td><td>4</td><td>46 46 47 47 46 46 47 48</td><td>roots only (build)</td></tr>
+    <tr><td>42</td><td>4</td><td>49 FE 4A FE 49 FE 4A 4C</td><td>held F and G on 0B, OFF at the end (B)</td></tr>
+    <tr><td>52</td><td>5</td><td>5A 5A 5B 5B 5A 5A 5B 5C</td><td>one stab a bar (breakdown)</td></tr>
+    <tr><td>53</td><td>5</td><td>50 51 52 53 50 51 5D FE</td><td>the A stabs, ending on one long Am9</td></tr>
+    <tr><td>62</td><td>6</td><td>60 FD, then FE</td><td>the hook's first bar, once</td></tr>
+    <tr><td>63</td><td>6</td><td>as 60, ending 63</td><td>the hook, ending on F♯</td></tr>
+    <tr><td>64</td><td>6</td><td>64 65 FD FE 64 FD 60 62</td><td>the dub: throws, more space</td></tr>
+    <tr><td>70, 71, 72</td><td>7</td><td>70 then FE; FE only; FD then FE</td><td>rain starts; carries on; stops</td></tr>
+    <tr><td>80, 81, 82</td><td>8</td><td>DJC phrases</td><td>the DJ filter: intro, breakdown, outro</td></tr>
+  </tbody>
+</table>
+
+<h3>The B section goes half-time, and the bass holds</h3>
+<p>In row 04 the kick plays only beat 1 and the clap only beat 3: the tempo stays, the feel halves. The
+bass holds F2 for two bars, slides up to G2 (<code>PSL 06</code>), and so on, ending with an OFF (phrase 4C).
+Its short notes would leave holes, so it's played on <b>0B SUB HOLD</b>: 04 copied, with an ADSR that
+sustains.</p>
+<m8-instrument inst="0B" show="mods"></m8-instrument>
+<ul>
+  <li>Make it: on 04, <kbd>SHIFT</kbd>+<kbd>OPTION</kbd>; <kbd>OPTION</kbd>+<kbd>RIGHT</kbd> to 0B;
+  <kbd>SHIFT</kbd>+<kbd>EDIT</kbd>. In its mod view, change MOD 1's type to <b>01 ADSR ENV</b>.</li>
+  <li>ATK until the help line reads about <b>0.01 s</b>; REL about <b>0.48 s</b>, a beat at 124 BPM; SUS FF.
+  It holds until the next note or the OFF, then lets go over a beat.</li>
+</ul>
+<m8-phrase phrase="4A" compact></m8-phrase>
+
+<h3>The duck: the bass gets out of the kick's way</h3>
+<p>On 04 and 0B, MOD 3 is a trig envelope on VOLUME, fired by track 1: SRC <code>80</code> is track 1
+(above 7F, SRC counts tracks; Dirtywave meetups). AMT negative, about 40%; ATK 00, HOLD 01, DEC 06. Each kick pulls the
+bass down for a moment, so the two don't pile up on beat 1. It's Low Tide's pad duck, on a bass.</p>
+<m8-envelope inst="04" mod="3" subject="the bass"></m8-envelope>
+<p class="unverified">How a negative trig AMT reads on screen. "About 40%, negative" is the target; set it
+by ear. <b>Report back:</b> how does a negative AMT read?</p>
+
+<h3>The breakdown and the build</h3>
+<p>Row 05: no kick, hats or bass. The stabs drop to one a bar (chain 52), the voice sings its first bar once
+(chain 62), and the clap is silent for six bars, then plays the build from step 6 (chain 22). Track 8 closes
+the DJ filter and opens it, a beat at a time, into the drop.</p>
+<m8-chain chain="81" compact></m8-chain>
+<m8-phrase phrase="89" compact></m8-phrase>
+<p>DJC sets the cutoff of the mixer's DJ filter: <code>80</code> is off, below 80 it closes. It stays where
+the last DJC left it, so playback started from a middle row keeps whatever the last one set (the outro
+leaves it at <code>20</code>, nearly shut). If the song sounds muffled, set DJF back to 80 in the mixer.</p>
+
+<h3>The peak and the dub</h3>
+<ul>
+  <li><b>Row 06, chain 63</b>: the hook, but its last note becomes F♯ (phrase 63): the voice joins the Em9
+  stab's bright note.</li>
+  <li><b>Row 07, chain 64</b>: stabs and rain gone. The A of bar 1 and the C of bar 2 are thrown into the
+  delay on <b>0C VOICE DUB</b>: 06 copied, with DEL <code>C0</code> (from 18) and REV <code>30</code> (from 40),
+  so the throws repeat in the delay rather than wash out in the reverb. Then gaps where the line used to
+  continue.</li>
+</ul>
+<m8-phrase phrase="63" compact></m8-phrase>
+<m8-phrase phrase="64" compact></m8-phrase>
+
+<h3>The last stab: DE1</h3>
+<p>The outro ends on one Am9 that rings out (phrase 5D). 05's own envelope is a short stab, so the note
+carries <code>DE1 60</code>: DE[1–2] offsets an envelope's decay for that note (manual, Instrument FX
+Commands). 10 + 60 = 70, 112 ticks, a little over a bar.</p>
+<m8-phrase phrase="5D" compact></m8-phrase>
+<p class="unverified">That the "1" in DE1 is mod slot 1. If the last stab stays short, use a copy of 05
+with DEC <code>60</code> for that one note. <b>Report back:</b> does the last stab ring for about a bar?</p>
+
+<h2>The rain</h2>
+<p>Track 7, instrument <b>07 RAIN</b>: Low Tide's FIELD loop (or a new rain recording), set duller for this
+song. Triggered once in row 00 (chain 70), carried through rows 01 to 06 by chain 71, which has no notes,
+stopped by the OFF in chain 72 for the dub, and started again in row 08.</p>
+<m8-instrument inst="07"></m8-instrument>
+<ul>
+  <li><b>TRANSP. OFF</b>: a texture nothing should move. <b>PLAY FWDLOOP</b>: it loops as long as the note holds.</li>
+  <li><b>LOWPASS, CUTOFF 70</b>: wet, not crisp. Low Tide's card used HIGHPASS 30 against rumble; here
+  <b>EQ 07</b>'s low cut does that job (below).</li>
+  <li><b>DRY 58, REV 50</b>: quieter than the hats, far back.</li>
+  <li><b>MOD 1, ADSR on VOLUME</b>: ATK about <b>0.5 s</b>, REL about <b>1.0 s</b>, SUS FF, by the help line. It
+  fades in when it starts and fades out over a second at the OFF, instead of cutting.</li>
+</ul>
+<p class="unverified">That a held FWDLOOP sample keeps playing through rows whose chain has no note (chain
+71). If the rain stops at row 01, put chain 70 in every rain row, as Low Tide does. <b>Report back:</b> does
+the rain carry through rows 01 to 06?</p>
+
+<h2>The mix</h2>
+<p>From the Mixer view, <kbd>SHIFT</kbd>+<kbd>DOWN</kbd> opens the effect settings. Starting points by ear.</p>
+<m8-mix show="reverb delay modfx"></m8-mix>
+<ul>
+  <li><b>Reverb SIZE A0, DECAY 90</b>: a street under an overpass, big but not a hall, and short enough that
+  the beat stays clear. <b>SHIMMER 00</b>: this song's lift is the stabs, not the tail.</li>
+  <li><b>Delay TIME 0C, FEEDBACK 80</b>: a dotted eighth, so each throw lands off the beat and repeats
+  through a bar or more. Its INPUT EQ cuts both ends, about 300 Hz and 4 kHz: darker, thinner repeats, the
+  dub sound. The stabs' small send (DEL 10) keeps their echoes faint.</li>
+  <li><b>ModFX CHORUS</b>: the width the mono stabs get.</li>
+</ul>
+<p class="unverified">That delay TIME <code>0C</code> is a dotted eighth (Low Tide step 7 asks too).
+<b>Report back:</b> what does the help line say for <code>0C</code>?</p>
+
+<h3>A mono low end: the main mix EQ</h3>
+<p>Mixer view, <kbd>EDIT</kbd> on <b>EQ</b>: LOW band, TYPE LOWCUT, <b>MODE SIDE</b>, about 150 Hz. The low end of
+everything (kick, bass, the reverb's low tail) goes mono; above it the chorus and reverb stay wide. Low
+Tide used the same trick on one instrument at about 500 Hz (Dirtywave's meetup #32); on the whole mix it
+wants to be much lower.</p>
+<m8-mix show="mixer eq"></m8-mix>
+<ul>
+  <li><b>EQ 05</b> on the stabs (05, 08): a low cut at about 150 Hz. Their lowest note is A3, 220 Hz; below
+  that belongs to the bass.</li>
+  <li><b>EQ 06</b> on the voice (06, 09, 0C): about 200 Hz, mic rumble and pops out.</li>
+  <li><b>EQ 07</b> on the rain: about 200 Hz, traffic rumble out from under the bass.</li>
+  <li><b>LIM</b> about <code>30</code>, raised until the limiter's line on the MIX meter moves only on the drops
+  into rows 02 and 06. OTT 00. Balance with each instrument's DRY.</li>
+</ul>
+
+<p class="unverified">The ADSR targets. The help line reads seconds; the hex for each isn't known.
+<b>Report back:</b> which hex values give 0.010 and 0.480 s?</p>
+
+<h2>When you're home</h2>
+<p>Project view, <b>RENDER</b>: MIXED or STEMS, SONG ROW START 00, LAST 08, with REVERB, DELAY and LIMITER on.</p>
+
+<p>That's Overpass. Its instruments are on the cards <a href="page:chord-stabs">Chord stabs</a>,
+<a href="page:fm-sub">FM sub</a> and <a href="page:hummed-voice">Hummed voice</a>; the FM keys are
+<a href="page:glass-keys">Glass keys</a>, the rain the <a href="page:field-loop">Field recording loop</a>.</p>
+</main>
+</body>
+</html>

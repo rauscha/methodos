@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overpass 5: chord memory</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../songs/overpass.json" step="5" silent="No demo sound: the stabs are your renders, so the browser has nothing to play. The roll shows the four notes each stab sounds."></m8-player>
+
+<p class="kicker">Overpass · step 5 of 10</p>
+<h1>Chord memory</h1>
+
+<p>One sample, one chord shape, played on every root: the whole progression from the render you just
+made. Every voice moves the same distance, so the chord slides around as one block. That's the
+deep-house sound called chord memory, and the reason the renders were built on C.</p>
+
+<m8-roll tracks="5"></m8-roll>
+<m8-progression list></m8-progression>
+
+<div class="listen"><span class="label book-only">Listen for</span>The stabs never land on a kick's
+beat: they fall between, on the "a" of 1 and the "and"s. In bar 8 the chord rises a step and its top
+note brightens, F♯ instead of F: the loop leans home. In the B section (row 01) the stabs are fewer,
+ring longer, and the chord is warmer: the major render.</div>
+
+<h2>The note names the chord</h2>
+<table class="values">
+  <thead><tr><th>You type</th><th>Instrument</th><th>Sounds</th><th>Chord</th></tr></thead>
+  <tbody>
+    <tr><td>A-3</td><td>05 (CM9)</td><td>C4 G4 B4 E5</td><td>Am9</td></tr>
+    <tr><td>D-4</td><td>05</td><td>F4 C5 E5 A5</td><td>Dm9</td></tr>
+    <tr><td>E-4</td><td>05</td><td>G4 D5 F♯5 B5</td><td>Em9</td></tr>
+    <tr><td>F-3</td><td>08 (CMAJ9)</td><td>A3 E4 G4 C5</td><td>Fmaj9</td></tr>
+    <tr><td>G-3</td><td>08</td><td>B3 F♯4 A4 D5</td><td>Gmaj9</td></tr>
+  </tbody>
+</table>
+<ul>
+  <li>A-3 is three semitones below C-4, so the Cm9 render plays three semitones down: E♭ B♭ D G
+  becomes C G B E, Am9 without its root.</li>
+  <li><b>The shape doesn't know the key.</b> Dm9 brings F natural; Em9 brings F♯, the one bright note,
+  from A Dorian. Same idea as Low Tide's C♯: one note from outside the key at the turnaround.</li>
+  <li><b>The top voice is always the chord's fifth</b>: E, A, B. Em9 sits at E-4, not E-3, so its F♯ is
+  F♯5, the note your voice will join at the peak.</li>
+  <li>The renders are played from seven semitones below their own pitch (F-3) to four above (E-4).</li>
+</ul>
+
+<h2>The stab rhythm</h2>
+<table class="values">
+  <thead><tr><th>Phrase</th><th>Bar</th><th>Rows</th><th>Count</th></tr></thead>
+  <tbody>
+    <tr><td>50, 52</td><td>Am9, Dm9 a</td><td>3, 6, E</td><td>1a, 2&amp;, 4&amp;</td></tr>
+    <tr><td>51, 53</td><td>Am9, Dm9 b</td><td>6, B</td><td>2&amp;, 3a</td></tr>
+    <tr><td>54</td><td>Dm9, bar 7</td><td>3, 6, E</td><td>1a, 2&amp;, and Em9 on 4&amp;: an eighth early</td></tr>
+    <tr><td>55</td><td>Em9, bar 8</td><td>6, B</td><td>2&amp;, 3a</td></tr>
+    <tr><td>56, 58</td><td>Fmaj9, Gmaj9 a</td><td>0, A</td><td>1, 3&amp;</td></tr>
+    <tr><td>57, 59</td><td>Fmaj9, Gmaj9 b</td><td>6</td><td>2&amp;</td></tr>
+  </tbody>
+</table>
+<p>Two or three stabs a bar, never on every beat. The last stab of bar a pushes into bar b, and in bar 7
+the Em9 arrives an eighth early, with the bass's slide in step 8: the loop leans forward into its
+changes.</p>
+<ol class="do">
+  <li>Song view, track 5: row 00 chain <code>50</code>, row 01 chain <code>51</code>.</li>
+  <li>Chain 50: <code>50 51 52 53 50 51 54 55</code>. Chain 51: <code>56 57 58 59 56 57 58 59</code>.</li>
+  <li>Phrases 50 to 55 on instrument <code>05</code>; 56 to 59 on <code>08</code>. Velocities as below.</li>
+</ol>
+<m8-chain chain="50" compact></m8-chain>
+<m8-phrase phrase="50" compact></m8-phrase>
+<m8-phrase phrase="54"></m8-phrase>
+<m8-phrase phrase="56" compact></m8-phrase>
+
+<h2>Short stabs, longer stabs</h2>
+<m8-instrument inst="05" show="mods"></m8-instrument>
+<m8-envelope inst="05" mod="1"></m8-envelope>
+<ul>
+  <li><b>05, MOD 1, AHD on VOLUME: ATK 00, HOLD 02, DEC 10.</b> 18 ticks, three-quarters of a beat: a hit
+  and a little ring, cut by the next stab.</li>
+  <li><b>05, MOD 2, AHD on CUTOFF: AMT 18, DEC 0C.</b> A small brightening that closes in an eighth: the
+  front of the hit.</li>
+  <li><b>08, MOD 1: HOLD 08, DEC 28.</b> 48 ticks, half a bar: the B stabs ring. MOD 2 as 05.</li>
+</ul>
+
+<p class="unverified">That C-4 plays a sample at its own pitch. Every stab here assumes it (the Sampling
+page asks the same). If another note does, shift every stab note by the same amount. <b>Report back:</b>
+does A-3 on 05 sound Am9 in tune? (Step 8's bass will tell you for sure.)</p>
+
+<h2>Things to try</h2>
+<ul>
+  <li>Phrase 50's row 6 stab moved to row 7: it lands on a swung row once step 6's groove is in.</li>
+  <li>A-4 instead of A-3 in phrase 50: the same chord an octave up, thin, and near the pitch limit.</li>
+</ul>
+
+<p>The stabs are on the <a href="page:chord-stabs">Chord stabs</a> card.
+Next: <a href="page:overpass-6">step 6, the drums</a>.</p>
+</main>
+</body>
+</html>

@@ -1,6 +1,6 @@
 {
-  "order": ["start", "low-tide", "techniques", "patches"],
+  "order": ["start", "low-tide", "faded-polaroid", "overpass", "techniques", "patches"],
   "subtitle": "Tracker · Model:02 · firmware 6.6.3",
-  "description": "One song, Low Tide, built step by step on the M8; two techniques, Tables and Sampling; and ten instrument patch cards to look up.",
-  "note": "A book to read with the M8 in your hands. Do Low Tide's steps in order; the patch cards at the back are for looking up. The pictures are the M8's own screens. Flats in the text are spelled with a plain b (Bbmaj9, A7b9); the pictures show the real sign. The live version, with sound, is the Methodos app."
+  "description": "Three songs built step by step on the M8: Low Tide, Faded Polaroid and Overpass; two techniques, Tables and Sampling; and fifteen instrument patch cards to look up.",
+  "note": "A book to read with the M8 in your hands. Do each song's steps in order; the patch cards at the back are for looking up. The pictures are the M8's own screens. Flats in the text are spelled with a plain b (Bbmaj9, A7b9); the pictures show the real sign. The live version, with sound, is the Methodos app."
 }

@@ -57,6 +57,17 @@ table { border-collapse: collapse; }
 }
 .unverified::before { content: "Unverified on 6.6.3: "; font-weight: 700; color: var(--m8-ink); }
 .demo-note { font: 0.85rem/1.5 system-ui, sans-serif; color: var(--m8-mid); }
+/* A choice the draft made on his behalf, easy to find and change (data-choice names it):
+   a solid outline, where an unverified box is dashed. */
+.choice {
+  border: 1.5px solid var(--m8-ink);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin: 20px 0;
+  font: 0.9rem/1.5 system-ui, sans-serif;
+  color: var(--m8-ink-2);
+}
+.choice::before { content: "Draft choice"; display: block; font: 700 0.75rem/1.4 system-ui, sans-serif; letter-spacing: 0.08em; text-transform: uppercase; color: var(--m8-ink); }
 
 ol.do { padding-left: 1.4em; }
 ol.do li { margin: 6px 0; }
@@ -136,6 +147,11 @@ m8-player {
 .m8-banks caption { text-align: left; color: var(--m8-mid); padding-bottom: 2px; }
 .m8-banks th, .m8-banks td { text-align: left; padding: 2px 8px 2px 0; border-bottom: 1px solid var(--m8-faint); color: var(--m8-ink); }
 .m8-banks tr.m8-row-new td:first-child { box-shadow: inset 4px 0 0 var(--m8-ink); padding-left: 8px; }
+
+/* mixer screens (m8-mix): one column of longer values; operator rows (FM) */
+.m8-wide { grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+.m8-wide dd { text-align: right; }
+m8-mix .m8-screen + .m8-screen { margin-top: 10px; }
 
 /* progression */
 .m8-prog { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }

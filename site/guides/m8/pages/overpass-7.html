@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overpass 7: a table that counts</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../songs/overpass.json" step="7" silent="No demo sound: the stabs are your renders, and the demo doesn't model TIC 00. The tables below are what to type."></m8-player>
+
+<p class="kicker">Overpass · step 7 of 10</p>
+<h1>A table that counts</h1>
+
+<p>A sample plays the same way every time, and twenty identical stabs in a row sound like a machine.
+A player's hand on keys never hits the same chord twice the same way. This table fixes that: it moves
+one row each time the stab is played, not in time, so stabs cycle through three slightly different
+hits. Faded Polaroid's table ran on a clock inside each note; this one counts notes.</p>
+
+<div class="listen"><span class="label book-only">Listen for</span>Three kinds of stab coming round in
+turn: one firm, one a little softer, darker and flat, one in between and a touch sharp. It should be
+hard to point at, and easy to miss if you take it away.</div>
+
+<h2>TIC 00: one row per trigger</h2>
+<p><b>TBL. TIC</b> sets how many ticks each table row lasts, and <code>00</code> is a special value: the
+table "moves one row each time the instrument is triggered" (Tables page, from the manual). You set
+TBL. TIC 00 on 05 and 08 in step 4. The swung stabs trigger it, so the groove doesn't matter: tables
+ignore the groove, and this one doesn't run in time anyway.</p>
+
+<h2>Table 05</h2>
+<m8-table table="05"></m8-table>
+<table class="values">
+  <thead><tr><th>Row</th><th>The hit</th></tr></thead>
+  <tbody>
+    <tr><td>0</td><td>Firm: the instrument as set (CUTOFF B0, in tune), V 7F, full level. No commands.</td></tr>
+    <tr><td>1</td><td>Lazy: V <code>64</code>, about 80%; <code>CUT 98</code>, darker; <code>FIN F9</code>, about 5 cents flat.</td></tr>
+    <tr><td>2</td><td>The reach: V <code>72</code>, about 90%; <code>CUT A4</code>, between the two; <code>FIN 03</code>, about 2 cents sharp; then <code>HOP 00</code>, back to row 0.</td></tr>
+  </tbody>
+</table>
+<ul>
+  <li><b>Row 0 has no commands</b> because every stab carries instrument 05 (or 08), and a note with an
+  instrument number resets the instrument's parameters (manual, Relative and Absolute FX Commands). So
+  the firm hit is the instrument itself, and rows 1 and 2 are offsets from it.</li>
+  <li><b>V</b> multiplies the phrase's velocity.</li>
+  <li><b>The HOP shares row 2</b>, in FX3, rather than taking a row of its own, so three stabs make one
+  cycle whatever a HOP row does on a trigger.</li>
+</ul>
+
+<h3>Three against five</h3>
+<p>The A section plays five stabs every two bars, and the table has three rows, so the cycle lines up
+with the bar only every six bars:</p>
+<table class="values">
+  <thead><tr><th>Bar</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr></thead>
+  <tbody>
+    <tr><td>Rows</td><td>0 1 2</td><td>0 1</td><td>2 0 1</td><td>2 0</td><td>1 2 0</td><td>1 2</td></tr>
+  </tbody>
+</table>
+<p>Over the eight-bar loop, the same stab never gets the same treatment twice in a row.</p>
+
+<h2>Enter it</h2>
+<ol class="do">
+  <li>In instrument 05, check TBL. TIC is <code>00</code>. Highlight <b>CUTOFF</b> and press
+  <kbd>SHIFT</kbd>+<kbd>RIGHT</kbd>: table 05 opens with the cutoff command ready as the default for new FX
+  (manual, Instrument View).</li>
+  <li>Type rows 0 to 2. FIN is in the FX help list: <kbd>EDIT</kbd>+<kbd>UP</kbd>/<kbd>DOWN</kbd> on an FX cell.</li>
+  <li>Copy it to 08. Cursor on row 0's N; <kbd>SHIFT</kbd>+<kbd>OPTION</kbd> enters selection mode; move to row
+  2's FX3. <kbd>OPTION</kbd> copies and leaves selection mode.</li>
+  <li><kbd>OPTION</kbd>+<kbd>RIGHT</kbd> three times: table 08. Cursor on row 0's N; <kbd>SHIFT</kbd>+<kbd>EDIT</kbd>
+  pastes.</li>
+  <li>In instrument 08, TBL. TIC <code>00</code>.</li>
+</ol>
+<p>08 was copied from 05 in step 4, before the table existed, which is why the table is copied by hand.</p>
+
+<p class="unverified">The Sampler's cutoff command: the manual doesn't list it, so <code>CUT</code> stands
+for whatever SHIFT+RIGHT from CUTOFF puts in the table. The values are written as absolute. If the help
+line says the command is relative, type <code>E8</code> for <code>98</code> and <code>F4</code> for
+<code>A4</code>: the same results from CUTOFF B0. <b>Report back:</b> what command does SHIFT+RIGHT from
+CUTOFF put in the table?</p>
+
+<p class="unverified">The Sampler's fine-pitch command. FIN is relative (changelog), but each stab resets
+it, so <code>F9</code> and <code>03</code> work either way. If the Sampler's fine-pitch command is named for
+its DETUNE parameter instead (80 in tune, second digit sixteenths of a semitone), use <code>7F</code> for the
+flat hit and <code>81</code> for the sharp one. <b>Report back:</b> what does the FX help list for a
+Sampler?</p>
+
+<p class="unverified">A HOP sharing a row with other commands. If the reach never sounds (a two-stab
+cycle), move <code>HOP 00</code> to a row 3 of its own. <b>Report back:</b> do three different stabs come
+round in turn?</p>
+
+<h2>Things to try</h2>
+<ul>
+  <li>A fourth row before the HOP (a fourth kind of stab): a four-stab cycle against five stabs lines up
+  only every eight bars, once per loop.</li>
+  <li>Clear rows 1 and 2 of table 08 only, and compare the B section's stabs (all firm) with the A
+  section's.</li>
+</ul>
+
+<p>Next: <a href="page:overpass-8">step 8, the FM bass</a>.</p>
+</main>
+</body>
+</html>

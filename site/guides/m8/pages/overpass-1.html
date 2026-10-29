@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overpass 1: the plan and the setup</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../songs/overpass.json" step="8" label="Preview: the bass under the stabs after step 8 (the stabs are samples, so they draw but don't sound)"></m8-player>
+
+<p class="kicker">Overpass · step 1 of 10</p>
+<h1>The plan and the setup</h1>
+
+<p>Overpass is a night song built from samples, most of which you make yourself on the M8. 124 BPM
+in A minor: 2-step garage meeting deep house. A broken kick, a backbeat clap, swung hats, warm
+chord stabs, and your own voice in fragments. It's the guide's FM song, its sampling song, and its
+second table lesson, the opposite of Faded Polaroid's.</p>
+
+<h2>The mood</h2>
+<p>After the last train, walking under an overpass with the rain stopped. Cold concrete and wet
+glass outside, warmth in the chords, a voice that only ever says half a phrase, a beat that keeps
+skipping a step. Lonely but not bleak: the warm keys are the lit windows. For the feel: Burial's
+"Archangel" (vocal fragments as the hook, the 2-step skip), Mr. Fingers' "Can You Feel It"
+(unhurried deep house, warm minor chords that sit and glow), Todd Edwards (melodies made of
+chopped vocal snippets).</p>
+
+<div class="tip choice" data-choice="overpass-as-planned"><span class="label book-only">Draft choice.</span>This
+is a turn: faster and beat-led after two slow songs. These pages write it as the plan has it. If
+you'd rather a third slow song, say so before you start; nothing in the other songs depends on it.</div>
+
+<h2>The idea: the M8 can't play an FM chord</h2>
+<p>The FM synth plays one note per track. So the chords are made the long way round: four tracks
+each play one note of a chord on the same FM electric piano, and the M8 renders those four tracks to
+a sample. A Sampler then plays that one sample on every root. That's the deep-house trick called
+<b>chord memory</b>: one chord shape, moved around whole.</p>
+<m8-progression></m8-progression>
+<m8-roll tracks="4,5"></m8-roll>
+<ul>
+  <li><b>Two renders</b>, each a rootless four-note chord built on C: a minor ninth and a major
+  ninth. Because they're built on C, the note you type names the chord: A-3 plays Am9.</li>
+  <li><b>The A section</b> moves one minor shape in parallel: Am9, Dm9, Am9, then Dm9 and Em9. Em9
+  brings F♯, the one bright note, from A Dorian, in the last bar: it lifts the loop home.</li>
+  <li><b>The B section</b> switches to the major shape on F and G, ♭VI and ♭VII, climbing in whole
+  steps out of the tunnel.</li>
+  <li>The FM bass plays every root, arriving at each new chord an eighth early, sliding in.</li>
+</ul>
+
+<h2>Where it's going</h2>
+<table class="values">
+  <thead><tr><th>Row</th><th>Section</th><th>What happens</th></tr></thead>
+  <tbody>
+    <tr><td>00</td><td>Intro</td><td>Stabs and rain under a closed filter that opens in bar 8</td></tr>
+    <tr><td>01</td><td>Build</td><td>Hats; the bass, roots only</td></tr>
+    <tr><td>02</td><td>A1</td><td>The beat and the bassline</td></tr>
+    <tr><td>03</td><td>A2</td><td>Your voice: the hook</td></tr>
+    <tr><td>04</td><td>B</td><td>Half-time, held bass, the major stabs, backward fragments</td></tr>
+    <tr><td>05</td><td>Breakdown</td><td>One stab a bar; a clap roll builds into the drop</td></tr>
+    <tr><td>06</td><td>A3, the peak</td><td>Everything; the voice ends on F♯</td></tr>
+    <tr><td>07</td><td>A4, dub</td><td>No stabs, no rain; the voice thrown into the delay</td></tr>
+    <tr><td>08</td><td>Outro</td><td>Stabs and rain under a closing filter, one long last chord</td></tr>
+  </tbody>
+</table>
+
+<h2>The tracks</h2>
+<table class="values">
+  <thead><tr><th>Track</th><th>Part</th><th>Instrument</th><th>Step</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>Kick</td><td>01 KICK, Sampler: slices of one kit</td><td>6</td></tr>
+    <tr><td>2</td><td>Clap and rim</td><td>02 CLAP, the same slices</td><td>6</td></tr>
+    <tr><td>3</td><td>Hats and shaker</td><td>03 HATS, the same slices</td><td>6</td></tr>
+    <tr><td>4</td><td>Bass</td><td>04 FM SUB, 0B SUB HOLD, FM synth</td><td>8, 10</td></tr>
+    <tr><td>5</td><td>Stabs</td><td>05 STAB MIN9, 08 STAB MAJ9, Sampler: your renders</td><td>4, 5, 7</td></tr>
+    <tr><td>6</td><td>Voice</td><td>06 VOICE, 09 VOICE REV, 0C VOICE DUB, Sampler: your hum</td><td>9, 10</td></tr>
+    <tr><td>7</td><td>Rain</td><td>07 RAIN, Sampler</td><td>10</td></tr>
+    <tr><td>8</td><td>No notes: the DJ filter</td><td>none</td><td>10</td></tr>
+  </tbody>
+</table>
+<p>In steps 3 and 4, tracks 5 to 8 hold the four FM voices to render (instrument 0A, GLASS KEYS).
+After the render they're cleared and take the parts above.</p>
+
+<div class="tip choice" data-choice="hummed-voice"><span class="label book-only">Draft choice.</span>The
+hook is your own voice: one hummed "ooh" on C, recorded on the M8's mic in step 9 and played as a
+melody. If you'd rather not, the fallback is the Macrosynth VOWEL FOF model holding a long "ooh",
+rendered to a sample and used the same way; step 9 has both. Every phrase stays the same.</div>
+
+<div class="tip choice" data-choice="numbering"><span class="label book-only">Draft choice.</span>The
+track, chain and phrase numbers are these pages' own. Any free numbers work, as long as you use them
+consistently.</div>
+
+<h2>Set up the song</h2>
+<ol class="do">
+  <li>Save whatever you're working on. Project view: <b>NEW</b>.</li>
+  <li><b>TEMPO</b> <code>124</code>. <b>NAME</b> OVERPASS, <b>SAVE</b>.</li>
+  <li>Leave <b>SCALE</b> alone: the Em9 bar's F♯ isn't in A minor, and a scale would bend it.</li>
+  <li>Leave <b>GROOVE</b> on 00. In step 6 you edit groove 00 itself, so every track swings the same.</li>
+</ol>
+
+<h2>Before you start</h2>
+<ul>
+  <li><b>One drum file to slice</b> from the factory samples, for step 6: ideally one file with a short
+  kick, a dry clap, a rim, a closed hat, an open hat and a shaker. A drum break works too; a snare can
+  stand in for the clap.</li>
+  <li><b>The rain</b>, for step 10: Low Tide's FIELD sample if it was rain or traffic, or a new
+  recording on the mic.</li>
+  <li><b>Headphones</b> for step 9, so the reference tone doesn't leak into the mic.</li>
+  <li>Free slots: instruments 01 to 0C (and 0D for a moment), tables 05 and 08, and a spare song row,
+  0F.</li>
+</ul>
+
+<p>Next: <a href="page:overpass-2">step 2, one FM voice</a>.</p>
+</main>
+</body>
+</html>

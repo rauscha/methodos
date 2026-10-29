@@ -1,5 +1,16 @@
 # M8 guide: plan
 
+## Revision 5, 2026-10-29: songs 2 and 3, and the book edition
+
+DRAFT until he reviews it. At his request a relay of agents planned (`docs/m8-songs-plan.md`),
+wrote the parts and the instrument settings (`docs/songs/`, generated from `tools/songs/`), and
+built **Faded Polaroid** (steps 1-10, his session's chords, arp and bass kept, a flute lead, a
+B section with a borrowed Gm9, a resampled "memory") and **Overpass** (steps 1-10, 124 BPM 2-step:
+FM chord rendered to stabs and replayed as chord memory, sliced drums, a TIC 00 table, FM sub,
+his hummed voice). Five new patch cards; Glass keys (MOD1 00, operator rows) and Field loop
+updated. Open choices pending his answers are in `.choice` boxes. The guide also reads as an
+EPUB (`epub.json`; `app-only`/`book-only`).
+
 ## Revision 4, 2026-10-25: his device findings, the whole song built
 
 DRAFT until he reviews it. Andrew tried steps 1 to 3 on his M8 (6.6.3) on a plane and asked for

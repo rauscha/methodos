@@ -13,6 +13,7 @@
 //   <m8-progression></m8-progression>          the chords, where they are going
 //   <m8-envelope inst="03" mod="1"></m8-envelope>   ADSR, AHD, or a trig envelope (the duck)
 //   <m8-filter inst="03"></m8-filter>          cutoff over time + response over a spectrum
+//   <m8-mix show="reverb delay"></m8-mix>      the song's mixer and effect settings (spec.mix)
 //
 // Everything comes from the song spec. Every element in the spec carries the walkthrough
 // step that introduces it (`step`), and may carry the last step it belongs to (`until`); a
@@ -44,6 +45,11 @@ const cutoffHz = (v) => 20 * 2 ** (v / 255 * 10);          // 00 = 20 Hz, FF = 2
 const lfoCents = (amt) => amt / 255 * 4800;                // 40 = about one octave each way
 const resQ = (v) => 0.7 + v / 255 * 14;
 const djHz = (v) => (v >= 0x80 ? 20000 : 30 * 2 ** (v / 0x80 * 9.4)); // DJ filter: 80 = open
+// The table speed row: TABLE TIC in the older specs, TBL. TIC as his 6.6.3 photo labels it.
+const tableTic = (inst) => inst.params['TABLE TIC'] ?? inst.params['TBL. TIC'];
+// Instruments that sound a chord from one typed note: Hypersynth banks, a Macrosynth
+// paraphonic COLOR shape (`shapes`), or a rendered chord in a Sampler (`voicing`).
+const isChordal = (inst) => !!inst && (inst.type === 'HYPERSYNTH' || !!inst.shapes || !!inst.voicing);
 
 // ---------------------------------------------------------------- song model
 
@@ -97,14 +103,19 @@ function build(spec, step) {
               const retrig = !!cell.i;
               const inst = cell.i ?? last?.inst ?? null;
               const vh = cell.v ?? last?.vh ?? '64';
+              // COL is relative (his test): a note with an instrument number resets COLOR,
+              // and COL adds to it, wrapping at FF.
+              const col = fx.find((f) => f.cmd === 'COL');
+              const base0 = retrig ? insts[inst]?.params.COLOR : last?.color;
               const ev = {
                 ...base, note: midiOf(cell.n) + tsp, name: cell.n, v: hex(vh), vh, inst, change: !retrig,
                 bank: crd?.val ?? (retrig ? insts[inst]?.params.CHORD : last?.bank),
+                color: col && isHex(base0) ? hx2((hex(base0) + hex(col.val)) & 0xFF) : base0,
               };
               events.push(ev); last = ev;
             } else if (last) {
               // FX with no note (CRD, say): the held note keeps sounding and changes in place.
-              const ev = { ...base, note: last.note, name: last.name, v: last.v, vh: last.vh, inst: last.inst, change: true, bank: crd?.val ?? last.bank };
+              const ev = { ...base, note: last.note, name: last.name, v: last.v, vh: last.vh, inst: last.inst, change: true, bank: crd?.val ?? last.bank, color: last.color };
               events.push(ev); last = ev;
             } else {
               events.push({ ...base, fxOnly: true }); // commands on a track with no note (DJC)
@@ -120,7 +131,7 @@ function build(spec, step) {
     }
     if (pos === 0) continue;
     const len = Math.round(pos);
-    expandTables(spec, insts, events, len);
+    expandTables(spec, insts, events, len, on);
     events.sort((a, b) => a.t - b.t);
     events.forEach((e, i) => {
       const next = events[i + 1];
@@ -132,7 +143,7 @@ function build(spec, step) {
   const len = Math.max(16, ...tracks.map((t) => t.len));
   // Harmony entries show from their own step, only inside the song's length. They describe
   // one loop; `loopBars` is its length, so an arrangement cycles through it.
-  const harmony = (spec.harmony ?? []).filter((h) => (h.step ?? 0) <= step && (h.bar - 1) * 16 < len);
+  const harmony = (spec.harmony ?? []).filter((h) => on(h) && (h.bar - 1) * 16 < len);
   const loopBars = Math.max(1, ...harmony.map((h) => h.bar + (h.hold ?? 1) - 1));
   return { spec, step, tracks, len, insts, on, harmony, loopBars, songRows };
 }
@@ -140,7 +151,7 @@ function build(spec, step) {
 // Tables: rows of transposes (N), volumes (V) and FX, run at the instrument's TABLE TIC
 // (ticks per row) for as long as the note plays. The demo reads N, V and HOP 0Y, which
 // jumps to row Y and keeps no time of its own (unverified: see the Tables page).
-function expandTables(spec, insts, events, len) {
+function expandTables(spec, insts, events, len, on = () => true) {
   const subs = [];
   events.forEach((ev, k) => {
     if (ev.off || ev.fxOnly || ev.change) return;
@@ -148,8 +159,8 @@ function expandTables(spec, insts, events, len) {
     if (!inst) return;
     const id = fxOf(ev, 'TBL')?.val ?? inst.table;
     const table = spec.tables?.[id];
-    if (!table) return;
-    const tic = hex(fxOf(ev, 'TIC')?.val ?? inst.params['TABLE TIC'] ?? '01');
+    if (!table || !on(table)) return; // a table arrives at its own step
+    const tic = hex(fxOf(ev, 'TIC')?.val ?? tableTic(inst) ?? '01');
     if (!tic || tic > 0xFB) return; // TIC00 and the map modes aren't modeled
     let stop = len;
     for (let j = k + 1; j < events.length; j++) if (!events[j].fxOnly) { stop = events[j].t; break; }
@@ -185,8 +196,15 @@ function expandTables(spec, insts, events, len) {
 
 // The notes a Hypersynth event actually sounds: the played note plus its bank's intervals.
 // The bank comes from CRD, or carries over from the row before.
+// A paraphonic Macrosynth sounds the shape its COLOR lands on; a Sampler holding a rendered
+// chord sounds the render's voicing above the typed note.
 function chordOf(model, ev) {
   const inst = model.insts[ev.inst];
+  if (inst?.shapes) {
+    const s = inst.shapes.find((x) => x.color === (ev.color ?? inst.params.COLOR));
+    return s ? s.iv.map((i) => ev.note + hex(i)) : [ev.note];
+  }
+  if (inst?.voicing) return inst.voicing.iv.map((i) => ev.note + hex(i));
   if (!inst || inst.type !== 'HYPERSYNTH') return [ev.note];
   const bankId = ev.bank ?? inst.params.CHORD ?? '00';
   const bank = inst.banks.find((b) => b.bank === bankId) ?? inst.banks[0];
@@ -313,6 +331,9 @@ class Voice {
     engine.route(this.out, p);
     const envMod = inst.mods.find((m) => m.type.startsWith('ADSR') && m.dest === 'VOLUME');
     this.env = envMod ? new Env(envMod, engine.tempo) : null;
+    // An AHD on VOLUME (ticks) shapes each note and runs its course; it needs no OFF.
+    const ahdMod = !envMod && inst.mods.find((m) => m.type === 'AHD ENV' && m.dest === 'VOLUME');
+    this.ahd = ahdMod ? ahdOf(ahdMod, engine.tempo) : null;
     this.ducks = inst.mods.filter((m) => m.type === 'TRIG ENV' && m.dest === 'VOLUME').map((m) => ({ mod: m, e: ahdOf(m, engine.tempo) }));
     this.duckHits = [];
     this.lfo = null;
@@ -361,7 +382,13 @@ class Voice {
   trigger(ev, notes, t, glide) {
     this.setNotes(notes, t, ev.v / 0x7f, ev, glide);
     if (this.env) this.env.trigger(t, this.vca.gain);
-    else {
+    else if (this.ahd) {
+      const { a, h, d, amt } = this.ahd, g = this.vca.gain;
+      hold(g, t);
+      g.linearRampToValueAtTime(amt, t + Math.max(a, 0.004));
+      g.setValueAtTime(amt, t + Math.max(a, 0.004) + h);
+      g.linearRampToValueAtTime(0, t + Math.max(a, 0.004) + h + Math.max(d, 0.01));
+    } else {
       hold(this.vca.gain, t);
       this.vca.gain.setTargetAtTime(1, t, 0.004);
     }
@@ -441,12 +468,14 @@ class HyperVoice extends Voice {
 // Every other instrument plays on one plain stand-in: a sine and a triangle (balance on
 // COLOR) into a wavefolder (strength on TIMBRE). It is the Macrosynth SINE TRIANGLE model in
 // spirit, and only the notes for anything else.
+// A chord (a paraphonic shape) gets one such pair per note, each quieter, so four notes
+// sound about as loud as one. A single note plays exactly as it always has.
 class MacroVoice extends Voice {
   setNotes(notes, t, vel, ev, glide) {
     const { ctx } = this.engine;
     const p = this.inst.params;
-    if (!this.oscs.length) {
-      const mix = isHex(p.COLOR) ? hex(p.COLOR) / 255 : 0.3;
+    while (this.oscs.length < notes.length) {
+      const mix = isHex(p.COLOR) && !this.inst.shapes ? hex(p.COLOR) / 255 : 0.3;
       const fold = ctx.createWaveShaper();
       const k = 1 + (isHex(p.TIMBRE) ? hex(p.TIMBRE) : 0x18) / 255 * 6;
       const curve = new Float32Array(1024);
@@ -457,13 +486,20 @@ class MacroVoice extends Voice {
       const tr = ctx.createOscillator(); tr.type = 'triangle';
       const gs = ctx.createGain(); gs.gain.value = 1 - mix;
       const gt = ctx.createGain(); gt.gain.value = mix;
+      const lvl = ctx.createGain(); lvl.gain.value = 1;
       s.connect(gs).connect(pre); tr.connect(gt).connect(pre);
-      pre.connect(fold).connect(this.filter);
+      pre.connect(fold).connect(lvl).connect(this.filter);
       s.start(t); tr.start(t);
-      this.oscs = [[s, tr]];
+      s._lvl = lvl;
+      this.oscs.push([s, tr]);
       this.out.gain.value = 0.5;
     }
-    for (const o of this.oscs[0]) this.pitch(o.frequency, hz(notes[0]), t, glide);
+    const each = 1 / Math.sqrt(notes.length);
+    this.oscs.forEach((pair, i) => {
+      const n = notes[i];
+      if (n != null) for (const o of pair) this.pitch(o.frequency, hz(n), t, glide);
+      pair[0]._lvl.gain.setTargetAtTime(n != null ? each : 0, t, 0.005);
+    });
     this.out.gain.setTargetAtTime(0.55 * vel, t, 0.005);
   }
 }
@@ -992,7 +1028,7 @@ class M8Instrument extends Panel {
     const id = this.getAttribute('inst');
     const raw = this.model.spec.instruments[id];
     if (!raw) { this.textContent = `No instrument ${id} in this song.`; return; }
-    const show = (this.getAttribute('show') ?? 'params mods banks').split(/\s+/);
+    const show = (this.getAttribute('show') ?? 'params ops mods banks').split(/\s+/);
     const instNew = this.isNew(raw);
     let html = `<figure class="m8-screen"><figcaption><span class="m8-title">INST. ${id}</span>${instNew && show.includes('params') ? newTag() : ''}</figcaption>`;
     if (show.includes('params')) {
@@ -1000,6 +1036,13 @@ class M8Instrument extends Panel {
         <div><dt>TYPE</dt><dd>${raw.type}</dd></div><div><dt>NAME</dt><dd>${raw.name}</dd></div>
         ${raw.params.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}
       </dl>`;
+    }
+    if (show.includes('ops') && raw.ops) {
+      // An FM instrument's four operator rows, A to D, as the screen lists them under ALGO.
+      html += `<table class="m8-banks m8-ops"><caption>Operators</caption>
+        <thead><tr><th>OP</th><th>SHAPE</th><th>RATIO</th><th>LEV</th><th>FB</th><th>MOD</th></tr></thead><tbody>
+        ${raw.ops.map((o) => `<tr><td>${o.op}</td><td>${o.shape}</td><td>${o.ratio}</td><td>${o.lev}</td><td>${o.fb}</td><td class="m8-nowrap">${(o.mod ?? []).join(' ')}</td></tr>`).join('')}
+        </tbody></table>`;
     }
     if (show.includes('banks') && raw.banks) {
       const banks = raw.banks.filter(this.model.on);
@@ -1015,11 +1058,35 @@ class M8Instrument extends Panel {
       const mods = (raw.mods ?? []).filter(this.model.on);
       if (mods.length) {
         html += `<div class="m8-mods">${mods.map((m) => `<div class="m8-mod ${this.isNew(m) ? 'm8-is-new' : ''}">
-          <p class="m8-modhead">MOD ${m.slot} <b>${m.type}</b> → ${m.dest} ${this.isNew(m) ? newTag() : ''}</p>
+          <p class="m8-modhead">MOD ${m.slot} <b>${m.num ? m.num + ' ' : ''}${m.type}</b> → ${m.dest} ${this.isNew(m) ? newTag() : ''}</p>
           <dl class="m8-params">${Object.entries(m.p).map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl></div>`).join('')}</div>`;
       }
     }
     this.innerHTML = html + '</figure>';
+  }
+}
+
+// The song's mixer and effect settings, as screens: spec.mix holds [parameter, value] lists
+// for the reverb, delay, ModFX and mixer, and the instrument EQ slots by number.
+class M8Mix extends Panel {
+  setup() {
+    if (this._built) return; this._built = true;
+    const mix = this.model.spec.mix;
+    if (!mix) { this.textContent = 'No mixer settings in this spec.'; return; }
+    const show = (this.getAttribute('show') ?? 'reverb delay modfx mixer eq').split(/\s+/);
+    const titles = { reverb: 'REVERB', delay: 'DELAY', modfx: 'MOD FX', mixer: 'MIXER' };
+    const grid = (rows) => `<dl class="m8-params m8-wide">${rows.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>`;
+    let html = '';
+    for (const part of show) {
+      if (part === 'eq') {
+        for (const [slot, bands] of Object.entries(mix.eq ?? {})) {
+          html += `<figure class="m8-screen"><figcaption><span class="m8-title">EQ ${slot}</span><span class="m8-note">bands not listed stay flat</span></figcaption>${grid(bands)}</figure>`;
+        }
+      } else if (mix[part]) {
+        html += `<figure class="m8-screen"><figcaption><span class="m8-title">${titles[part] ?? part.toUpperCase()}</span></figcaption>${grid(mix[part])}</figure>`;
+      }
+    }
+    this.innerHTML = html;
   }
 }
 
@@ -1038,7 +1105,8 @@ class M8Roll extends Panel {
           const t0 = ev.t + k * tr.len;
           const t1 = Math.min(ev.end + k * tr.len, this.model.len);
           const chord = chordOf(this.model, ev);
-          chord.forEach((n, i) => this.notes.push({ n, t0, t1, track: tr.n, top: i === chord.length - 1, inst: this.model.insts[ev.inst]?.type }));
+          const chordal = isChordal(this.model.insts[ev.inst]);
+          chord.forEach((n, i) => this.notes.push({ n, t0, t1, track: tr.n, top: i === chord.length - 1, inst: this.model.insts[ev.inst]?.type, chordal }));
         }
       }
     }
@@ -1047,7 +1115,7 @@ class M8Roll extends Panel {
     this.resized = () => { this._p = undefined; this.draw(this._lastP ?? null); };
     if (!this.querySelector('.m8-readout')) {
       this.innerHTML = `<p class="m8-legend">${this.tracks.map((t) => {
-        const kind = this.notes.find((x) => x.track === t.n)?.inst === 'HYPERSYNTH' ? 'outlined, hatched blocks; the top voice is the thick line' : 'solid blocks';
+        const kind = this.notes.some((x) => x.track === t.n && x.chordal) ? 'outlined, hatched blocks; the top voice is the thick line' : 'solid blocks';
         return `<span>T${t.n} ${t.name}: ${kind}<span class="book-only">.</span></span>`;
       }).join('')}</p><p class="m8-readout" aria-live="off"></p>`;
     }
@@ -1118,7 +1186,7 @@ class M8Roll extends Panel {
       const on = p != null && p >= nt.t0 && p < nt.t1;
       if (on) sounding.push(nt);
       const x0 = x(nt.t0) + 1, x1 = Math.max(x0 + 2, x(nt.t1) - 1), yy = y(nt.n) - rowH / 2 + 1, hh = rowH - 2;
-      if (nt.inst === 'HYPERSYNTH') {
+      if (nt.chordal) {
         g.fillStyle = on ? mid : paper;
         g.fillRect(x0, yy, x1 - x0, hh);
         g.save(); g.beginPath(); g.rect(x0, yy, x1 - x0, hh); g.clip();
@@ -1133,7 +1201,7 @@ class M8Roll extends Panel {
       }
     }
     // top voice line
-    const tops = this.notes.filter((nt) => nt.top && nt.inst === 'HYPERSYNTH').sort((a, b) => a.t0 - b.t0);
+    const tops = this.notes.filter((nt) => nt.top && nt.chordal).sort((a, b) => a.t0 - b.t0);
     if (tops.length) {
       // Through the middle of the top notes, on a paper halo, so it reads as its own line.
       const path = () => {
@@ -1153,7 +1221,7 @@ class M8Roll extends Panel {
     // readout
     const ro = this.querySelector('.m8-readout');
     if (ro) {
-      if (p == null) ro.textContent = 'Press Play to hear it. Sounding notes show here.';
+      if (p == null) ro.textContent = this.player?.hasAttribute('silent') ? 'No demo sound on this page: the roll shows the notes as written.' : 'Press Play to hear it. Sounding notes show here.';
       else {
         const byTrack = this.tracks.map((t) => {
           const ns = sounding.filter((s) => s.track === t.n).map((s) => spell(s.n));
@@ -1177,7 +1245,7 @@ class M8Progression extends Panel {
       <li data-i="${i}">
         <span class="m8-roman">${h.roman}</span>
         <span class="m8-chord">${h.chord}<span class="book-only">:</span></span>
-        <span class="m8-sub">bar${h.hold ? 's' : ''} ${h.bar}${h.hold ? '–' + (h.bar + h.hold - 1) : ''} · root ${h.bass} · pad ${h.upper}</span>
+        <span class="m8-sub">bar${h.hold ? 's' : ''} ${h.bar}${h.hold ? '–' + (h.bar + h.hold - 1) : ''} · root ${h.bass} · ${this.model.spec.upperLabel ?? 'pad'} ${h.upper}</span>
         <span class="m8-move">→ ${h.move}</span>
         <span class="m8-state"></span>
       </li>`).join('')}</ol>`;
@@ -1347,7 +1415,7 @@ class M8Envelope extends Panel {
       const st = live.pos % 16;
       const lv = live.v.duckAt(live.t);
       g.fillStyle = ink; g.beginPath(); g.arc(x(st), y(levelAt(st)), 6, 0, Math.PI * 2); g.fill();
-      if (ro) ro.textContent = `Now: row ${hx1(Math.floor(st))}, the pad at ${Math.round(lv * 100)}% of its level`;
+      if (ro) ro.textContent = `Now: row ${hx1(Math.floor(st))}, ${this.getAttribute('subject') ?? 'the pad'} at ${Math.round(lv * 100)}% of its level`;
     } else if (ro) ro.textContent = 'Press Play: a dot rides the dip as the bar goes by.';
   }
 }
@@ -1463,6 +1531,7 @@ customElements.define('m8-roll', M8Roll);
 customElements.define('m8-progression', M8Progression);
 customElements.define('m8-envelope', M8Envelope);
 customElements.define('m8-filter', M8Filter);
+customElements.define('m8-mix', M8Mix);
 
 // Book mode (tools/render_pages.cjs adds html.book before its snapshot): app-only parts are
 // removed outright, not just hidden, so no hidden panel is left for the snapshot to picture.

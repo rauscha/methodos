@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The memory</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../patches/faded-memory.json" silent="No demo sound: the sample is your own render."></m8-player>
+
+<p class="kicker">Patch card · Sampler · resample</p>
+<h1>The memory</h1>
+
+<p>Your own four bars, rendered on the M8 and played back an octave down at half speed: the same chords,
+slower, lower, duller and gently warbling, as if remembered. Played backward, every note swells in and
+cuts off. Faded Polaroid's intro, breakdown and outro (<a href="page:faded-polaroid-9">step 9</a> has the
+render step by step). The idea works on any loop.</p>
+
+<h2>Make it</h2>
+<ol class="do">
+  <li>A spare song row with only the parts you want (no bass: half speed puts it below hearing).</li>
+  <li>Select those cells (<kbd>SHIFT</kbd>+<kbd>OPTION</kbd>, then arrows), double-tap <kbd>EDIT</kbd>, choose
+  <b>QUICK RENDER</b>.</li>
+  <li>In the new instrument's sample editor: SELECT exactly the bars you want (<kbd>OPTION</kbd>+<kbd>UP</kbd>/<kbd>DOWN</kbd>
+  steps in beats), CROP, a short fade-out at the end, NAME, SAVE.</li>
+  <li>Set it as below, then copy it to a second slot with PLAY REV for the backward version.</li>
+</ol>
+
+<h2>The instrument</h2>
+<m8-instrument inst="09"></m8-instrument>
+<ul>
+  <li><b>Played on C-3</b>: an octave below its own pitch, so half speed. Four bars fill eight.</li>
+  <li><b>PLAY FWD, not looping</b>: one note plays the whole row and ends with it; the crop sets the length.</li>
+  <li><b>DEGRADE 30, LOWPASS 70</b>: grainy and dull, so it sits behind anything live. Slowing it down
+  already took its top end down.</li>
+  <li><b>LFO on PITCH, AMT 02, FREQ 20</b>: one wow every two bars, deeper than the live parts' tape
+  wobble.</li>
+  <li><b>DRY 90, REV 50</b> (60 on the backward copy, 0A), no delay: echoes would blur the slowed chords.</li>
+</ul>
+
+<h2>Play it</h2>
+<m8-chain chain="07" compact></m8-chain>
+<m8-phrase phrase="70" compact></m8-phrase>
+
+<h2>Try</h2>
+<ul>
+  <li>C-2: two octaves down, quarter speed. Very dull, very long.</li>
+  <li>The backward copy under a freeze (<code>XRZ</code>) on its last chord, as Faded Polaroid ends.</li>
+</ul>
+
+<p class="unverified">Not yet tried: that C-4 plays a sample at its own pitch (so C-3 is half speed),
+whether QUICK RENDER includes the send effects, and where PLAY REV starts. Does the memory on C-3 sound
+exactly an octave below the loop?</p>
+</main>
+</body>
+</html>

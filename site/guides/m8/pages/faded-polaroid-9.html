@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Faded Polaroid 9: the memory</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../songs/faded-polaroid.json" step="9" label="Rows 00 to 02; the memory itself is your render, so row 02 is silent here"></m8-player>
+
+<p class="kicker">Faded Polaroid · step 9 of 10</p>
+<h1>The memory</h1>
+
+<p>The song opens and closes with itself: your A section rendered to a sample on the M8, played
+back an octave down at half speed, dulled, and in the outro played backward. This step makes that
+sample. It's <b>resampling</b>: turning part of your song into a sample you can play like any other.
+The finished instrument is the <a href="page:faded-memory">memory</a> card; <a href="page:sampling">Sampling</a>
+has the background.</p>
+
+<p class="demo-note app-only">The demo can't play your render, so track 7 is silent here. Its chain
+and phrase still light up on row 02.</p>
+
+<h2>Pitch is speed</h2>
+<p>A Sampler plays a sample slower to play it lower. One octave down is exactly half speed, so four
+bars last eight. Render your four bars, play them an octave below their own pitch, and they fill
+one eight-bar song row: the same chords, slower and lower, and duller, because slowing a sample
+also brings its top end down. That dullness is the point.</p>
+
+<h2>Render your A section, without the bass</h2>
+<p>Half speed would put the bass at D1 to G0, below hearing and full of mud. So the render leaves it
+out. Rather than mute a track and wonder whether the render honors mutes, it's made from a spare song
+row holding only the arp and the chords.</p>
+<ol class="do">
+  <li><b>A spare row.</b> Song view, row <code>0F</code> (any empty row will do): track 1 chain
+  <code>01</code>, track 3 chain <code>03</code>. Leave track 2 empty.</li>
+  <li><b>Select it.</b> Cursor on row 0F, track 1. <kbd>SHIFT</kbd>+<kbd>OPTION</kbd> starts a selection;
+  <kbd>RIGHT</kbd> twice covers tracks 1 to 3 of that row.</li>
+  <li><b>Render.</b> Double-tap <kbd>EDIT</kbd>. The dialog offers QUICK RENDER, REALTIME and EXTERNAL
+  ONLY; choose <b>QUICK RENDER</b> (offline, the tracks only). <kbd>OPTION</kbd> would cancel.</li>
+  <li><b>Find it.</b> When it finishes, a new Sampler instrument holding the render appears and
+  becomes the default for new notes. Note its number.</li>
+  <li><b>Open the sample editor.</b> In that instrument, <kbd>EDIT</kbd> on <b>EDIT</b>, to the right of
+  SAMPLE.</li>
+  <li><b>Select four bars.</b> On <b>SELECT</b>, leave the start at the beginning. Move the end with
+  <kbd>OPTION</kbd>+<kbd>UP</kbd>/<kbd>DOWN</kbd>, which steps in beats at the song's tempo, to 16 beats:
+  the end of your bar 4. The help line shows the position. (The render is eight bars, your loop
+  twice.)</li>
+  <li><b>Crop.</b> On <b>PROCESS</b>, <kbd>EDIT</kbd>+<kbd>LEFT</kbd>/<kbd>RIGHT</kbd> to CROP, then
+  <kbd>EDIT</kbd>.</li>
+  <li><b>Soften the cut.</b> SELECT the last half beat (from 15 beats 2 steps to 16 beats;
+  <kbd>OPTION</kbd>+<kbd>LEFT</kbd>/<kbd>RIGHT</kbd> steps by a sixteenth). PROCESS: the fade-out
+  (FADE IN/OUT). Bar 4's Gmaj9 is still at full level where the crop cuts it; the fade keeps the end
+  of the intro from clicking, and the start of the backward copy from clicking in.</li>
+  <li><b>Name and save.</b> NAME <code>FADED</code>, then SAVE. <kbd>OPTION</kbd> leaves the editor.</li>
+  <li><b>Move it to 09.</b> In the new instrument, <kbd>SHIFT</kbd>+<kbd>OPTION</kbd> copies it.
+  <kbd>OPTION</kbd>+<kbd>LEFT</kbd>/<kbd>RIGHT</kbd> to instrument 09; <kbd>SHIFT</kbd>+<kbd>EDIT</kbd> pastes.
+  Then clear the slot the render landed in: in the Instrument Pool view, <kbd>EDIT</kbd>+<kbd>OPTION</kbd>
+  on its name. (Or keep the number it landed on and type that wherever these pages say 09.)</li>
+  <li><b>Set 09</b> as below.</li>
+  <li><b>Make 0A.</b> On 09, <kbd>SHIFT</kbd>+<kbd>OPTION</kbd>; <kbd>OPTION</kbd>+<kbd>RIGHT</kbd> to 0A;
+  <kbd>SHIFT</kbd>+<kbd>EDIT</kbd>. Then PLAY <b>REV</b>, REV <code>60</code>, NAME FADED REV.</li>
+  <li><b>Clear row 0F</b>: <kbd>EDIT</kbd>+<kbd>OPTION</kbd> on each of its cells.</li>
+  <li><b>Check the length.</b> Play row 02 (below): the memory should end exactly as the row does. 6.6
+  fixed a quick-render length error; if it runs long or short, trim LEN.</li>
+</ol>
+
+<p class="unverified">Whether QUICK RENDER includes the send effects (reverb, delay, chorus). Either
+way works: with them, the haze is baked in; without, 09's own sends add it. <b>Report back:</b> which
+was it?</p>
+
+<h2>Instruments 09 and 0A</h2>
+<m8-instrument inst="09"></m8-instrument>
+<ul>
+  <li><b>PLAY FWD, LOOP ST. 00</b>: once, forward, not looping. One note plays the whole song row and
+  ends with it.</li>
+  <li><b>DEGRADE 30, CUTOFF 70</b>: grainy, and duller than anything live, so it sits behind.</li>
+  <li><b>DRY 90, MFX 20, DEL 00, REV 50</b>: quiet and far back; a little chorus for more tape warble;
+  no echoes, which would blur the slowed chords.</li>
+  <li><b>EQ 09</b>: a low cut, set up in step 10. At half speed the chords reach down to A2.</li>
+  <li><b>MOD 1, LFO on PITCH: SIN, FREE, AMT 02, FREQ 20</b>: a deeper, faster wow than the live parts,
+  one cycle every two bars. The memory is the more worn copy.</li>
+  <li>No volume envelope: the sample plays to its own end, which the crop put at the end of the row.</li>
+</ul>
+<p><b>0A</b> is the same with <b>PLAY REV</b> and <b>REV 60</b>: once, backward, so every pluck and chord
+swells in and cuts off. It sends more reverb so the outro's freeze (step 10) has a chord to hold.</p>
+
+<p class="unverified">Where PLAY REV starts. Written as "from the end, backward". If 0A plays nothing,
+or only part, use a reversed file instead: in 0A's sample editor, SELECT all, PROCESS REVERSE, NAME
+<code>FADEDREV</code>, SAVE (a new file, so 09 still plays forward), and set 0A to PLAY FWD.
+<b>Report back:</b> which did you need?</p>
+
+<h2>Play it on C-3</h2>
+<ol class="do">
+  <li>Song view, row <code>02</code>, track 7: chain <code>07</code>. In it, phrase 70 on row 0 and the
+  empty phrase FE on rows 1 to 7.</li>
+  <li>Phrase 70, row 0: <code>C-3</code>, V <code>60</code>, I <code>09</code>. One note, eight bars.</li>
+  <li>On tracks 1 to 6 of row 02, and track 7 of rows 00 and 01, put chain <code>FE</code>, the silence
+  chain, as in Low Tide's step 9: phrase <code>FD</code> (an OFF on row 0) on row 0, the empty phrase
+  FE on rows 1 to 7. An empty cell would send that track back to the start of its list (manual), out
+  of step with the others. Then the song plays your loop, the B section, and the memory on its own.</li>
+</ol>
+<m8-song></m8-song>
+<m8-chain chain="07" compact></m8-chain>
+<m8-phrase phrase="70" compact></m8-phrase>
+
+<p class="unverified">That C-4 plays a sample at its own pitch, so C-3 is half speed. The Sampling page
+asks the same; the manual's pitch limit starts above C-4. <b>Report back:</b> does the memory on C-3
+sound exactly an octave below your loop?</p>
+
+<div class="listen"><span class="label book-only">Listen for</span>Your four bars, now eight, an octave
+down: the arp's eighths have become slow quarters, the chords last two bars each, and everything is
+softer at the top and gently warbling. It should sound like your song heard through a wall, a long
+time ago. Then try 0A on C-3: the same, backward, every note swelling in.</div>
+
+<h2>Things to try</h2>
+<ul>
+  <li><code>C-2</code> instead of C-3: two octaves down, quarter speed, sixteen bars. Too long for one
+  row, and very dull, but worth hearing.</li>
+  <li>DEGRADE 00 for a cleaner memory; 60 for a cheaper one.</li>
+</ul>
+
+<p>Next: <a href="page:faded-polaroid-10">step 10, arrange and mix</a>.</p>
+</main>
+</body>
+</html>

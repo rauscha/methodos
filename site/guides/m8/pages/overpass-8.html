@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overpass 8: the FM bass</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../songs/overpass.json" step="8" label="The bass; the stabs and drums draw but don't sound"></m8-player>
+
+<p class="kicker">Overpass · step 8 of 10</p>
+<h1>The FM bass</h1>
+
+<p>A second FM patch, for the low end: deep and round, with a soft knock at the front of each note and
+no buzz. Short notes with rests between them, a pop up an octave, and a slide into every new chord an
+eighth early. It's FM used the other way from the Glass keys: low ratios and a very fast envelope. The
+card is <a href="page:fm-sub">FM sub</a>.</p>
+
+<m8-roll tracks="4,5"></m8-roll>
+
+<div class="listen"><span class="label book-only">Listen for</span>Each note is short, about an eighth,
+with a soft "thock" right at the front. The rests are half the line. At the end of every second bar the
+bass slides into the next root early, and the stabs arrive with it: the loop leans forward. And now you
+can hear whether the stabs are in tune with it.</div>
+
+<h2>The line</h2>
+<table class="values">
+  <thead><tr><th>Phrase</th><th>Bar</th><th>Rows and notes</th></tr></thead>
+  <tbody>
+    <tr><td>40</td><td>Am9 a</td><td>0 A1, 7 A1 (swung), D A2 (the octave pop)</td></tr>
+    <tr><td>41</td><td>Am9 b</td><td>0 A1, 9 A1, E D2 with <code>PSL 03</code>: an eighth early</td></tr>
+    <tr><td>42</td><td>Dm9 a</td><td>0 D2, 7 D2, D D3</td></tr>
+    <tr><td>43</td><td>Dm9 b</td><td>0 D2, 9 D2, E A1, <code>PSL 03</code>: down a fourth</td></tr>
+    <tr><td>44</td><td>Dm9, bar 7</td><td>0 D2, 7 D2, E E2, <code>PSL 03</code>: up a step</td></tr>
+    <tr><td>45</td><td>Em9, bar 8</td><td>0 E2, 9 E2, E A1, <code>PSL 03</code>: down a fifth, home</td></tr>
+  </tbody>
+</table>
+<p>Staff, bar 1: A1 eighth, rest, A1 eighth (on the swung row), rest, A2 eighth, sixteenth rest. Bar 2:
+A1 eighth, a long rest, A1 eighth, rest, D2 on the last eighth, sliding up into bar 3. Every note is a
+root; the octave pops stay on the root.</p>
+<ol class="do">
+  <li>Song view, row 00, track 4: chain <code>40</code>: <code>40 41 42 43 40 41 44 45</code>.</li>
+  <li>Every note on instrument <code>04</code>. Velocities as in the phrases: the root on row 0 loudest,
+  the repeats softer, the pop softest.</li>
+</ol>
+<m8-chain chain="40" compact></m8-chain>
+<m8-phrase phrase="40" compact></m8-phrase>
+<m8-phrase phrase="41"></m8-phrase>
+
+<h2>Instrument 04: FM sub</h2>
+<p>The same routing as the Glass keys, ALGO 07 <b>[A&gt;B]+[C&gt;D]</b>, so this reads like step 2: one FM
+pair, and one plain sine.</p>
+<m8-instrument inst="04" show="params ops"></m8-instrument>
+<ul>
+  <li><b>A into B, both at ratio 1.00</b>: a modulator at the note's own frequency bends B into a
+  rubbery body, and the low ratio keeps the bend harmonic. A's MOD slot is <code>1 LEV</code>: its level
+  follows MOD1, which starts at 00.</li>
+  <li><b>C at level 00</b>: off, so D is a plain sine at the note, the clean, deep fundamental under the
+  rubber.</li>
+  <li><b>CUTOFF 70</b>: takes the FM's upper partials off. No buzz.</li>
+  <li><b>PAN 80, DRY D0, sends 00</b>: mono, dead center, dry. The floor.</li>
+</ul>
+
+<h3>The knock</h3>
+<m8-instrument inst="04" show="mods"></m8-instrument>
+<m8-envelope inst="04" mod="2"></m8-envelope>
+<ul>
+  <li><b>MOD 1, AHD on VOLUME: ATK 01, HOLD 05, DEC 06.</b> 12 ticks, an eighth (0.24 s). One tick of
+  attack keeps the sine from clicking.</li>
+  <li><b>MOD 2, AHD on MOD1: AMT FF, ATK 00, HOLD 00, DEC 04.</b> A's level from full to nothing in 4
+  ticks, 80 ms: a burst of harmonics at the front of each note, then the plain rubbery tone. That's the
+  knock. The Glass keys' tine took 12 ticks; a bass wants it shorter.</li>
+</ul>
+<p>Step 10 adds a third mod, a trig envelope that ducks the bass under the kick.</p>
+
+<h2>Things to try</h2>
+<ul>
+  <li>MOD 2's DEC at 08: a longer, more obvious knock, closer to a plucked string.</li>
+  <li>A's ratio at 2.00, an octave up: hear how the body changes.</li>
+  <li><code>PSL 06</code> on the slides: lazier, more dub.</li>
+</ul>
+
+<p>Next: <a href="page:overpass-9">step 9, the voice</a>.</p>
+</main>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overpass 9: the voice</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../songs/overpass.json" step="9" label="The bass; your voice, the stabs and the drums draw but don't sound"></m8-player>
+
+<p class="kicker">Overpass · step 9 of 10</p>
+<h1>The voice</h1>
+
+<p>The hook is you: one hummed "ooh" on C, recorded on the M8's own mic, played back at other pitches
+as a melody. Short notes and hard cuts make it sound chopped, like fragments of a sung line rather than
+a singer. The backward copy swells in and cuts off. The instruments are on the
+<a href="page:hummed-voice">Hummed voice</a> card.</p>
+
+<div class="tip choice" data-choice="hummed-voice"><span class="label book-only">Draft choice.</span>This
+page uses your hummed voice. If you'd rather not hum, the fallback is at the end: a Macrosynth VOWEL FOF
+"ooh" rendered to a sample and used the same way. Every phrase stays the same.</div>
+
+<m8-roll tracks="5,6"></m8-roll>
+
+<div class="listen"><span class="label book-only">Listen for</span>The same line re-lit by the chord
+under it. Over Am9 the long C is the chord's third; over Dm9 the first bar's E, G, A are its ninth,
+eleventh and fifth. In bar 8, over Em9, the C would clash, so it drops to B. In the B section, the voice
+breaks into pieces, and some of them swell in backward.</div>
+
+<h2>The hook</h2>
+<p>Two bars, as it sounds with a C5 hum:</p>
+<table class="values">
+  <thead><tr><th>Bar</th><th>Notes</th><th>Rows</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>E5 dotted eighth, E5 sixteenth (a stutter), eighth rest, G5 eighth, A5 quarter,
+    eighth rest, G5 eighth</td><td>0, 3, 6, 8, E; OFFs on 4 and C</td></tr>
+    <tr><td>2</td><td>E5 dotted quarter, D5 eighth, C5 half</td><td>0, 6, 8</td></tr>
+  </tbody>
+</table>
+<p>A small climb to A and a fall past where it started, landing on C, the minor third. Pentatonic,
+syncopated on the "and"s: garage phrasing. Five pitches in all, so one hummed note pitched around stays
+natural.</p>
+
+<h3>Written as typed, an octave below as heard</h3>
+<p>The phrases say E-4, G-4, A-4, C-4. C-4 plays your hum at its own pitch, so if you hum the C as
+<b>C5</b>, in head voice, the hook sounds an octave above what's typed: E5 to A5, above the stabs. The
+roll draws the notes as typed. If C5 is out of reach, hum C4: the same phrases sound an octave lower,
+inside the stabs, which is muddier. Typing the hook an octave higher instead would pitch a C4 hum up an
+octave: thin, and likely past the pitch limit.</p>
+
+<h2>Record your C</h2>
+<p><b>A reference tone first</b>, so you hum on C:</p>
+<ol class="do">
+  <li>A spare instrument, <code>0D</code>: TYPE <b>WAVSYNTH</b>, SHAPE <b>SINE</b>, no mods (it holds for as
+  long as the note does), DRY <code>80</code>.</li>
+  <li>A spare phrase <code>0D</code> with <code>C-5</code> on row 0, instrument 0D; a spare chain
+  <code>0D</code> holding it; song row <code>0F</code>, track 1: chain 0D.</li>
+  <li>Headphones on: the speaker would leak into the mic.</li>
+</ol>
+<p><b>Record:</b></p>
+<ol class="do" start="4">
+  <li>Instrument <code>06</code>: TYPE <b>SAMPLER</b>. <kbd>EDIT</kbd> on <b>REC.</b> opens the sample editor
+  ready to record.</li>
+  <li><b>SRC</b> <code>MIC</code>. <b>VOL</b>: hum, and raise it until the loudest part sits high without
+  clipping.</li>
+  <li><b>PLAY</b>: set it to row <code>0F</code>, then <kbd>EDIT</kbd> on PLAY, so the song plays the
+  reference tone.</li>
+  <li>Start recording with the <b>power button</b> (no key click). Hum one "ooh" on the reference C, in
+  head voice, breathy, for 3 or 4 seconds, and <b>let it end softly</b>: the soft end is where the backward
+  copy will swell from. Stop.</li>
+</ol>
+<p class="unverified">How PLAY starts the song while recording. If it doesn't play row 0F, play row 0F in
+the song view, listen, stop, then record and hum from memory; DETUNE fixes the rest. <b>Report back:</b>
+how does PLAY in the sample editor start the song?</p>
+<p class="unverified">How a recording stops: <kbd>EDIT</kbd> again, or the power button (the field loop
+card asks too). <b>Report back:</b> what stopped it?</p>
+
+<p><b>Edit:</b></p>
+<ol class="do" start="8">
+  <li><b>SELECT</b> from the very start of the hum (zoom in with <kbd>EDIT</kbd>+<kbd>LEFT</kbd>/<kbd>RIGHT</kbd>)
+  to about <b>1.8 seconds</b> later, soft end included. PROCESS <b>CROP</b>. Why 1.8 s: the last backward
+  swell (phrase 69, E-4, from beat 2) has three beats to reach the next downbeat, 1.45 s at 124 BPM,
+  and E-4 plays the sample about a quarter faster than C-4.</li>
+  <li><b>MONO: MIX</b> (if it's stereo) and <b>NORMALIZE</b>. The voice plays up to A-4, nine semitones
+  above C-4, so mono and 16-bit matter here; recordings are already 16-bit (changelog).</li>
+  <li>A short fade at the very end, the last tenth of a second: FADE IN/OUT.</li>
+  <li><b>NAME</b> <code>VOICE C</code>. <b>SAVE</b>. <kbd>OPTION</kbd> leaves.</li>
+</ol>
+<p><b>Tune and copy:</b></p>
+<ol class="do" start="12">
+  <li>With row 0F playing the reference, preview C-4 on 06 (<kbd>EDIT</kbd>+<kbd>PLAY</kbd> in the instrument
+  view). Move <b>DETUNE</b> (80 is in tune; the second digit moves sixteenths of a semitone) until the two
+  sound as one.</li>
+  <li>Copy 06 to <code>09</code> (<kbd>SHIFT</kbd>+<kbd>OPTION</kbd>, <kbd>OPTION</kbd>+<kbd>RIGHT</kbd>,
+  <kbd>SHIFT</kbd>+<kbd>EDIT</kbd>): PLAY <b>REV</b>, DRY <code>B0</code>, REV <code>60</code>, NAME VOICE REV.</li>
+  <li>Clear row 0F, chain 0D, phrase 0D and instrument 0D.</li>
+</ol>
+
+<h2>Instruments 06 and 09</h2>
+<m8-instrument inst="06"></m8-instrument>
+<ul>
+  <li><b>PLAY FWD, LOOP ST. 00</b>: every note starts at the front of the hum and doesn't loop; a long note
+  ends with the hum.</li>
+  <li><b>DEGRADE 10, CUTOFF C0</b>: a little lo-fi; the hiss off, the breath kept.</li>
+  <li><b>DRY C0, MFX 10, DEL 18, REV 40</b>: close, a little echo in the gaps. <b>EQ 06</b>: a low cut, in
+  step 10.</li>
+  <li><b>MOD 1, ADSR on VOLUME</b>: ATK until the help line reads about <b>0.005 s</b>, REL about
+  <b>0.030 s</b>, SUS FF. A tiny fade in and out, so the hard cuts don't click. ADSR's smallest values
+  start around 2 ms (4.0 meetup).</li>
+  <li><b>09</b>: the same with PLAY REV, DRY B0 and REV 60: further away, and every note a swell.</li>
+</ul>
+
+<p class="unverified">The pitch limit. A-4 on a mono 16-bit sample should play; if it doesn't,
+DOWNSAMPLE it in the sample editor. <b>Report back:</b> does A-4 play?</p>
+
+<h2>Enter it</h2>
+<ol class="do">
+  <li>Row 00, track 6: chain <code>60</code>: <code>60 61 60 FD 60 61 60 62</code>. The hook three and a half
+  times: bar 4 is an OFF and silence, so the voice "only ever says half a phrase" at least once a loop.</li>
+  <li>Row 01, track 6: chain <code>61</code>: <code>66 FE 67 FE 66 FE 68 69</code>, the B fragments.</li>
+  <li>Phrase FD is an OFF on row 0; FE is empty.</li>
+</ol>
+<m8-phrase phrase="60"></m8-phrase>
+<m8-phrase phrase="61" compact></m8-phrase>
+<m8-phrase phrase="62" compact></m8-phrase>
+
+<h3>The B fragments: backward on 09</h3>
+<ul>
+  <li><b>66</b> (Fmaj9): the opening, E, E, G, then the A on instrument 09: it swells in backward.</li>
+  <li><b>67</b> (Gmaj9): a backward G through the bar, then a short forward A.</li>
+  <li><b>68</b> (Gmaj9): G and A, forward, short.</li>
+  <li><b>69</b>: a backward E from beat 2, swelling into the breakdown's first downbeat, where the forward
+  E answers it.</li>
+</ul>
+<m8-chain chain="61" compact></m8-chain>
+<m8-phrase phrase="69" compact></m8-phrase>
+
+<p class="unverified">Where PLAY REV starts. Written as "from the end, backward", so each backward note
+swells for as long as the sample is. If phrase 69's E runs past the downbeat, lower 09's LEN; if 09
+plays nothing, use a reversed file (09's sample editor: SELECT all, PROCESS REVERSE, NAME VOICE REV,
+SAVE as a new file, PLAY FWD). <b>Report back:</b> does the backward E end on the breakdown's first
+beat?</p>
+
+<h2>If you'd rather not hum: VOWEL FOF</h2>
+<ol class="do">
+  <li>Instrument <code>0D</code> as a <b>MACROSYN</b>, SHAPE <code>17 VOWEL FOF</code>. TIMBRE about
+  <code>C0</code>, toward "oo" (TIMBRE morphs a, e, i, o, u: manual); COLOR <code>40</code>. MOD 1 an ADSR on
+  VOLUME: ATK about 0.05 s, REL about 0.3 s, by the help line.</li>
+  <li>Hold <code>C-5</code> for two bars in a spare row, QUICK RENDER it (as in step 4), and edit and copy
+  the render exactly as from "Edit" above.</li>
+</ol>
+<p class="unverified">The model's number: <code>17</code> is Braids' order in hex, unverified, as for the
+flute in Faded Polaroid. If 17 isn't VOWEL FOF, find it by name. <b>Report back:</b> what does SHAPE read
+at 17?</p>
+
+<p>Next: <a href="page:overpass-10">step 10, arrange and mix</a>.</p>
+</main>
+</body>
+</html>

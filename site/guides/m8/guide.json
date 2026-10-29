@@ -166,6 +166,270 @@
       ]
     },
     {
+      "id": "faded-polaroid",
+      "group": "Songs",
+      "title": "Faded Polaroid",
+      "description": "Your own song, finished: D major at 90 BPM. Your paraphonic chords and hand-written arp become the A section; a breathy flute lead, a B section with a borrowed chord, a dusty sampled beat, and your loop resampled half speed for the intro and outro. DRAFT.",
+      "layout": "steps",
+      "pages": [
+        {
+          "id": "faded-polaroid-1",
+          "title": "The plan and the setup",
+          "file": "pages/faded-polaroid-1.html",
+          "summary": "Where your four bars stand and what gets added; the tracks, and saving a copy of your session.",
+          "tags": [
+            "harmony",
+            "setup"
+          ]
+        },
+        {
+          "id": "faded-polaroid-2",
+          "title": "The chords",
+          "file": "pages/faded-polaroid-2.html",
+          "summary": "Your paraphonic chords: COLOR as a chord shape, and COL as a relative command from a base of 80.",
+          "tags": [
+            "macrosynth",
+            "harmony",
+            "relative fx"
+          ],
+          "links": [
+            "polaroid-chords"
+          ]
+        },
+        {
+          "id": "faded-polaroid-3",
+          "title": "The bass",
+          "file": "pages/faded-polaroid-3.html",
+          "summary": "Roots under the rootless chords, on the Velvet bass: three beats long, in ticks.",
+          "tags": [
+            "bass",
+            "wavsynth"
+          ],
+          "links": [
+            "velvet-bass"
+          ]
+        },
+        {
+          "id": "faded-polaroid-4",
+          "title": "The arp",
+          "file": "pages/faded-polaroid-4.html",
+          "summary": "Your arp on a Wavsynth triangle: a pluck in ticks, a tape wobble on pitch, and why even rows ignore swing.",
+          "tags": [
+            "arp",
+            "wavsynth",
+            "lfo"
+          ],
+          "links": [
+            "polaroid-arp"
+          ]
+        },
+        {
+          "id": "faded-polaroid-5",
+          "title": "The drums",
+          "file": "pages/faded-polaroid-5.html",
+          "summary": "A dusty sampled beat, a fill every fourth bar with NTH, swing on two tracks, and a bass figure.",
+          "tags": [
+            "drums",
+            "sampler",
+            "groove"
+          ]
+        },
+        {
+          "id": "faded-polaroid-6",
+          "title": "The lead",
+          "file": "pages/faded-polaroid-6.html",
+          "summary": "Writing the hook: resting on ninths, ties, OFFs and slides, on a flute model.",
+          "tags": [
+            "lead",
+            "melody",
+            "macrosynth"
+          ],
+          "links": [
+            "polaroid-lead"
+          ]
+        },
+        {
+          "id": "faded-polaroid-7",
+          "title": "The lead's table",
+          "file": "pages/faded-polaroid-7.html",
+          "summary": "A table that shapes every note in time: a scoop into pitch, then a vibrato after a beat.",
+          "tags": [
+            "tables",
+            "vibrato"
+          ],
+          "links": [
+            "polaroid-lead",
+            "tables"
+          ]
+        },
+        {
+          "id": "faded-polaroid-8",
+          "title": "The B section",
+          "file": "pages/faded-polaroid-8.html",
+          "summary": "Two bars a chord and a borrowed Gm9: a half-step fade line in four tracks.",
+          "tags": [
+            "harmony",
+            "borrowed chord"
+          ]
+        },
+        {
+          "id": "faded-polaroid-9",
+          "title": "The memory",
+          "file": "pages/faded-polaroid-9.html",
+          "summary": "Resampling: your A section rendered, played an octave down at half speed, and backward.",
+          "tags": [
+            "sampling",
+            "resampling"
+          ],
+          "links": [
+            "faded-memory",
+            "sampling"
+          ]
+        },
+        {
+          "id": "faded-polaroid-10",
+          "title": "Arrange and mix",
+          "file": "pages/faded-polaroid-10.html",
+          "summary": "Nine rows, the hook's one resolution, a reverb freeze, shimmer, and the mix.",
+          "tags": [
+            "arrangement",
+            "mix",
+            "reverb"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "overpass",
+      "group": "Songs",
+      "title": "Overpass",
+      "description": "A night song built from samples, 124 BPM in A minor, 2-step meeting deep house. FM keys rendered into chord stabs played on every root, a sliced beat, a table that counts, an FM bass, and your own hummed voice as the hook. DRAFT.",
+      "layout": "steps",
+      "pages": [
+        {
+          "id": "overpass-1",
+          "title": "The plan and the setup",
+          "file": "pages/overpass-1.html",
+          "summary": "Chord memory, and why the song is built from samples; the tracks and a new song at 124 BPM.",
+          "tags": [
+            "harmony",
+            "setup"
+          ]
+        },
+        {
+          "id": "overpass-2",
+          "title": "One FM voice",
+          "file": "pages/overpass-2.html",
+          "summary": "FM synthesis on the Glass keys: carriers and modulators, ratios, and an envelope on a modulator for the tine.",
+          "tags": [
+            "fm",
+            "envelope"
+          ],
+          "links": [
+            "glass-keys"
+          ]
+        },
+        {
+          "id": "overpass-3",
+          "title": "Four tracks, one chord",
+          "file": "pages/overpass-3.html",
+          "summary": "One FM instrument on four tracks, one note each: two rootless chords built on C.",
+          "tags": [
+            "fm",
+            "polyphony"
+          ]
+        },
+        {
+          "id": "overpass-4",
+          "title": "Render the chords",
+          "file": "pages/overpass-4.html",
+          "summary": "Selection to sample: QUICK RENDER, crop, normalize, mono, and two stab instruments.",
+          "tags": [
+            "sampling",
+            "resampling"
+          ],
+          "links": [
+            "chord-stabs",
+            "sampling"
+          ]
+        },
+        {
+          "id": "overpass-5",
+          "title": "Chord memory",
+          "file": "pages/overpass-5.html",
+          "summary": "One rendered chord on every root: the whole progression in parallel, on the 2-step grid.",
+          "tags": [
+            "harmony",
+            "sampler"
+          ],
+          "links": [
+            "chord-stabs"
+          ]
+        },
+        {
+          "id": "overpass-6",
+          "title": "The drums",
+          "file": "pages/overpass-6.html",
+          "summary": "Slicing one kit, a 2-step beat, a heavy swing on groove 00, and a RET build.",
+          "tags": [
+            "drums",
+            "slicing",
+            "groove"
+          ]
+        },
+        {
+          "id": "overpass-7",
+          "title": "A table that counts",
+          "file": "pages/overpass-7.html",
+          "summary": "TIC 00: a table that moves one row per stab, so every hit is slightly different.",
+          "tags": [
+            "tables"
+          ],
+          "links": [
+            "chord-stabs",
+            "tables"
+          ]
+        },
+        {
+          "id": "overpass-8",
+          "title": "The FM bass",
+          "file": "pages/overpass-8.html",
+          "summary": "FM for bass: a low ratio and a four-tick knock; a syncopated line that slides in early.",
+          "tags": [
+            "fm",
+            "bass"
+          ],
+          "links": [
+            "fm-sub"
+          ]
+        },
+        {
+          "id": "overpass-9",
+          "title": "The voice",
+          "file": "pages/overpass-9.html",
+          "summary": "Record a hummed C on the M8's mic, tune it, and play it as the hook; backward fragments.",
+          "tags": [
+            "sampling",
+            "recording",
+            "voice"
+          ],
+          "links": [
+            "hummed-voice"
+          ]
+        },
+        {
+          "id": "overpass-10",
+          "title": "Arrange and mix",
+          "file": "pages/overpass-10.html",
+          "summary": "Nine rows: half-time B, a breakdown build into the drop, a dub, a duck, and a mono low end.",
+          "tags": [
+            "arrangement",
+            "mix"
+          ]
+        }
+      ]
+    },
+    {
       "id": "techniques",
       "title": "Techniques",
       "description": "Hands-on walkthroughs of Tables and sampling.",
@@ -274,6 +538,34 @@
           ]
         },
         {
+          "id": "polaroid-lead",
+          "title": "Polaroid lead",
+          "file": "pages/polaroid-lead.html",
+          "summary": "A breathy flute on a worn cassette: a scoop into each note and a vibrato that blooms, from a table.",
+          "tags": [
+            "macrosynth",
+            "lead",
+            "tables"
+          ],
+          "links": [
+            "faded-polaroid-6",
+            "faded-polaroid-7"
+          ]
+        },
+        {
+          "id": "faded-memory",
+          "title": "The memory",
+          "file": "pages/faded-memory.html",
+          "summary": "Your own loop resampled and played an octave down at half speed, dull and warbling; backward for a swell.",
+          "tags": [
+            "sampler",
+            "resampling"
+          ],
+          "links": [
+            "faded-polaroid-9"
+          ]
+        },
+        {
           "id": "struck-bell",
           "title": "Struck bell",
           "file": "pages/struck-bell.html",
@@ -322,6 +614,48 @@
           ]
         },
         {
+          "id": "chord-stabs",
+          "title": "Chord stabs",
+          "file": "pages/chord-stabs.html",
+          "summary": "An FM chord rendered to one sample and played on every root: chord memory, with a table that counts.",
+          "tags": [
+            "sampler",
+            "chords",
+            "tables"
+          ],
+          "links": [
+            "overpass-5",
+            "glass-keys"
+          ]
+        },
+        {
+          "id": "fm-sub",
+          "title": "FM sub",
+          "file": "pages/fm-sub.html",
+          "summary": "A deep, round FM bass with a four-tick knock at the front and no buzz.",
+          "tags": [
+            "fm",
+            "bass"
+          ],
+          "links": [
+            "overpass-8"
+          ]
+        },
+        {
+          "id": "hummed-voice",
+          "title": "Hummed voice",
+          "file": "pages/hummed-voice.html",
+          "summary": "One hummed note on the M8's mic, played as a chopped melody, forward and backward.",
+          "tags": [
+            "sampler",
+            "voice",
+            "recording"
+          ],
+          "links": [
+            "overpass-9"
+          ]
+        },
+        {
           "id": "field-loop",
           "title": "Field recording loop",
           "file": "pages/field-loop.html",
@@ -344,13 +678,20 @@
     "kit/m8kit.css",
     "kit/m8kit.js",
     "patches/acid-bass.json",
+    "patches/chord-stabs.json",
     "patches/drum-kit.json",
+    "patches/faded-memory.json",
     "patches/faded-polaroid.json",
     "patches/field-loop.json",
+    "patches/fm-sub.json",
     "patches/glass-keys.json",
+    "patches/hummed-voice.json",
+    "patches/polaroid-lead.json",
     "patches/sampling.json",
     "patches/struck-bell.json",
     "patches/table-arp.json",
-    "songs/low-tide.json"
+    "songs/faded-polaroid.json",
+    "songs/low-tide.json",
+    "songs/overpass.json"
   ]
 }

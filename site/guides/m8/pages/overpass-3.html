@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overpass 3: four tracks, one chord</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../songs/overpass.json" step="3" label="Cm9, then Cmaj9, one note per track"></m8-player>
+
+<p class="kicker">Overpass · step 3 of 10</p>
+<h1>Four tracks, one chord</h1>
+
+<p>An M8 track plays one note at a time, and the FM synth has no chord mode. So a chord takes four
+tracks: the same instrument on tracks 5 to 8, one note each, all on the same row. Two chords, one
+bar each, with a bar of silence after each for the ring. Next step they become samples.</p>
+
+<m8-roll tracks="5,6,7,8"></m8-roll>
+
+<div class="listen"><span class="label book-only">Listen for</span>Row 00: four tines at once, then
+one warm minor chord ringing out over the bar. Row 01: the same, but brighter. Only the bottom note
+moved, E♭ up to E. That one half step is the whole difference between the song's cold half and its
+warm half.</div>
+
+<h2>Two chords built on C</h2>
+<table class="values">
+  <thead><tr><th>Chord</th><th>Track 5</th><th>Track 6</th><th>Track 7</th><th>Track 8</th></tr></thead>
+  <tbody>
+    <tr><td>Cm9</td><td>E♭4 <code>D#4</code></td><td>B♭4 <code>A#4</code></td><td>D5</td><td>G5</td></tr>
+    <tr><td>Cmaj9</td><td>E4</td><td>B4</td><td>D5</td><td>G5</td></tr>
+  </tbody>
+</table>
+<ul>
+  <li><b>Rootless</b>, as in the other two songs: the third, the seventh, the ninth and the fifth,
+  upward. No C. The bass will play every root.</li>
+  <li><b>Built on C</b> because the render will be played on other notes, and a Sampler moves a sample
+  by the distance from C-4 (if C-4 is its own pitch: step 5 asks). Built on C, the note you type
+  names the chord: A-3 plays Am9, D-4 plays Dm9.</li>
+  <li><b>An open voicing</b>, a fourth or more between most neighbors, so the chord stays clear when it's
+  played low.</li>
+</ul>
+
+<h2>Enter it</h2>
+<ol class="do">
+  <li>Song view, row 00: chains <code>90</code>, <code>91</code>, <code>92</code>, <code>93</code> on tracks 5,
+  6, 7 and 8. Row 01: <code>94</code> to <code>97</code>.</li>
+  <li>Each chain is two rows: the chord's phrase, then <code>FE</code>, an empty phrase, so the note
+  rings through a second bar. That bar is the tail the render needs.</li>
+  <li>Each phrase is one note on row 0: V <code>60</code>, I <code>0A</code>. The M8 spells E♭ and B♭ as
+  <code>D#</code> and <code>A#</code>.</li>
+</ol>
+<m8-song></m8-song>
+<m8-chain chain="90" compact></m8-chain>
+<m8-phrase phrase="90,91,92,93"></m8-phrase>
+<m8-phrase phrase="94,95,96,97"></m8-phrase>
+
+<p class="unverified">That one FM instrument on four tracks gives four independent voices. It should:
+each track plays its own note. If row 00 sounds like one note, or notes cut each other off, copy 0A
+to three more slots and give each track its own copy. <b>Report back:</b> does row 00 sound four
+notes?</p>
+
+<h2>Things to try</h2>
+<ul>
+  <li>Mute tracks 5 to 7 (<kbd>OPTION</kbd>+<kbd>SHIFT</kbd> on each) and listen to the top voice alone,
+  then add the others back one at a time.</li>
+  <li>Move track 8's G5 down an octave to G4: a closed voicing, muddier. Back to G5.</li>
+</ul>
+
+<p>Next: <a href="page:overpass-4">step 4, render the chords</a>.</p>
+</main>
+</body>
+</html>

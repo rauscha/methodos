@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Polaroid lead</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../patches/polaroid-lead.json" label="The Faded Polaroid hook over the chords"></m8-player>
+
+<p class="kicker">Patch card · Macrosynth · flute lead</p>
+<h1>Polaroid lead</h1>
+
+<p>A breathy, airy lead, a recorder or wooden flute on a worn cassette: a little air and a small
+scoop at the start of each note, short notes plain, long notes growing a vibrato after about a beat.
+Faded Polaroid's hook (<a href="page:faded-polaroid-6">step 6</a>, and its table in
+<a href="page:faded-polaroid-7">step 7</a>).</p>
+
+<p class="demo-note app-only">The browser plays the notes, slides and the table's breath on a plain tone.
+Mute <b>T3</b> to hear the lead alone.</p>
+
+<m8-instrument inst="04" show="params mods"></m8-instrument>
+
+<h2>Play it</h2>
+<p>The hook's first half, over the chords: a beat of rest, A5 and D6 eighths, E6 held into bar 2,
+then C♯6 and B5, which rests on the chord's ninth.</p>
+<m8-roll tracks="3,4"></m8-roll>
+<m8-phrase phrase="40" compact></m8-phrase>
+
+<h2>Its table</h2>
+<p>TBL. TIC <code>03</code>: three ticks a row. Rows 0–2 scoop the note up into pitch in a sixteenth
+(<code>FIN</code> is relative, so F0, 08, 08 come back to zero) while V swells it; rows 3–7 wait; a beat in,
+rows 8–9 start a vibrato (<code>PVB</code>, speed then depth) and <code>HOP 09</code> holds it there.</p>
+<m8-table table="04"></m8-table>
+<p>A second table, 81, picked with <code>TBL 81</code>, has a deeper scoop and a wider vibrato, for the
+hook's second telling.</p>
+
+<h2>Why these values</h2>
+<ul>
+  <li><b>SHAPE 1F FLUTED</b>: the BLOWN / FLUTED physical model. TIMBRE is air pressure, COLOR the
+  instrument's geometry, and it has no filter of its own (manual).</li>
+  <li><b>TIMBRE 60, COLOR 40</b>: enough pressure to speak on an eighth note; a short, wooden bore.</li>
+  <li><b>DEGRADE 08, CUTOFF A8</b>: cassette grain, a soft top.</li>
+  <li><b>ADSR on VOLUME</b>, ATK about 0.030 s and REL about 0.250 s by the help line, SUS FF: it holds
+  while the note does and lets go quickly on an OFF. Since 6.6 a retrigger resumes from the current
+  level, so tied notes join into one breath.</li>
+  <li><b>AHD on TIMBRE, AMT 18, DEC 06</b>: a puff of extra air for one sixteenth.</li>
+  <li><b>LFO on PITCH, AMT 01, FREQ 80</b>: one slow wobble every eight bars, the tape.</li>
+  <li><b>DRY B0, DEL 30, REV 70</b>: soft, with dotted-eighth echoes and a long tail.</li>
+</ul>
+
+<h2>Try</h2>
+<ul>
+  <li>TIMBRE 80: more air, nearer to overblowing.</li>
+  <li><code>1E BLOWN</code>, the reed model beside it: a reedier voice for the same line.</li>
+</ul>
+
+<p class="unverified">Not yet tried on an M8: the model's name and number (<code>1F FLUTED</code> is
+Braids' order in hex), whether it speaks on an eighth note, and PVB in a table. What does SHAPE read at
+1E and 1F?</p>
+</main>
+</body>
+</html>

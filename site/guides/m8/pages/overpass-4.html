@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overpass 4: render the chords</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../songs/overpass.json" step="4" label="The two chords you render"></m8-player>
+
+<p class="kicker">Overpass · step 4 of 10</p>
+<h1>Render the chords</h1>
+
+<p>Now the M8 records its own four tracks into a sample: <b>resampling</b>. One render per chord, each
+cropped, normalized, made mono and given a short fade, then moved into its own Sampler instrument.
+After this, the four FM tracks are cleared, and the whole chord is one note on one track. That's
+polyphony from a mono tracker, and the start of chord memory. <a href="page:sampling">Sampling</a> has
+the background.</p>
+
+<h2>Render each chord</h2>
+<p>For row 00 (Cm9), then again for row 01 (Cmaj9):</p>
+<ol class="do">
+  <li><b>Select the four cells.</b> Song view, cursor on track 5 of the row. <kbd>SHIFT</kbd>+<kbd>OPTION</kbd>
+  starts a selection; <kbd>RIGHT</kbd> three times covers tracks 5 to 8.</li>
+  <li><b>Render.</b> Double-tap <kbd>EDIT</kbd>; choose <b>QUICK RENDER</b>. Both bars of each chain, the
+  chord and its tail, are rendered.</li>
+  <li>A new Sampler instrument holding the render appears and becomes the default for new notes. In it,
+  <kbd>EDIT</kbd> on <b>EDIT</b> opens the sample editor.</li>
+  <li><b>Crop to the chord.</b> On SELECT, start at the beginning; move the end with
+  <kbd>OPTION</kbd>+<kbd>UP</kbd>/<kbd>DOWN</kbd> (beats at the song's tempo) to <b>4 beats</b>: by then 0A's
+  one-bar fade has finished. PROCESS <b>CROP</b>.</li>
+  <li><b>NORMALIZE</b>, with the whole sample selected. Quick renders are already 16-bit (changelog:
+  "32-bit normalization process before finalizing to 16-bit").</li>
+  <li><b>MONO: MIX.</b> The four voices are all centered and dry, so nothing is lost, and a mono file halves
+  what the pitch limit has to stream: the stabs play up to E-4, four semitones above C-4.</li>
+  <li><b>A short fade at the end:</b> SELECT the last beat, PROCESS the fade-out (FADE IN/OUT).</li>
+  <li><b>NAME</b> <code>CM9</code> (for row 01: <code>CMAJ9</code>). <b>SAVE</b>. <kbd>OPTION</kbd> leaves.</li>
+</ol>
+
+<h2>Into 05 and 08</h2>
+<ol class="do" start="9">
+  <li>On the CM9 instrument, <kbd>SHIFT</kbd>+<kbd>OPTION</kbd> copies it; <kbd>OPTION</kbd>+<kbd>LEFT</kbd>/<kbd>RIGHT</kbd>
+  to <code>05</code>; <kbd>SHIFT</kbd>+<kbd>EDIT</kbd> pastes. Set 05 as below.</li>
+  <li>On 05, <kbd>SHIFT</kbd>+<kbd>OPTION</kbd>; go to <code>08</code>; <kbd>SHIFT</kbd>+<kbd>EDIT</kbd>. On 08's
+  SAMPLE, <kbd>EDIT</kbd>+<kbd>LEFT</kbd>/<kbd>RIGHT</kbd> on the name steps through the folder to
+  <code>CMAJ9</code>.</li>
+  <li>Clear the two slots the renders landed in (Instrument Pool view, <kbd>EDIT</kbd>+<kbd>OPTION</kbd> on each
+  name), and clear tracks 5 to 8 of rows 00 and 01 (<kbd>EDIT</kbd>+<kbd>OPTION</kbd> on each cell). Those
+  tracks and rows take the song's parts from step 5.</li>
+</ol>
+
+<h2>Instruments 05 and 08</h2>
+<m8-instrument inst="05" show="params"></m8-instrument>
+<ul>
+  <li><b>SAMPLE CM9</b> on 05, <b>CMAJ9</b> on 08. Both play once (PLAY FWD); the crop put the hit at the
+  start.</li>
+  <li><b>TRANSP. ON</b>, <b>DETUNE 80</b>: nothing transposes them, and in tune, so the typed note names
+  the chord.</li>
+  <li><b>TBL. TIC 00</b>: the table in step 7 moves one row per stab. Set it now.</li>
+  <li><b>DEGRADE 10, LOWPASS, CUTOFF B0, RES 10</b>: a little worn, the tine softened. Round, not glassy.</li>
+  <li><b>DRY C0, MFX 18, DEL 10, REV 38</b> on 05; 08 is the same with <b>REV 50</b>, further in.
+  The chorus gives the mono render width.</li>
+  <li><b>EQ 05</b> on both: a low cut, set up in step 10.</li>
+</ul>
+<p>Their envelopes come in step 5, when you first play them.</p>
+
+
+<div class="listen"><span class="label book-only">Listen for</span>In 05, <kbd>EDIT</kbd>+<kbd>PLAY</kbd>
+previews it: the whole Cm9 from one key, tine and all. It should sound like row 00 did, a little
+duller. Then 08: the same, brighter.</div>
+
+<h2>Things to try</h2>
+<ul>
+  <li>Before you clear tracks 5 to 8, render Cm9 again with 0A's MOD 2 DEC at <code>18</code> (a longer
+  shimmer), name it CM9B, and compare the two in 05 by swapping SAMPLE.</li>
+</ul>
+
+<p>Next: <a href="page:overpass-5">step 5, chord memory</a>.</p>
+</main>
+</body>
+</html>

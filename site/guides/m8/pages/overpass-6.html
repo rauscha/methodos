@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overpass 6: the drums</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../songs/overpass.json" step="6" silent="No demo sound: the drums are slices of your sample. The phrases below show the pattern."></m8-player>
+
+<p class="kicker">Overpass · step 6 of 10</p>
+<h1>The drums</h1>
+
+<p>One drum file, cut into slices, and the slices re-sequenced as a 2-step beat: a broken kick, a
+backbeat clap, swung hats. Then a heavier swing than Low Tide's, on every track at once, and a clap
+roll that builds into a drop. New here: <b>slicing</b>, and <b>RET</b>.</p>
+
+<h2>Slice one file</h2>
+<ol class="do">
+  <li><b>Load it.</b> Instrument <code>01</code>: TYPE <b>SAMPLER</b>. <kbd>EDIT</kbd> on <b>LOAD</b> opens the
+  file browser; <kbd>PLAY</kbd> previews, <kbd>EDIT</kbd> loads. Ideally one file with a short kick, a dry
+  clap, a rim, a closed hat, an open hat and a shaker; a break works too.</li>
+  <li><b>Open the sample editor:</b> <kbd>EDIT</kbd> on <b>EDIT</b>.</li>
+  <li><b>Mark the hits.</b> Either PROCESS <b>SLICE:AUTO</b>, which finds the hits, or chop by ear: cursor
+  on SLICE MARKER, press <kbd>PLAY</kbd>, and tap <kbd>EDIT</kbd> on each hit ("lazy chop", since 5.0).</li>
+  <li><b>Save it as your own file.</b> NAME <code>OVERKIT</code>, SAVE. A new name keeps the factory file as
+  it was; the markers are stored in the WAV. <kbd>OPTION</kbd> leaves.</li>
+  <li><b>Play the markers:</b> SLICE <code>01 FILE</code>. The first slice plays on <code>C-1</code>, the next on
+  <code>C#1</code>, and on up (manual).</li>
+  <li><b>Find the six sounds.</b> Play C-1 upward and write down which note is which.</li>
+</ol>
+<table class="values">
+  <thead><tr><th>Note</th><th>Slice</th><th>Should be</th><th>Played by</th></tr></thead>
+  <tbody>
+    <tr><td>C-1</td><td>0</td><td>a short kick</td><td>01, track 1</td></tr>
+    <tr><td>C#1</td><td>1</td><td>spare: a second kick</td><td></td></tr>
+    <tr><td>D-1</td><td>2</td><td>a dry clap</td><td>02, track 2</td></tr>
+    <tr><td>D#1</td><td>3</td><td>a rim</td><td>02, track 2</td></tr>
+    <tr><td>E-1</td><td>4</td><td>a closed hat</td><td>03, track 3</td></tr>
+    <tr><td>F-1</td><td>5</td><td>an open hat</td><td>03, track 3</td></tr>
+    <tr><td>F#1</td><td>6</td><td>a shaker</td><td>03, track 3</td></tr>
+  </tbody>
+</table>
+<p>A lazy chop of a break puts the slices in the order the break plays them, which won't be this one.
+Then change only the N column of the drum phrases: the rhythms stay.</p>
+
+<p class="unverified">SLICE's values. The manual names <code>01 FILE</code> for markers but not what the
+other values read (the Sampling page asks too). If 01 FILE doesn't play your markers, step SLICE through
+its values and watch the help line. <b>Report back:</b> what does SLICE read for its first few values?</p>
+
+<h2>Three instruments, one file</h2>
+<p>Set 01, then copy it: <kbd>SHIFT</kbd>+<kbd>OPTION</kbd>, <kbd>OPTION</kbd>+<kbd>RIGHT</kbd> to 02,
+<kbd>SHIFT</kbd>+<kbd>EDIT</kbd>; again for 03. Change each copy's filter, levels and envelope.</p>
+<table class="values">
+  <thead><tr><th>Setting</th><th>01 KICK</th><th>02 CLAP</th><th>03 HATS</th></tr></thead>
+  <tbody>
+    <tr><td>FILTER</td><td>LOWPASS</td><td>HIGHPASS</td><td>HIGHPASS</td></tr>
+    <tr><td>CUTOFF</td><td>FF</td><td>20</td><td>50</td></tr>
+    <tr><td>AMP</td><td>10</td><td>00</td><td>00</td></tr>
+    <tr><td>PAN</td><td>80</td><td>80</td><td>90</td></tr>
+    <tr><td>DRY</td><td>E0</td><td>C8</td><td>A0</td></tr>
+    <tr><td>REV</td><td>00</td><td>30</td><td>10</td></tr>
+    <tr><td>AHD HOLD</td><td>03</td><td>04</td><td>00</td></tr>
+    <tr><td>AHD DEC</td><td>06</td><td>0C</td><td>0C</td></tr>
+  </tbody>
+</table>
+<ul>
+  <li><b>TRANSP. OFF</b> on all three: a transpose would play the wrong slices.</li>
+  <li><b>DEGRADE 00</b>: crisp. The worn sound belongs to the stabs and the voice.</li>
+  <li><b>The kick</b> keeps its low end, with a little more push (AMP 10); the clap and hats lose theirs
+  through a high-pass.</li>
+  <li><b>MOD 1 on each</b> is an AHD on VOLUME, AMT FF, ATK 00, in ticks: the kick 9 ticks, tight, so the
+  next slice never bleeds in; the clap 16; the hats an eighth, long enough for the open hat to ring
+  over the row after it. The next hat or shaker cuts the closed ones.</li>
+</ul>
+<m8-instrument inst="01" show="params"></m8-instrument>
+
+<h2>The 2-step beat</h2>
+<table class="values">
+  <thead><tr><th>Part</th><th>Rows</th><th>Count</th></tr></thead>
+  <tbody>
+    <tr><td>Kick</td><td>0, A</td><td>1 and the "and" of 3. Never beat 3: that gap is the skip</td></tr>
+    <tr><td>Kick ghost</td><td>F, every fourth bar</td><td>4a, a soft nudge into beat 1</td></tr>
+    <tr><td>Clap</td><td>4, C</td><td>2 and 4</td></tr>
+    <tr><td>Rim</td><td>B, every other bar</td><td>3a, a quiet click right after the kick</td></tr>
+    <tr><td>Hats</td><td>even rows</td><td>closed hat; the off-beat eighths loud</td></tr>
+    <tr><td>Shaker</td><td>odd rows</td><td>every swung sixteenth, barely there</td></tr>
+  </tbody>
+</table>
+<ol class="do">
+  <li>Song view, row 00: track 1 chain <code>10</code> (<code>10 10 10 11</code>, twice); track 2 chain
+  <code>23</code> (<code>20 21 20 21 20 21 22 23</code>); track 3 chain <code>30</code> (<code>30 31</code>, four
+  times).</li>
+  <li>The phrases below. Velocity does the work in the hats: off-beat eighths <code>48</code>, on-beats
+  <code>24</code>–<code>28</code>, the shaker <code>14</code>–<code>1C</code>.</li>
+</ol>
+<m8-phrase phrase="11" compact></m8-phrase>
+<m8-phrase phrase="21" compact></m8-phrase>
+<m8-phrase phrase="30"></m8-phrase>
+
+<h2>Swing everything: groove 00</h2>
+<p>Low Tide put a second groove on two tracks. Here every track swings the same, so edit groove
+<b>00</b> itself, the default every track plays (manual: "Groove 00 is the default groove for all 8
+tracks"). No phrase needs a GRV.</p>
+<ol class="do">
+  <li>From any phrase, <kbd>SHIFT</kbd>+<kbd>UP</kbd> opens the groove view, on groove 00.</li>
+  <li>On row 0, <kbd>EDIT</kbd>+<kbd>UP</kbd>/<kbd>DOWN</kbd> changes rows 0 and 1 together until they read
+  <code>08</code> and <code>04</code>. Rows 2 to F stay <code>--</code>.</li>
+</ol>
+<figure class="m8-screen" aria-label="Groove 00">
+  <figcaption><span class="m8-title">GROOVE 00</span><span class="m8-note">the manual's second swing example</span></figcaption>
+  <table class="m8-grid"><tbody>
+    <tr class="m8-row-new"><th scope="row">0</th><td class="m8-is-new">08</td><td class="m8-newcol"><span class="m8-new">new</span></td></tr>
+    <tr class="m8-row-new"><th scope="row">1</th><td class="m8-is-new">04</td><td></td></tr>
+    <tr><th scope="row">2</th><td class="m8-dim">--</td><td></td></tr>
+    <tr><th scope="row">…</th><td class="m8-dim">--</td><td></td></tr>
+  </tbody></table>
+</figure>
+<p>08/04 is about 67% (the groove view shows the percentage since 6.5): every odd row lands two-thirds
+of the way through its eighth. That's the shaker, the kick's ghost, the rim, the stab on "1a", and
+later the voice's stutter. If it sounds like a shuffle rather than garage, try 48 PPQN and
+<code>0F 09</code>, about 62%.</p>
+
+<h2>The build: RET and KIL</h2>
+<p>Bars 7 and 8 of chain 23 build into the top of the loop. In the finished song they lead into the
+drop after the breakdown.</p>
+<ul>
+  <li><b>Phrase 22</b>: eighth-note claps, velocity rising from <code>14</code> to <code>30</code>.</li>
+  <li><b>Phrase 23, row 0: <code>RET 96</code>.</b> RET retriggers the row: Y is the ticks between
+  retrigs, and X from 8 to F makes each one louder (0 to 7, quieter). So <code>96</code> is a clap every
+  6 ticks, sixteenths, rising.</li>
+  <li><b>Row 8: <code>RET A3</code></b>: every 3 ticks, thirty-seconds, louder faster.</li>
+  <li><b>Row E: <code>KIL 00</code></b>: stops the clap at once. An eighth of silence before the drop.</li>
+</ul>
+<m8-phrase phrase="23" compact></m8-phrase>
+
+<p class="unverified">How far a RET reaches. It's written as if it keeps retriggering until the next note
+or a KIL; the 6.6.3 changelog fixed "a note or OFF command could possibly not stop an active RET",
+which points that way. If it only fills its own row, write the clap on every row of phrase 23 with the
+same RETs. <b>Report back:</b> does the build roll right through bar 8?</p>
+
+<div class="listen"><span class="label book-only">Listen for</span>The missing kick on beat 3: the beat
+seems to trip and catch itself every bar. The shaker is felt more than heard, swung hard; mute track 3
+and the groove goes stiff. Bar 8: the roll tightens and rises, then an eighth of nothing.</div>
+
+<h2>Things to try</h2>
+<ul>
+  <li>The spare second kick (C#1) on row F of phrase 11 instead of the ghost.</li>
+  <li><code>RET 46</code> on phrase 23's row 0: an X below 8 makes each retrig quieter, so the roll falls away instead of rising.</li>
+</ul>
+
+<p>Next: <a href="page:overpass-7">step 7, a table that counts</a>.</p>
+</main>
+</body>
+</html>

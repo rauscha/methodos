@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Faded Polaroid 8: the B section</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../songs/faded-polaroid.json" step="8" label="Your loop, then the B section"></m8-player>
+
+<p class="kicker">Faded Polaroid · step 8 of 10</p>
+<h1>The B section</h1>
+
+<p>Eight new bars, after your loop. Two things change at once: the chords slow down to two bars
+each, and one of them is borrowed from D minor. Over those bars a single line falls a half step at
+a time, B, B♭, A, and four tracks play it together. It's the moment the photo fades.</p>
+
+<m8-roll tracks="2,3,4"></m8-roll>
+
+<div class="listen"><span class="label book-only">Listen for</span>Bar 13 of the roll (the B
+section's bar 5): Gmaj9 turns into Gm9 while the bass holds G and the top A holds. Nothing moves
+except two inner notes, B down to B♭ and F♯ down to F, and the chord darkens. The lead sags from B
+to B♭ at the same moment. Then bar 15 into 16 resolves inside the chord, D down to C♯, and your
+loop comes back.</div>
+
+<h2>The harmony</h2>
+<table class="values">
+  <thead><tr><th>Bars</th><th>Chord, bass</th><th>Chord note, COL</th><th>Sounds</th></tr></thead>
+  <tbody>
+    <tr><td>1–2</td><td>Em9 (ii), E1</td><td><code>G-3</code>, <code>44</code>: C4, major 7</td><td>G3 B3 D4 F♯4</td></tr>
+    <tr><td>3–4</td><td>Gmaj9 (IV), G1</td><td><code>B-3</code>, <code>B4</code>: 34, minor 7</td><td>B3 D4 F♯4 A4</td></tr>
+    <tr><td>5–6</td><td>Gm9 (iv, from D minor), G1</td><td><code>A#3</code>, <code>44</code>: C4, major 7</td><td>B♭3 D4 F4 A4</td></tr>
+    <tr><td>7</td><td>Asus4 (V sus), A1</td><td><code>A-3</code>, <code>54</code>: D4, sus4 + octave</td><td>A3 D4 E4 A4</td></tr>
+    <tr><td>8</td><td>Aadd9 (V), A1</td><td><code>A-3</code>, <code>24</code>: A4</td><td>A3 C♯4 E4 B4</td></tr>
+  </tbody>
+</table>
+<ul>
+  <li><b>The harmonic rhythm halves.</b> Your loop changes chord every bar; the B section every two.
+  The music seems to slow down without the tempo changing. Your chord's two-bar AHD (step 2) means
+  one strike carries both bars.</li>
+  <li><b>The borrowed iv.</b> Gmaj9 to Gm9 changes two notes, B to B♭ and F♯ to F, under the same
+  bass note. Major IV to minor iv and home to I is one of the oldest nostalgic moves in pop.</li>
+  <li><b>Two shapes do new jobs.</b> The major 7 shape (C4) played on G is Em9 without its root; on
+  B♭ it's Gm9 without its root. The only new COLOR target is D4, for the sus.</li>
+  <li><b>Bar 7 to 8</b> resolves the sus inside the chord: D falls to C♯, and on into your Dmaj9.</li>
+</ul>
+
+<div class="tip choice" data-choice="borrowed-gm9"><span class="label book-only">Draft choice.</span>This
+page keeps the borrowed Gm9 (bars 5–6), as the plan does. To stay all in D major, bars 5–6 would take
+the softer F♯m7 (iii) instead, and the chords, arp, bass and lead of those two bars would be
+rewritten; nothing else changes. Your call.</div>
+
+<p class="unverified">The COLOR shape at <code>D4</code>. It's named sus4 + octave in the Braids
+source and the chat, not tried. If it isn't a sus, skip Asus4: bar 7 plays phrase 31 (Aadd9) for two
+bars, and the sus resolution goes. <b>Report back:</b> does <code>D4</code> sound like a sus4?</p>
+
+<h2>The fade line, in four tracks</h2>
+<table class="values">
+  <thead><tr><th>Bars</th><th>Lead</th><th>Chords' bottom</th><th>Arp</th></tr></thead>
+  <tbody>
+    <tr><td>1–2</td><td>B5</td><td>G3, B3 above it</td><td>B4</td></tr>
+    <tr><td>3–4</td><td>B5 again</td><td>B3</td><td>B3, B4</td></tr>
+    <tr><td>5–6</td><td>B♭5, sagging from B</td><td>B♭3</td><td>B♭3, B♭4</td></tr>
+    <tr><td>7–8</td><td>A5, sagging again</td><td>A3</td><td>A3, A4</td></tr>
+  </tbody>
+</table>
+<p>The bass joins for one eighth: B♭1 at the very end of bar 6, falling to A1.</p>
+<p>The lead's slow slide from B5 to B♭5 is the song's center: the note itself seems to warp, like a
+stretched tape. Nothing else is busy there.</p>
+
+<h2>Enter it</h2>
+<p>All in song row 01, under your loop in row 00.</p>
+<m8-song></m8-song>
+<ol class="do">
+  <li><b>Chords, chain 31:</b> <code>34 3F 33 3F 35 3F 36 31</code>. Phrase 3F is an empty phrase: the
+  chord keeps fading through it. 33 and 31 are your phrases from step 2. New phrases 34, 35, 36 below.</li>
+  <li><b>Lead, chain 41:</b> <code>4A FE 4A FE 4B FE 4C FE</code>. FE is an empty phrase: each note holds
+  two bars. 4B and 4C slide in slowly with <code>PSL 0C</code>, half a beat.</li>
+  <li><b>Arp, chain 12:</b> <code>18 18 19 19 1A 1A 1B 11</code>. Four new phrases, written your way;
+  bar 8 is your phrase 11.</li>
+  <li><b>Bass, chain 24:</b> <code>2A 2B 2C 2D 2C 2E 2F 25</code>.</li>
+  <li><b>Drums, chain 51:</b> phrase 52 seven times, then 53. Hats: chain 06 again.</li>
+  <li><b>Row 00, track 2:</b> change chain 21 to <code>22</code>. It's 21 with the last bar's step note
+  changed from E2 to F♯1 (phrase 28), so the bass steps down into the B section's E1.</li>
+</ol>
+<m8-phrase phrase="34,35,36"></m8-phrase>
+<m8-phrase phrase="4A,4B,4C"></m8-phrase>
+
+<h3>The arp, your way</h3>
+<table class="values">
+  <thead><tr><th>Phrase</th><th>Chord</th><th>Eighths, rows 0 to E</th></tr></thead>
+  <tbody>
+    <tr><td>18</td><td>Em9</td><td>E4 B4 F♯5 G4 D5 B4 G4 F♯5</td></tr>
+    <tr><td>19</td><td>Gmaj9</td><td>B3 F♯4 A4 D4 F♯5 A4 B4 F♯4</td></tr>
+    <tr><td>1A</td><td>Gm9</td><td>B♭3 F4 A4 D4 F5 A4 B♭4 F4</td></tr>
+    <tr><td>1B</td><td>Asus4</td><td>A3 E4 A4 D5 E5 A4 E4 D4</td></tr>
+  </tbody>
+</table>
+<ul>
+  <li>18 is your bar-1 shape (root, fifth, ninth, third, seventh) moved onto E.</li>
+  <li>1A is 19 with two notes lowered a half step, B to B♭ and F♯ to F: the arp fades with the chord.
+  Type B♭ as <code>A#</code>.</li>
+  <li>1B ends on D4, which falls to your C♯4 on the next downbeat: the sus resolves in the arp too.</li>
+  <li>Velocity <code>60</code> on the beat, <code>48</code> off it; instrument <code>01</code>.</li>
+</ul>
+<m8-phrase phrase="1A" compact></m8-phrase>
+
+<h3>The bass climbs</h3>
+<p>Your loop's bass falls (D, A, B, G); the B section's climbs: E1, the song's lowest note, then G1,
+G1, A1, and up a fourth to D2. Under both G chords it's the same bar (phrase 2C): the bass doesn't
+move while the chord darkens above it. Phrase 2E ends on B♭1, the fade line in the bass for one
+eighth.</p>
+<m8-chain chain="24" compact></m8-chain>
+
+<h2>Things to try</h2>
+<ul>
+  <li><code>PSL 18</code> on 4B: a whole beat of sag.</li>
+  <li>Mute everything but the lead and the chords for the B section: the two lines are the song.</li>
+</ul>
+
+<p>Next: <a href="page:faded-polaroid-9">step 9, the memory</a>.</p>
+</main>
+</body>
+</html>

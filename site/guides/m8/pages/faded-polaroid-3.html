@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Faded Polaroid 3: the bass</title>
+<link rel="stylesheet" href="../kit/m8kit.css">
+<script type="module" src="../kit/m8kit.js"></script>
+</head>
+<body>
+<main>
+<m8-player src="../songs/faded-polaroid.json" step="3" label="Chords and roots"></m8-player>
+
+<p class="kicker">Faded Polaroid · step 3 of 10</p>
+<h1>The bass</h1>
+
+<p>The chords leave their roots out, so the bass puts them back: one note a bar, held, on your
+<a href="page:velvet-bass">Velvet bass</a>. It's the floor the rootless shapes stand on. In step 5
+it grows a small figure; for now it's roots alone.</p>
+
+<m8-roll tracks="2,3"></m8-roll>
+
+<div class="listen"><span class="label book-only">Listen for</span><span class="app-only">Mute T2 on
+the strip</span><span class="book-only">Mute track 2 (<kbd>OPTION</kbd>+<kbd>SHIFT</kbd> on it)</span>
+and bar 1 sounds like F♯ minor, not D major. Unmute it and it's Dmaj9 again. That's what a rootless
+chord is. Then follow the bass alone: down a fourth, up a step, down a third, and up a fifth home.</div>
+
+<h2>Four roots</h2>
+<table class="values">
+  <thead><tr><th>Phrase</th><th>Bar</th><th>Chord</th><th>Row 0</th></tr></thead>
+  <tbody>
+    <tr><td>20</td><td>1</td><td>Dmaj9</td><td><code>D-2</code></td></tr>
+    <tr><td>21</td><td>2</td><td>Aadd9</td><td><code>A-1</code></td></tr>
+    <tr><td>22</td><td>3</td><td>Bm9</td><td><code>B-1</code></td></tr>
+    <tr><td>23</td><td>4</td><td>Gmaj9</td><td><code>G-1</code></td></tr>
+  </tbody>
+</table>
+<ol class="do">
+  <li>Song view, track 2, row 00: chain <code>02</code>. In it: <code>20 21 22 23 20 21 22 23</code>.</li>
+  <li>In each phrase, row 0: the root, V <code>70</code>, I <code>02</code>. Nothing else.</li>
+</ol>
+<m8-chain chain="02" compact></m8-chain>
+<m8-phrase phrase="20,21,22,23"></m8-phrase>
+
+<div class="tip choice" data-choice="bass-roots"><span class="label book-only">Draft choice.</span>Your
+chat had the roots at D2, A2, B1, G2, which leaps a seventh from A2 down to B1. These pages use
+D2, A1, B1, G1, so the line falls a fourth, steps up, and falls a third. Both are the same chords.
+If you prefer yours, type <code>A-2</code> in phrase 21 and <code>G-2</code> in phrase 23; the
+<a href="page:velvet-bass">Velvet bass</a> card plays yours.</div>
+
+<h2>Instrument 02: Velvet bass</h2>
+<p>A Wavsynth. Set it exactly as on the card.</p>
+<m8-instrument inst="02"></m8-instrument>
+<ul>
+  <li><b>SHAPE SAW, CUTOFF 60, RES 08</b>: a saw with its top shaved off. Full harmonics low down,
+  nothing fizzy: the felt.</li>
+  <li><b>AMP 18, LIM POST</b>: a little gain, clipped after the filter, so it thickens without
+  getting brighter.</li>
+  <li><b>DRY D0, REV 08</b>: loud enough to be the floor, almost dry. Reverb on the bass would
+  muddy the chords above it.</li>
+</ul>
+
+<h3>Three beats long</h3>
+<m8-envelope inst="02" mod="1"></m8-envelope>
+<p>The AHD on VOLUME is in ticks: ATK 01 (one tick, so no click), HOLD 18 (a beat), DEC 30 (two
+beats). Each root holds a beat and dies away over two more, so the bass breathes in each bar
+instead of droning. Because the chords hold for a bar, the last beat of each bar is chord
+alone.</p>
+
+<p>The M8 has no B♭ or E♭ to type; every flat is entered as a sharp. This song only needs that in
+step 8.</p>
+
+<h2>Things to try</h2>
+<ul>
+  <li>HOLD 30: the roots last the whole bar, and the song gets heavier.</li>
+  <li>SHAPE TRIANGLE: rounder still, and quieter on the M8's speaker.</li>
+</ul>
+
+<p>Next: <a href="page:faded-polaroid-4">step 4, the arp</a>.</p>
+</main>
+</body>
+</html>

@@ -26,14 +26,14 @@ chance; in the Faded Polaroid session its FM voice "wasn't becoming very crystal
 <p><b>ALGO 07</b> is <b>[A&gt;B]+[C&gt;D]</b>: two pairs, side by side. In each pair the first
 operator bends the second, and you hear the second. So B and D are what you hear; A and C only
 color them.</p>
-<table class="m8-banks">
-  <caption>Operator rows</caption>
-  <thead><tr><th>Op</th><th>Shape</th><th>RATIO</th><th>LEV</th><th>FB</th><th>MOD</th><th>Job</th></tr></thead>
+<m8-instrument inst="0A" show="ops"></m8-instrument>
+<table class="values">
+  <thead><tr><th>Op</th><th>Job</th></tr></thead>
   <tbody>
-    <tr><td>A</td><td>SIN</td><td>1.00</td><td>30</td><td>00</td><td>--</td><td>warms the body</td></tr>
-    <tr><td>B</td><td>SIN</td><td>1.00</td><td>C0</td><td>00</td><td>--</td><td>the body you hear</td></tr>
-    <tr><td>C</td><td>SIN</td><td>14.00</td><td>60</td><td>00</td><td>1 LEV</td><td>the tine's sparkle</td></tr>
-    <tr><td>D</td><td>SIN</td><td>1.00</td><td>80</td><td>00</td><td>--</td><td>the tine you hear</td></tr>
+    <tr><td>A</td><td>warms the body</td></tr>
+    <tr><td>B</td><td>the body you hear</td></tr>
+    <tr><td>C</td><td>the tine's sparkle; its level follows MOD1 (<code>1 LEV</code>)</td></tr>
+    <tr><td>D</td><td>the tine you hear</td></tr>
   </tbody>
 </table>
 
@@ -45,9 +45,13 @@ color them.</p>
 <ul>
   <li><b>C at ratio 14.00 into D at 1.00</b>: a modulator fourteen times the note's frequency
   puts a cluster of high, slightly bell-like partials on D. That's the glass.</li>
-  <li><b>C's MOD slot set to 1 LEV</b>, and <b>MOD 2 (AHD, DEC 0C) on MOD1</b>: the envelope
-  pulls C's level from full to nothing in an eighth note. The sparkle is only on the attack, as
-  on a real tine.</li>
+  <li><b>C's MOD slot set to 1 LEV</b>, <b>MOD1 at 00</b>, and <b>MOD 2 (AHD, DEC 0C) on MOD1</b>:
+  the envelope lifts MOD1 and lets it fall, pulling C's level from full to nothing in an eighth note.
+  The sparkle is only on the attack, as on a real tine. LEV "controls the level from 00 to the
+  currently set level" (manual).</li>
+  <li><b>MOD1 was FF on this card until Overpass</b> (2026-10-29). A mod adds to the value it moves,
+  as the Polaroid arp's cutoff envelope adds to its CUTOFF, so with MOD1 already at full the
+  envelope had nowhere to go and the tine would never fade. At 00 it can.</li>
   <li><b>MOD 1, AHD on VOLUME, DEC 60</b>: the whole note fades over a bar.</li>
   <li><b>A at 1.00 into B, low level (30)</b>: a gentle body. More A level makes it reedier.</li>
 </ul>
@@ -55,6 +59,13 @@ color them.</p>
 <p><b>Why Glass Garden may have missed.</b> The chat's patch set A to level 80 and B to 24, at
 ratios 1.00 and 3.00. If B is the one you hear, as the algorithm's name suggests, its 3.00 ratio
 plays an octave and a fifth above the note, quietly, under a loud modulator. Worth a look.</p>
+
+<h2>In Overpass: rendered into chords</h2>
+<p>Overpass (<a href="page:overpass-2">steps 2</a> to <a href="page:overpass-4">4</a>) plays this patch on
+four tracks at once, one note each, and renders them to a sample: the
+<a href="page:chord-stabs">Chord stabs</a>. For that, the sends go to <b>MFX 00, DEL 00, REV 00</b>
+(DRY stays C0): a dry render makes clean stabs, and the stab instruments add their own space. Keep
+MFX 10, DEL 30, REV 40 for playing it live, as here.</p>
 
 <h2>Try</h2>
 <ul>
@@ -65,9 +76,9 @@ plays an octave and a fifth above the note, quietly, under a loud modulator. Wor
 
 <p class="unverified">Values are a starting point, not tried on an M8. How a mod-page envelope
 reaches an operator is the guess here: the manual says each operator's MOD slots assign MOD1–4
-to LEV, RAT, PIT or FBK, but not how MOD 2's DEST names them. What DEST choices does a mod slot
-show on an FM instrument? And which operators does ALGO 07's picture put at the bottom (the ones
-you hear)?</p>
+to LEV, RAT, PIT or FBK, but not how MOD 2's DEST names them; and MOD1 00 as the base the envelope
+lifts. What DEST choices does a mod slot show on an FM instrument, and does the tine fade in an
+eighth?</p>
 </main>
 </body>
 </html>
