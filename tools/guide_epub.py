@@ -24,7 +24,8 @@ shapes the book without touching the guide:
     {"order": ["start", "songs", ...],   section ids in book order; unlisted ones follow
      "omit": ["map", ...],               section or page ids to leave out
      "title": ..., "subtitle": ..., "description": ...,   overrides for the title page
-     "note": "..."}                      the title page's small print (HTML)
+     "note": "...",                      the title page's small print (HTML)
+     "sections": {"start": {"description": "..."}}}   per-section title/description for the book
 
 Nothing here knows about any one guide or subject.
 """
@@ -107,8 +108,10 @@ class Book:
         rank = lambda sec: order.index(sec.get('id')) if sec.get('id') in order else len(order)
         sections = [sec for sec in self.guide.get('sections', []) if sec.get('id') not in omit]
         sections = sorted(sections, key=rank)  # stable: unlisted sections keep their order
+        overrides = self.book.get('sections', {})
         for sec in sections:
             sec['pages'] = [p for p in sec.get('pages', []) if p.get('id') not in omit]
+            sec.update(overrides.get(sec.get('id'), {}))
         self.guide['sections'] = sections
         self.width = width
         self.images = {}      # source path -> epub name
@@ -210,7 +213,7 @@ class Book:
                 ba.string = 'Back'; back.append(ba); body.append(back)
                 spoilers.append(body)
                 ref = soup.new_tag('p', attrs={'class': 'spoiler-ref', 'id': f'ref-{n}'})
-                ref.append(f'Spoiler {n}{f" ({label})" if label else ""}: at the end of this chapter. ')
+                ref.append(f'Spoiler {n}{f": {label}" if label else ""}. It is at the end of this chapter. ')
                 a = soup.new_tag('a', href=f'#sp-{n}'); a.string = 'Read it'
                 ref.append(a)
                 d.replace_with(ref)
