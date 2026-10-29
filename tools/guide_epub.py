@@ -50,6 +50,28 @@ img { max-width: 100%; height: auto; }
 .small { font-size: 0.85em; }
 """
 
+# Small readers ship small fonts: music signs, arrows and pictographs often aren't in them,
+# and a missing glyph is silently dropped (a B-flat would read as B). These get plain
+# spellings. Pictures keep the real signs, since the browser drew them.
+SYMBOLS = {
+    '♭': 'b', '♯': '#', '♮': ' natural', '𝄪': 'x',
+    '→': '->', '←': '<-', '↑': 'up', '↓': 'down', '↔': '<->', '⇒': '=>', '⟶': '->',
+    '▶': '>', '▸': '>', '▾': 'v', '◀': '<', '►': '>', '●': '*', '○': 'o', '■': '#', '□': '[ ]',
+    '✓': 'done', '✔': 'done', '✗': 'x', '✦': '*', '⌖': '', '≈': '~', '≥': '>=', '≤': '<=',
+    '−': '-', '×': 'x', '…': '...', '\u2009': ' ', '\u202f': ' ', '\u200b': '',
+}
+SYMBOL_RE = re.compile('|'.join(map(re.escape, SYMBOLS)))
+
+
+DIRECTIONS = {'←': 'left', '→': 'right', '↑': 'up', '↓': 'down'}
+
+
+def plain(text):
+    # an arrow after "D-pad" is a direction: say it
+    text = re.sub(r'(D-?pad\s*)([←→↑↓])', lambda m: m.group(1) + DIRECTIONS[m.group(2)], text, flags=re.I)
+    return SYMBOL_RE.sub(lambda m: SYMBOLS[m.group(0)], text)
+
+
 BOX_CLASSES = {'tip': '', 'warn': '', 'unverified': 'dashed', 'listen': '', 'demo-note': ''}
 
 
@@ -69,8 +91,15 @@ class Book:
         self.images = {}      # source path -> epub name
         self.image_data = {}  # epub name -> bytes
         self.pages = []       # dicts: id, title, file (source), href (epub), section
+        for key in ('title', 'subtitle', 'description'):
+            if self.guide.get(key):
+                self.guide[key] = plain(self.guide[key])
         for s in self.guide.get('sections', []):
+            for key in ('title', 'group', 'description'):
+                if s.get(key):
+                    s[key] = plain(s[key])
             for p in s.get('pages', []):
+                p['title'] = plain(p['title'])
                 self.pages.append({**p, 'section': s, 'href': f"p-{re.sub(r'[^A-Za-z0-9_-]', '_', p['id'])}.xhtml"})
         self.by_id = {p['id']: p for p in self.pages}
         self.by_file = {(self.dir / p['file']).resolve(): p for p in self.pages}
@@ -90,12 +119,18 @@ class Book:
             bg = Image.new('RGBA', im.size, (255, 255, 255, 255))
             bg.alpha_composite(im.convert('RGBA'))
             im = bg
+        png = src_path.suffix.lower() == '.png'
         im = im.convert('L')
         if im.width > self.width:
             im = im.resize((self.width, round(im.height * self.width / im.width)), Image.LANCZOS)
         buf = io.BytesIO()
-        im.save(buf, 'JPEG', quality=78, optimize=True, progressive=False)
-        name = f'img/i{len(self.images) + 1:03d}.jpg'
+        if png:
+            # screens, drawings and text: keep edges sharp, in the 16 grays e-ink shows
+            im.quantize(16).save(buf, 'PNG', optimize=True)
+            name = f'img/i{len(self.images) + 1:03d}.png'
+        else:
+            im.save(buf, 'JPEG', quality=78, optimize=True, progressive=False)
+            name = f'img/i{len(self.images) + 1:03d}.jpg'
         self.images[src_path] = name
         self.image_data[name] = buf.getvalue()
         return name
@@ -249,10 +284,16 @@ class Book:
             elif el.name == 'span' and not el.attrs:
                 el.unwrap()
 
+        for t in root.find_all(string=True):
+            if SYMBOL_RE.search(t):
+                t.replace_with(plain(str(t)))
+        for img in root.find_all('img'):
+            if img.get('alt'):
+                img['alt'] = plain(img['alt'])
         body = ''.join(str(c) for c in (root.contents if root.name in ('main', 'body') else [root]))
         if dropped and not root.get_text(strip=True):
             body += '<p class="note">This page is interactive (a map or a player). Open it in the Methodos app.</p>'
-        return xhtml(page['title'], body)
+        return xhtml(plain(page['title']), body)
 
     def write(self, out):
         g = self.guide
@@ -317,7 +358,8 @@ class Book:
             manifest.append(f'<item id="c{i}" href="{name}" media-type="application/xhtml+xml"/>')
             spine.append(f'<itemref idref="c{i}"/>')
         for i, name in enumerate(self.image_data):
-            manifest.append(f'<item id="img{i}" href="{name}" media-type="image/jpeg"/>')
+            kind = 'image/png' if name.endswith('.png') else 'image/jpeg'
+            manifest.append(f'<item id="img{i}" href="{name}" media-type="{kind}"/>')
         opf = ('<?xml version="1.0" encoding="utf-8"?>\n'
                '<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="bookid">'
                '<metadata xmlns:dc="http://purl.org/dc/elements/1.1/">'

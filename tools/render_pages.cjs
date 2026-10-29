@@ -2,11 +2,15 @@
 // content live (panels, canvases). The output is a static copy of the guide folder that
 // tools/guide_epub.py can turn into a book.
 //
-//   node tools/render_pages.cjs <guide-dir> <out-dir> [--width 480]
+//   node tools/render_pages.cjs <guide-dir> <out-dir> [--width 400] [--scale 1.2] [--shoot "figure, table"]
 //
 // Each page is opened in headless Chromium at the given width, in light mode (e-ink is
 // paper). Then: every canvas becomes a PNG beside the page; custom elements become plain
-// divs with what they drew; what the page hides, scripts, players and live readouts go. Needs Playwright; it is
+// divs with what they drew; what the page hides, scripts, players and live readouts go.
+// --shoot takes a CSS selector: each matching element (outermost only) is replaced by a
+// picture of itself, for layouts a small reader can't draw (tracker screens, wide tables).
+// Pictures come out at width x scale pixels: 400 x 1.2 = 480, the Xteink X4's width, with
+// text a fifth larger than on a phone. Needs Playwright; it is
 // found through PLAYWRIGHT_DIR (default ~/repos/backlot), and Chromium through CHROMIUM
 // (default the Playwright cache).
 const { createRequire } = require('module');
@@ -19,7 +23,10 @@ const { chromium } = createRequire(path.join(process.env.PLAYWRIGHT_DIR ?? `${HO
 const CHROME = process.env.CHROMIUM ?? `${HOME}/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome`;
 
 const [src, out] = process.argv.slice(2);
-const width = Number(process.argv[process.argv.indexOf('--width') + 1]) || 480;
+const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
+const width = Number(arg('--width', 400));
+const scale = Number(arg('--scale', 1.2));
+const shoot = arg('--shoot', '');
 if (!src || !out) { console.error('usage: node tools/render_pages.cjs <guide-dir> <out-dir> [--width 480]'); process.exit(2); }
 
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json',
@@ -40,18 +47,37 @@ const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/cs
   const base = `http://127.0.0.1:${server.address().port}/`;
 
   const browser = await chromium.launch({ executablePath: CHROME });
-  const page = await browser.newPage({ viewport: { width, height: 800 }, deviceScaleFactor: 1, colorScheme: 'light' });
+  const page = await browser.newPage({ viewport: { width, height: 800 }, deviceScaleFactor: scale, colorScheme: 'light' });
   const errors = [];
   page.on('pageerror', (e) => errors.push(e.message));
-  let pages = 0, canvases = 0;
+  let pages = 0, canvases = 0, shotCount = 0;
   for (const s of guide.sections ?? []) for (const p of s.pages ?? []) {
     await page.goto(base + p.file, { waitUntil: 'networkidle' });
     await page.waitForTimeout(600); // let panels lay out and draw their resting frame
+    const stem0 = path.basename(p.file, path.extname(p.file));
+    if (shoot) {
+      const handles = await page.$$(shoot);
+      let k = 0;
+      for (const h of handles) {
+        const outer = await h.evaluate((e, sel) => !e.parentElement?.closest(sel), shoot);
+        if (!outer) continue;
+        const name = `${stem0}-shot${++k}.png`;
+        await h.screenshot({ path: path.join(out, path.dirname(p.file), name) });
+        await h.evaluate((e, name) => {
+          const img = document.createElement('img');
+          img.src = name; img.alt = e.querySelector('figcaption, caption')?.textContent.trim() ?? '';
+          img.setAttribute('data-shot', '');
+          e.replaceWith(img);
+        }, name);
+        shotCount++;
+      }
+    }
     const shots = await page.evaluate(() => {
       const list = [];
       document.querySelectorAll('canvas').forEach((c, i) => {
         try { list.push({ i, data: c.toDataURL('image/png') }); } catch { list.push({ i, data: null }); }
       });
+      // a canvas's bitmap is already width x devicePixelRatio, the size wanted
       return list;
     });
     const stem = path.basename(p.file, path.extname(p.file));
@@ -70,13 +96,13 @@ const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/cs
         c.replaceWith(img);
       });
       // What the page itself hides (cursors, live-only marks) goes, and inline pieces that the
-      // page spaces with margin or padding get a real space, so text doesn't run together.
+      // page spaces with a margin or a flex gap get a real space, so text doesn't run together.
       for (const e of [...document.body.querySelectorAll('*')]) {
         const cs = getComputedStyle(e);
         if (cs.display === 'none' || cs.visibility === 'hidden') { e.remove(); continue; }
         const pcs = e.parentElement && getComputedStyle(e.parentElement);
         const gapped = pcs && /flex|grid/.test(pcs.display) && parseFloat(pcs.columnGap) > 0;
-        const spaced = cs.display.startsWith('inline') && (parseFloat(cs.marginLeft) > 0 || parseFloat(cs.paddingLeft) > 0);
+        const spaced = cs.display.startsWith('inline') && parseFloat(cs.marginLeft) > 0; // padding is inside the border: no gap
         if ((gapped || spaced) && e.previousSibling && !/\s$/.test(e.previousSibling.textContent ?? '')) e.before(' ');
       }
       // Live-only parts: players, transports, "press Play" readouts, buttons.
@@ -96,5 +122,5 @@ const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/cs
   }
   await browser.close();
   server.close();
-  console.log(`${out}: ${pages} pages rendered, ${canvases} drawings saved${errors.length ? `; page errors: ${errors.join(' | ')}` : ''}`);
+  console.log(`${out}: ${pages} pages rendered, ${canvases} drawings and ${shotCount} screen pictures saved${errors.length ? `; page errors: ${errors.join(' | ')}` : ''}`);
 })();
