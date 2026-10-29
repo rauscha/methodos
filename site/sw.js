@@ -1,14 +1,16 @@
 // Methodos service worker.
 // - The app shell is precached so the library opens offline.
-// - Same-site files (guides, pages) are network-first, falling back to cache, so
-//   an edit to a guide shows up on the next load and old copies serve offline.
+// - The app's own files are served from the shell cache at once; a new version arrives
+//   through the update check (the app calls it on open), never by waiting on the network.
+// - Guides and pages are served from the saved copy at once and refreshed in the
+//   background, so an edit shows up on the load after next and a hung network never blocks.
 // - Files from other sites (CDN scripts and fonts that artifacts load) are
 //   cache-first: they are versioned URLs and rarely change.
 // andrewrausch.com is one origin shared by many apps, so this worker only ever
 // touches caches whose names start with "methodos-".
 
 // Bump SHELL_VERSION with every change to a shell file, or offline users keep the old copy.
-const SHELL_VERSION = '2026-10-25c';
+const SHELL_VERSION = '2026-10-29a';
 const SHELL_CACHE = `methodos-shell-${SHELL_VERSION}`;
 const DATA_CACHE = 'methodos-data';
 const CDN_CACHE = 'methodos-cdn';
@@ -47,30 +49,43 @@ self.addEventListener('activate', (event) => {
 
 const timeout = (ms) => new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms));
 
-async function networkFirst(request) {
-  // no-cache: always ask the server (a cheap 304 when nothing changed) instead of reusing the
-  // browser's copy for up to 10 minutes. A navigation request can't take options; it's
-  // index.html, which is tiny and rarely changes.
-  const network = fetch(request, request.mode === 'navigate' ? undefined : { cache: 'no-cache' }).then((response) => {
+// The app itself (index, script, style, manifest, icons) comes from the shell cache at once.
+// It changes only with a new SHELL_VERSION, which the update check fetches in the
+// background, so a slow or hung network never holds the app up.
+const SHELL_PATHS = new Set(SHELL.filter((u) => !u.startsWith('guides/')).map((u) => new URL(u, self.location).pathname));
+
+// The app's own page, as opposed to a guide page opening in its frame (also a navigation).
+const isAppPage = (request) => request.mode === 'navigate' && request.destination === 'document';
+
+async function fromShell(request) {
+  const cache = await caches.open(SHELL_CACHE);
+  if (isAppPage(request)) return (await cache.match('./')) ?? (await cache.match('index.html'));
+  return cache.match(request, { ignoreSearch: true });
+}
+
+// Guides and pages: the saved copy at once, refreshed in the background for next time
+// (no-cache: ask the server, a cheap 304 when nothing changed). With nothing saved, wait
+// for the network, up to a limit.
+async function savedThenRefresh(event) {
+  const { request } = event;
+  const refresh = fetch(request, request.mode === 'navigate' ? undefined : { cache: 'no-cache' }).then((response) => {
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const copy = response.clone();
     caches.open(DATA_CACHE).then((c) => c.put(request, copy)).catch(() => {});
     return response;
   });
-  network.catch(() => {}); // handled below; this only silences the unhandled-rejection warning
+  refresh.catch(() => {}); // a failed refresh is fine: the saved copy stands
+  for (const name of [DATA_CACHE, SHELL_CACHE]) {
+    const cached = await (await caches.open(name)).match(request, { ignoreSearch: true });
+    if (cached) {
+      event.waitUntil(refresh.catch(() => {}));
+      return cached;
+    }
+  }
   try {
-    return await Promise.race([network, timeout(6000)]);
+    return await Promise.race([refresh, timeout(15000)]);
   } catch {
-    // Data first (it holds whatever was fetched most recently), then the shell.
-    for (const name of [DATA_CACHE, SHELL_CACHE]) {
-      const cached = await (await caches.open(name)).match(request, { ignoreSearch: true });
-      if (cached) return cached;
-    }
-    // Nothing saved: on a slow connection the network may still answer, so wait for it.
-    try { return await network; } catch {}
-    if (request.mode === 'navigate' && request.destination === 'document') {
-      return (await (await caches.open(SHELL_CACHE)).match('index.html')) ?? Response.error();
-    }
+    if (isAppPage(request)) return (await fromShell(request)) ?? Response.error();
     return Response.error();
   }
 }
@@ -109,7 +124,11 @@ self.addEventListener('fetch', (event) => {
       event.respondWith(fromLocal(request));
       return;
     }
-    event.respondWith(networkFirst(request));
+    if (isAppPage(request) || SHELL_PATHS.has(url.pathname)) {
+      event.respondWith(fromShell(request).then((r) => r ?? savedThenRefresh(event)));
+      return;
+    }
+    event.respondWith(savedThenRefresh(event));
   } else if (CDN_KINDS.has(request.destination)) {
     event.respondWith(cacheFirst(request));
   }

@@ -5,7 +5,7 @@
 
 Needs BeautifulSoup and Pillow. The reader in mind is the Xteink X4 (480 x 800 e-ink,
 modest EPUB support), so the output keeps to what every reader handles: plain XHTML,
-almost no CSS, an EPUB 2 NCX beside the EPUB 3 nav, small grayscale JPEGs. What only
+almost no CSS, an EPUB 2 NCX beside the EPUB 3 nav, small baseline JPEGs (grays, saved as RGB). What only
 works in the app is translated:
 
 - Scripts, interactive panels (custom elements) and maps are dropped; map-pin links keep
@@ -127,7 +127,7 @@ class Book:
         self.by_id = {p['id']: p for p in self.pages}
         self.by_file = {(self.dir / p['file']).resolve(): p for p in self.pages}
 
-    # -- images: grayscale, at most `width` wide, baseline JPEG (or PNG if it has transparency)
+    # -- images: grays at most `width` wide, saved as baseline RGB JPEG
     def image(self, src_path):
         src_path = src_path.resolve()
         if src_path in self.images:
@@ -142,18 +142,18 @@ class Book:
             bg = Image.new('RGBA', im.size, (255, 255, 255, 255))
             bg.alpha_composite(im.convert('RGBA'))
             im = bg
-        png = src_path.suffix.lower() == '.png'
+        # Grays, but saved as a plain baseline RGB JPEG: the most widely decoded image there
+        # is. Small e-ink readers (the Xteink X4) garble palette and single-channel PNGs:
+        # black boxes, striped noise, the picture drawn twice side by side.
+        text_like = src_path.suffix.lower() == '.png'   # screens, drawings: keep edges crisp
         im = im.convert('L')
         if im.width > self.width:
             im = im.resize((self.width, round(im.height * self.width / im.width)), Image.LANCZOS)
+        im = im.convert('RGB')
         buf = io.BytesIO()
-        if png:
-            # screens, drawings and text: keep edges sharp, in the 16 grays e-ink shows
-            im.quantize(16).save(buf, 'PNG', optimize=True)
-            name = f'img/i{len(self.images) + 1:03d}.png'
-        else:
-            im.save(buf, 'JPEG', quality=78, optimize=True, progressive=False)
-            name = f'img/i{len(self.images) + 1:03d}.jpg'
+        im.save(buf, 'JPEG', quality=92 if text_like else 80, subsampling=0 if text_like else 2,
+                optimize=False, progressive=False)
+        name = f'img/i{len(self.images) + 1:03d}.jpg'
         self.images[src_path] = name
         self.image_data[name] = buf.getvalue()
         return name
