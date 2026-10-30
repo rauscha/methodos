@@ -25,6 +25,7 @@ shapes the book without touching the guide:
      "omit": ["map", ...],               section or page ids to leave out
      "title": ..., "subtitle": ..., "description": ...,   overrides for the title page
      "note": "...",                      the title page's small print (HTML)
+     "author": "...", "cover": "cover.jpg",   the book's author; a cover image (else one is drawn)
      "sections": {"start": {"description": "..."}}}   per-section title/description for the book
 
 Nothing here knows about any one guide or subject.
@@ -84,6 +85,57 @@ def plain(text):
 
 
 BOX_CLASSES = {'tip': '', 'warn': '', 'unverified': 'dashed', 'listen': '', 'demo-note': ''}
+
+
+FONT_DIR = Path('/usr/share/fonts/truetype/dejavu')
+
+
+def font(name, size):
+    from PIL import ImageFont
+    try:
+        return ImageFont.truetype(str(FONT_DIR / name), size)
+    except OSError:
+        return ImageFont.load_default(size)
+
+
+def make_cover(title, subtitle, foot, w=480, h=800):
+    """A plain type cover at the reader's own size: the title large, the subtitle under it."""
+    from PIL import ImageDraw
+    im = Image.new('RGB', (w, h), 'white')
+    d = ImageDraw.Draw(im)
+    d.rectangle([14, 14, w - 15, h - 15], outline='black', width=3)
+    d.rectangle([24, 24, w - 25, h - 25], outline='black', width=1)
+
+    def wrap(text, f, width):
+        lines, line = [], ''
+        for word in text.split():
+            trial = f'{line} {word}'.strip()
+            if d.textlength(trial, font=f) <= width or not line:
+                line = trial
+            else:
+                lines.append(line); line = word
+        return lines + ([line] if line else [])
+
+    size = 64
+    while size > 30:
+        tf = font('DejaVuSerif-Bold.ttf', size)
+        tl = wrap(title, tf, w - 96)
+        if len(tl) <= 4 and all(d.textlength(t, font=tf) <= w - 96 for t in tl):
+            break
+        size -= 4
+    y = 190
+    for t in tl:
+        d.text((48, y), t, font=tf, fill='black'); y += int(size * 1.18)
+    d.line([48, y + 18, 168, y + 18], fill='black', width=4)
+    y += 50
+    sf = font('DejaVuSerif-Italic.ttf', 24)
+    for t in wrap(subtitle or '', sf, w - 96)[:5]:
+        d.text((48, y), t, font=sf, fill='black'); y += 34
+    ff = font('DejaVuSans-Bold.ttf', 18)
+    d.text((48, h - 76), foot.upper(), font=ff, fill='black')
+    buf = io.BytesIO()
+    im.save(buf, 'JPEG', quality=92, subsampling=0, progressive=False)
+    return buf.getvalue()
 
 
 def xhtml(title, body, lang='en'):
@@ -338,6 +390,12 @@ class Book:
                      f'<p class="note">Made from the Methodos guide on {dt.date.today():%Y-%m-%d}. '
                      'Spoilers sit at the end of each chapter. Maps and players are only in the app.</p>')
         files = [('title.xhtml', xhtml(title, '\n'.join(parts)))]
+        # The cover: the reader's library shows it, and it opens the book.
+        author = self.book.get('author', 'Methodos')
+        cover = (self.dir / self.book['cover']).read_bytes() if self.book.get('cover') else \
+            make_cover(title, g.get('subtitle', ''), author)
+        self.image_data = {'img/cover.jpg': cover, **self.image_data}
+        files.insert(0, ('cover.xhtml', xhtml(title, '<div style="text-align:center"><img src="img/cover.jpg" alt="Cover" style="max-width:100%;max-height:100%"/></div>')))
         nav_tree = []  # (label, href, children)
         last_group, group_node = None, None
         for si, s in enumerate(g.get('sections', [])):
@@ -388,14 +446,19 @@ class Book:
             spine.append(f'<itemref idref="c{i}"/>')
         for i, name in enumerate(self.image_data):
             kind = 'image/png' if name.endswith('.png') else 'image/jpeg'
-            manifest.append(f'<item id="img{i}" href="{name}" media-type="{kind}"/>')
+            if name == 'img/cover.jpg':
+                manifest.append(f'<item id="cover-img" href="{name}" media-type="{kind}" properties="cover-image"/>')
+            else:
+                manifest.append(f'<item id="img{i}" href="{name}" media-type="{kind}"/>')
         opf = ('<?xml version="1.0" encoding="utf-8"?>\n'
                '<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="bookid">'
                '<metadata xmlns:dc="http://purl.org/dc/elements/1.1/">'
                f'<dc:identifier id="bookid">{book_id}</dc:identifier><dc:title>{html.escape(title)}</dc:title>'
-               '<dc:language>en</dc:language><dc:creator>Methodos</dc:creator>'
-               f'<meta property="dcterms:modified">{modified}</meta></metadata>'
-               f'<manifest>{"".join(manifest)}</manifest><spine toc="ncx">{"".join(spine)}</spine></package>')
+               f'<dc:language>en</dc:language><dc:creator>{html.escape(author)}</dc:creator>'
+               + (f'<dc:description>{html.escape(g["description"])}</dc:description>' if g.get('description') else '')
+               + f'<meta property="dcterms:modified">{modified}</meta><meta name="cover" content="cover-img"/></metadata>'
+               f'<manifest>{"".join(manifest)}</manifest><spine toc="ncx">{"".join(spine)}</spine>'
+               '<guide><reference type="cover" title="Cover" href="cover.xhtml"/></guide></package>')
 
         with zipfile.ZipFile(out, 'w') as z:
             z.writestr(zipfile.ZipInfo('mimetype'), 'application/epub+zip', compress_type=zipfile.ZIP_STORED)
