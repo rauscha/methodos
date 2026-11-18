@@ -177,15 +177,15 @@ instruments = {
         ["SHAPE", "20 STRUCK BELL"], ["TIMBRE", "50"], ["COLOR", "30"], ["DEGRADE", "00"], ["REDUX", "00"],
         ["FILTER", "LOWPASS"], ["CUTOFF", "C0"], ["RES", "00"], ["AMP", "00"], ["LIM", "CLIP"]]
         + mixer("A0", dl="50", rev="60"), "mods": []},
-    "06": {"type": "MACROSYN", "name": "KICK", "step": 5, "demo": False, "params": [
+    "06": {"type": "MACROSYN", "name": "KICK", "step": 5, "demo": "kick", "params": [
         ["SHAPE", "22 KICK"], ["TIMBRE", "60"], ["COLOR", "30"], ["DEGRADE", "00"], ["REDUX", "00"],
         ["FILTER", "LOWPASS"], ["CUTOFF", "FF"], ["RES", "00"], ["AMP", "20"], ["LIM", "CLIP"]] + mixer("E0"),
         "mods": []},
-    "07": {"type": "MACROSYN", "name": "SNARE", "step": 5, "demo": False, "params": [
+    "07": {"type": "MACROSYN", "name": "SNARE", "step": 5, "demo": "snare", "params": [
         ["SHAPE", "24 SNARE"], ["TIMBRE", "40"], ["COLOR", "90"], ["DEGRADE", "00"], ["REDUX", "00"],
         ["FILTER", "LOWPASS"], ["CUTOFF", "FF"], ["RES", "00"], ["AMP", "10"], ["LIM", "CLIP"]] + mixer("C0", rev="30"),
         "mods": []},
-    "08": {"type": "MACROSYN", "name": "HAT", "step": 5, "demo": False, "params": [
+    "08": {"type": "MACROSYN", "name": "HAT", "step": 5, "demo": "hat", "params": [
         ["SHAPE", "23 CYMBAL"], ["TIMBRE", "C0"], ["COLOR", "E0"], ["DEGRADE", "00"], ["REDUX", "00"],
         ["FILTER", "HIGHPASS"], ["CUTOFF", "80"], ["RES", "00"], ["AMP", "00"], ["LIM", "CLIP"]] + mixer("A0", rev="18"),
         "mods": [{"slot": 1, "type": "AHD ENV", "dest": "VOLUME", "p": {"AMT": "FF", "ATK": "00", "HOLD": "00", "DEC": "06"}}]},

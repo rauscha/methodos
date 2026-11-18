@@ -6,7 +6,10 @@ and docs/songs/overpass-instruments.md. This module is the data the builder read
 
 Shapes match site/guides/m8/songs/low-tide.json and the patch specs:
   instrument: {type, name, step, params: [[k, v]...], mods: [{slot, type, dest, step?, p, sec?, amt?}],
-               table?, demo?, ops? (FM only), until?}
+               table?, demo?, tone?, ops? (FM only), until?}
+  demo: false is silent in the browser demo (a recording); "kick", "snare", "clap" or "hat"
+        plays a plain drum; absent plays plain notes. tone: the plain family (pad, soft, keys,
+        bell, voice); absent, the kit guesses from the type.
   table:      {rows: {"<decimal row>": {n?, v?, fx?: [{cmd, val}]}}, about, step}
   grooves:    {"<hex groove>": [ticks...]}
 Params are in screen order. The three header rows (TRANSP., TBL. TIC, EQ) are the labels in his
@@ -90,16 +93,16 @@ FP_INST = {
         + mixer("C0", mfx="30", dl="28", rev="48"),
         "mods": [ahd(1, "VOLUME", "FF", "01", "01", "18"), ahd(2, "CUTOFF", "20", "00", "00", "10"),
                  lfo(3, "PITCH", "SIN", "FREE", "01", "80")]},
-    "05": {"type": "SAMPLER", "name": "KICK", "step": 5, "demo": False,
+    "05": {"type": "SAMPLER", "name": "KICK", "step": 5, "demo": "kick",
            "params": head(transp="OFF") + sampler("(a soft kick from the factory samples)", degrade="18", cutoff="90")
            + mixer("C0", rev="08"),
            "mods": [ahd(1, "VOLUME", "FF", "00", "04", "08")]},
-    "06": {"type": "SAMPLER", "name": "SNARE", "step": 5, "demo": False,
+    "06": {"type": "SAMPLER", "name": "SNARE", "step": 5, "demo": "snare",
            "params": head(transp="OFF") + sampler("(a brushed rim or muffled clap from the factory samples)",
                                                   degrade="18", cutoff="A0")
            + mixer("B0", rev="28"),
            "mods": [ahd(1, "VOLUME", "FF", "00", "03", "0C")]},
-    "07": {"type": "SAMPLER", "name": "HAT", "step": 5, "demo": False,
+    "07": {"type": "SAMPLER", "name": "HAT", "step": 5, "demo": "hat",
            "params": head(transp="OFF") + sampler("(a closed hat or shaker from the factory samples)",
                                                   degrade="20", cutoff="80")
            + mixer("90", rev="10", pan="90"),
@@ -154,23 +157,23 @@ OP_INST = {
                 {"op": "C", "shape": "SIN", "ratio": "14.00", "lev": "60", "fb": "00", "mod": ["1 LEV", "--"]},
                 {"op": "D", "shape": "SIN", "ratio": "1.00", "lev": "80", "fb": "00", "mod": ["--", "--"]}],
         "mods": [ahd(1, "VOLUME", "FF", "00", "00", "60"), ahd(2, "MOD1", "FF", "00", "00", "0C")]},
-    "05": {"type": "SAMPLER", "name": "STAB MIN9", "step": 4, "demo": False, "table": "05",
+    "05": {"type": "SAMPLER", "name": "STAB MIN9", "step": 4, "table": "05",
            "params": head(tic="00", eq="05") + sampler("CM9 (your render)", degrade="10", cutoff="B0", res="10")
            + mixer("C0", mfx="18", dl="10", rev="38"),
            "mods": [ahd(1, "VOLUME", "FF", "00", "02", "10", step=5), ahd(2, "CUTOFF", "18", "00", "00", "0C", step=5)]},
-    "08": {"type": "SAMPLER", "name": "STAB MAJ9", "step": 4, "demo": False, "table": "08",
+    "08": {"type": "SAMPLER", "name": "STAB MAJ9", "step": 4, "table": "08",
            "params": head(tic="00", eq="05") + sampler("CMAJ9 (your render)", degrade="10", cutoff="B0", res="10")
            + mixer("C0", mfx="18", dl="10", rev="50"),
            "mods": [ahd(1, "VOLUME", "FF", "00", "08", "28", step=5), ahd(2, "CUTOFF", "18", "00", "00", "0C", step=5)]},
-    "01": {"type": "SAMPLER", "name": "KICK", "step": 6, "demo": False,
+    "01": {"type": "SAMPLER", "name": "KICK", "step": 6, "demo": "kick",
            "params": head(transp="OFF") + sampler("OVERKIT (a factory kit or break, with slice markers)",
                                                   slice_="01 FILE", amp="10") + mixer("E0"),
            "mods": [ahd(1, "VOLUME", "FF", "00", "03", "06")]},
-    "02": {"type": "SAMPLER", "name": "CLAP", "step": 6, "demo": False,
+    "02": {"type": "SAMPLER", "name": "CLAP", "step": 6, "demo": "clap",
            "params": head(transp="OFF") + sampler("OVERKIT (the same file)", slice_="01 FILE", filt="HIGHPASS",
                                                   cutoff="20") + mixer("C8", rev="30"),
            "mods": [ahd(1, "VOLUME", "FF", "00", "04", "0C")]},
-    "03": {"type": "SAMPLER", "name": "HATS", "step": 6, "demo": False,
+    "03": {"type": "SAMPLER", "name": "HATS", "step": 6, "demo": "hat",
            "params": head(transp="OFF") + sampler("OVERKIT (the same file)", slice_="01 FILE", filt="HIGHPASS",
                                                   cutoff="50") + mixer("A0", rev="10", pan="90"),
            "mods": [ahd(1, "VOLUME", "FF", "00", "00", "0C")]},
@@ -185,11 +188,11 @@ OP_INST = {
         "mods": [ahd(1, "VOLUME", "FF", "01", "05", "06"), ahd(2, "MOD1", "FF", "00", "00", "04"),
                  {"slot": 3, "type": "TRIG ENV", "dest": "VOLUME", "step": 10,
                   "p": {"AMT": "neg.", "ATK": "00", "HOLD": "01", "DEC": "06", "SRC": "80"}, "amt": -0.4}]},
-    "06": {"type": "SAMPLER", "name": "VOICE", "step": 9, "demo": False,
+    "06": {"type": "SAMPLER", "name": "VOICE", "step": 9, "tone": "voice",
            "params": head(eq="06") + sampler("VOICE C (your hummed C)", degrade="10", cutoff="C0")
            + mixer("C0", mfx="10", dl="18", rev="40"),
            "mods": [adsr(1, "VOLUME", 0.005, 0.03)]},
-    "09": {"type": "SAMPLER", "name": "VOICE REV", "step": 9, "demo": False,
+    "09": {"type": "SAMPLER", "name": "VOICE REV", "step": 9, "tone": "voice",
            "params": head(eq="06") + sampler("VOICE C (the same file as 06)", play="REV", degrade="10",
                                              cutoff="C0")
            + mixer("B0", mfx="10", dl="18", rev="60"),
@@ -205,7 +208,7 @@ OP_INST = {
         "mods": [adsr(1, "VOLUME", 0.01, 0.48), ahd(2, "MOD1", "FF", "00", "00", "04"),
                  {"slot": 3, "type": "TRIG ENV", "dest": "VOLUME",
                   "p": {"AMT": "neg.", "ATK": "00", "HOLD": "01", "DEC": "06", "SRC": "80"}, "amt": -0.4}]},
-    "0C": {"type": "SAMPLER", "name": "VOICE DUB", "step": 10, "demo": False,
+    "0C": {"type": "SAMPLER", "name": "VOICE DUB", "step": 10, "tone": "voice",
            "params": head(eq="06") + sampler("VOICE C (the same file as 06)", degrade="10", cutoff="C0")
            + mixer("C0", mfx="10", dl="C0", rev="30"),
            "mods": [adsr(1, "VOLUME", 0.005, 0.03)]},

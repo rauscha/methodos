@@ -2960,7 +2960,6 @@
    "type": "SAMPLER",
    "name": "STAB MIN9",
    "step": 4,
-   "demo": false,
    "table": "05",
    "params": [
     [
@@ -3090,7 +3089,6 @@
    "type": "SAMPLER",
    "name": "STAB MAJ9",
    "step": 4,
-   "demo": false,
    "table": "08",
    "params": [
     [
@@ -3220,7 +3218,7 @@
    "type": "SAMPLER",
    "name": "KICK",
    "step": 6,
-   "demo": false,
+   "demo": "kick",
    "params": [
     [
      "TRANSP.",
@@ -3326,7 +3324,7 @@
    "type": "SAMPLER",
    "name": "CLAP",
    "step": 6,
-   "demo": false,
+   "demo": "clap",
    "params": [
     [
      "TRANSP.",
@@ -3432,7 +3430,7 @@
    "type": "SAMPLER",
    "name": "HATS",
    "step": 6,
-   "demo": false,
+   "demo": "hat",
    "params": [
     [
      "TRANSP.",
@@ -3703,7 +3701,7 @@
    "type": "SAMPLER",
    "name": "VOICE",
    "step": 9,
-   "demo": false,
+   "tone": "voice",
    "params": [
     [
      "TRANSP.",
@@ -3814,7 +3812,7 @@
    "type": "SAMPLER",
    "name": "VOICE REV",
    "step": 9,
-   "demo": false,
+   "tone": "voice",
    "params": [
     [
      "TRANSP.",
@@ -4094,7 +4092,7 @@
    "type": "SAMPLER",
    "name": "VOICE DUB",
    "step": 10,
-   "demo": false,
+   "tone": "voice",
    "params": [
     [
      "TRANSP.",

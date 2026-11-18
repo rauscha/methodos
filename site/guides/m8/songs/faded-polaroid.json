@@ -3563,7 +3563,7 @@
    "type": "SAMPLER",
    "name": "KICK",
    "step": 5,
-   "demo": false,
+   "demo": "kick",
    "params": [
     [
      "TRANSP.",
@@ -3669,7 +3669,7 @@
    "type": "SAMPLER",
    "name": "SNARE",
    "step": 5,
-   "demo": false,
+   "demo": "snare",
    "params": [
     [
      "TRANSP.",
@@ -3775,7 +3775,7 @@
    "type": "SAMPLER",
    "name": "HAT",
    "step": 5,
-   "demo": false,
+   "demo": "hat",
    "params": [
     [
      "TRANSP.",

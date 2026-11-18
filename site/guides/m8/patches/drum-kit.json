@@ -225,7 +225,7 @@
   "06": {
    "type": "MACROSYN",
    "name": "KICK",
-   "demo": false,
+   "demo": "kick",
    "params": [
     [
      "SHAPE",
@@ -293,7 +293,7 @@
   "07": {
    "type": "MACROSYN",
    "name": "SNARE",
-   "demo": false,
+   "demo": "snare",
    "params": [
     [
      "SHAPE",
@@ -361,7 +361,7 @@
   "08": {
    "type": "MACROSYN",
    "name": "HAT",
-   "demo": false,
+   "demo": "hat",
    "params": [
     [
      "SHAPE",

@@ -655,7 +655,6 @@
   "05": {
    "type": "SAMPLER",
    "name": "STAB MIN9",
-   "demo": false,
    "table": "05",
    "params": [
     [

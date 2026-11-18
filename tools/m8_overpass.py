@@ -8,8 +8,8 @@ docs/songs/overpass-parts.md) and tools/songs/instruments.py (every instrument, 
 and the mix; docs/songs/overpass-instruments.md). Edit those, not the JSON. What this script
 adds: the workbench song rows of steps 3 to 9 (the parts sheet, section 5), the silence chain
 FE in the finished song's empty cells, the harmony list the panels draw, and the stab renders'
-voicings (parts sheet, section 3), so the roll can draw the four notes each stab sounds. The
-samplers stay silent in the demo (`demo: false`).
+voicings (parts sheet, section 3), so the roll can draw and the demo can play the four notes
+each stab sounds. Drums play as plain drums; the rain recording stays silent (`demo: false`).
 """
 import json, sys
 from pathlib import Path

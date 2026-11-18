@@ -1743,7 +1743,7 @@
    "type": "MACROSYN",
    "name": "KICK",
    "step": 5,
-   "demo": false,
+   "demo": "kick",
    "params": [
     [
      "SHAPE",
@@ -1812,7 +1812,7 @@
    "type": "MACROSYN",
    "name": "SNARE",
    "step": 5,
-   "demo": false,
+   "demo": "snare",
    "params": [
     [
      "SHAPE",
@@ -1881,7 +1881,7 @@
    "type": "MACROSYN",
    "name": "HAT",
    "step": 5,
-   "demo": false,
+   "demo": "hat",
    "params": [
     [
      "SHAPE",

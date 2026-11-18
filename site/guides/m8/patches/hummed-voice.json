@@ -267,7 +267,7 @@
   "06": {
    "type": "SAMPLER",
    "name": "VOICE",
-   "demo": false,
+   "tone": "voice",
    "params": [
     [
      "TRANSP.",
@@ -377,7 +377,7 @@
   "09": {
    "type": "SAMPLER",
    "name": "VOICE REV",
-   "demo": false,
+   "tone": "voice",
    "params": [
     [
      "TRANSP.",
@@ -487,7 +487,6 @@
   "05": {
    "type": "SAMPLER",
    "name": "STAB MIN9",
-   "demo": false,
    "table": "05",
    "params": [
     [

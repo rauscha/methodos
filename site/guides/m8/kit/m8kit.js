@@ -3,6 +3,9 @@
 // A page loads this module once and declares what it wants to show:
 //
 //   <m8-player src="../songs/low-tide.json" step="3"></m8-player>   transport (one per page)
+//     focus="2"            track 2 up front, the others quiet behind it (a bassline page)
+//     build="06,07,08"     those instruments come in one at a time, every build-bars bars
+//     build-bars="2"       (a drum page: kick, then snare, then hats)
 //   <m8-song></m8-song>                        the song view: chains per track, per row
 //   <m8-phrase phrase="30"></m8-phrase>        the phrase as the M8 draws it ("30,31" = one
 //                                              line per phrase; `compact` = used rows only)
@@ -19,10 +22,12 @@
 // step that introduces it (`step`), and may carry the last step it belongs to (`until`); a
 // page at step N plays and draws what is on at N and marks what step N adds as new.
 //
-// The sound is a stand-in made with Web Audio, not the M8: "the notes, not the tone". Value
-// scales (cutoff in Hz, LFO depth) are the demo's own and are labeled as such where shown.
-// Instruments marked `"demo": false` (drum models, samples) make no sound, but their notes
-// still draw and still fire trig envelopes on other instruments.
+// The sound is a stand-in made with Web Audio, not the M8: plain notes that only loosely
+// suggest each instrument (see "voices"). Value scales (cutoff in Hz, LFO depth) are the
+// demo's own and are labeled as such where shown. An instrument's `demo` says how it sounds:
+// false is silent (a recording), though its notes still draw and still fire trig envelopes;
+// "kick", "snare", "clap" or "hat" is a plain drum; absent is plain notes, in the family its
+// `tone` names (pad, soft, keys, bell, voice) or the kit guesses.
 
 // ---------------------------------------------------------------- notes and numbers
 
@@ -137,7 +142,7 @@ function build(spec, step) {
       const next = events[i + 1];
       e.end = next ? next.t : len + (events[0]?.t ?? 0);
     });
-    const audible = events.some((e) => e.inst && insts[e.inst] && insts[e.inst].demo !== false);
+    const audible = events.some((e) => e.inst && sounds(insts[e.inst]));
     tracks.push({ ...t, len, events, segs, audible, chainId: segs[0]?.chainId });
   }
   const len = Math.max(16, ...tracks.map((t) => t.len));
@@ -299,19 +304,52 @@ function ahdOf(mod, tempo) {
 const ahdAt = (e, dt) => (dt < 0 ? 0 : dt < e.a ? dt / e.a : dt < e.a + e.h ? 1 : dt < e.a + e.h + e.d ? 1 - (dt - e.a - e.h) / e.d : 0);
 
 // ---------------------------------------------------------------- voices
+//
+// Plain stand-ins, on purpose (Andrew, 2026-11-18: "plainer notes to very loosely imitate
+// tones", not the M8's voices). Every pitched part is one simple harmonic wave per note, so
+// whatever the notes are, they are what you hear, in tune. A tone family picks the wave and a
+// default envelope: a pad is soft and held, keys and bells decay, a bass gets a little extra
+// overtone so a phone speaker can play it. What the demo keeps from the instrument is what a
+// page teaches about time: its volume envelope, its filter's cutoff and LFO sweep, its sends.
+// The M8's timbre settings (TIMBRE, COLOR, SWARM, SUBOSC, RES) don't change the sound.
 
-function wave(ctx, shape) {
-  // Harmonic recipes for the Hypersynth shapes the guide uses; others fall back to sine.
-  const n = 48;
-  const real = new Float32Array(n), imag = new Float32Array(n);
-  const tilt = { 'SAW': 1, 'SOFT SAW': 1.45, 'DARK SAW': 1.9 }[shape];
-  for (let k = 1; k < n; k++) {
-    if (tilt) imag[k] = 1 / k ** tilt;
-    else if (shape === 'TRIANGLE') imag[k] = k % 2 ? ((k - 1) / 2 % 2 ? -1 : 1) / (k * k) : 0;
-    else if (shape === 'SQUARE SOFT') imag[k] = k % 2 ? 1 / k ** 1.4 : 0;
-    else imag[k] = k === 1 ? 1 : 0; // sines
+// Harmonic levels, fundamental first. All whole-number partials, so a chord never smears.
+const TONES = {
+  pad: { h: [1, 0.3, 0.12, 0.06, 0.03] },
+  soft: { h: [1, 0.12, 0.1, 0.03, 0.03] },                 // triangle-like: arps, leads
+  keys: { h: [1, 0.25, 0.06, 0.04], decay: 1.1 },
+  bell: { h: [1, 0.08, 0.02, 0.22, 0, 0, 0, 0.06], decay: 0.9 },
+  voice: { h: [1, 0.35, 0.12, 0.05], attack: 0.03 },
+  bass: { h: [1, 0.5, 0.22, 0.08] },
+};
+
+// Which family an instrument gets: the spec's `tone`, or a loose guess from its type.
+function toneOf(inst) {
+  if (inst.tone && TONES[inst.tone]) return inst.tone;
+  const shape = String(inst.params.SHAPE ?? '');
+  if (inst.type === 'HYPERSYNTH' || inst.shapes) return 'pad';
+  if (/BELL/.test(shape)) return 'bell';
+  if (inst.voicing || inst.type === 'FMSYNTH') return 'keys';
+  return 'soft';
+}
+
+// What a spec's `demo` says: false is silent (a recording the browser has nothing for), a
+// drum name plays a plain drum, anything else plays plain notes.
+const DRUMS = ['kick', 'snare', 'clap', 'hat'];
+const drumOf = (inst) => (DRUMS.includes(inst?.demo) ? inst.demo : null);
+const sounds = (inst) => !!inst && inst.demo !== false;
+
+const waves = new WeakMap();
+function wave(ctx, h) {
+  let byCtx = waves.get(ctx);
+  if (!byCtx) waves.set(ctx, byCtx = new Map());
+  const key = h.join(',');
+  if (!byCtx.has(key)) {
+    const real = new Float32Array(h.length + 1), imag = new Float32Array(h.length + 1);
+    h.forEach((a, i) => { imag[i + 1] = a; });
+    byCtx.set(key, ctx.createPeriodicWave(real, imag));
   }
-  return ctx.createPeriodicWave(real, imag);
+  return byCtx.get(key);
 }
 
 class Voice {
@@ -321,8 +359,10 @@ class Voice {
     const p = inst.params;
     this.filter = ctx.createBiquadFilter();
     this.filter.type = p.FILTER === 'HIGHPASS' ? 'highpass' : 'lowpass';
-    this.filter.frequency.value = cutoffHz(hex(p.CUTOFF ?? 'FF'));
-    this.filter.Q.value = resQ(hex(p.RES ?? '00'));
+    // The cutoff still moves where the M8's would, but never so low the notes vanish, and
+    // with no resonance peak.
+    this.filter.frequency.value = this.filter.type === 'lowpass' ? Math.max(500, cutoffHz(hex(p.CUTOFF ?? 'FF'))) : Math.min(2000, cutoffHz(hex(p.CUTOFF ?? '00')));
+    this.filter.Q.value = 0.7;
     this.vca = ctx.createGain();
     this.vca.gain.value = 0;
     this.duck = ctx.createGain(); // trig envelopes on VOLUME act here
@@ -381,16 +421,24 @@ class Voice {
   }
   trigger(ev, notes, t, glide) {
     this.setNotes(notes, t, ev.v / 0x7f, ev, glide);
-    if (this.env) this.env.trigger(t, this.vca.gain);
+    const g = this.vca.gain;
+    const tone = TONES[this.tone] ?? {};
+    if (this.env) this.env.trigger(t, g);
     else if (this.ahd) {
-      const { a, h, d, amt } = this.ahd, g = this.vca.gain;
+      const { a, h, d, amt } = this.ahd;
       hold(g, t);
       g.linearRampToValueAtTime(amt, t + Math.max(a, 0.004));
       g.setValueAtTime(amt, t + Math.max(a, 0.004) + h);
       g.linearRampToValueAtTime(0, t + Math.max(a, 0.004) + h + Math.max(d, 0.01));
+    } else if (tone.decay) {
+      // Keys and bells with no envelope of their own ring down like struck things.
+      hold(g, t);
+      g.setValueAtTime(0, t);
+      g.linearRampToValueAtTime(1, t + 0.004);
+      g.setTargetAtTime(0, t + 0.004, tone.decay / 3);
     } else {
-      hold(this.vca.gain, t);
-      this.vca.gain.setTargetAtTime(1, t, 0.004);
+      hold(g, t);
+      g.setTargetAtTime(1, t, tone.attack ?? 0.004);
     }
     this.gate = true;
   }
@@ -409,111 +457,111 @@ class Voice {
   }
   stop() {
     const t = this.engine.ctx.currentTime;
-    for (const o of [...this.nodes, ...this.oscs.flat(), this.sub].filter(Boolean)) try { o.stop(t + 0.05); } catch {}
+    for (const o of [...this.nodes, ...this.oscs.flat()].filter(Boolean)) try { o.stop(t + 0.05); } catch {}
   }
 }
 
-// Hypersynth stand-in: each interval is a pair of detuned oscillators (SWARM), spread in
-// stereo (WIDTH), plus a square sub one or two octaves below the played note (SUBOSC).
-// SUBOSC 80 is off; below 80 mixes in a sub two octaves down, above 80 one octave down,
-// louder the further from 80 (manual; the default instrument shows SUBOSC 80).
-class HyperVoice extends Voice {
-  setNotes(notes, t, vel, ev, glide) {
-    const { ctx } = this.engine;
-    const p = this.inst.params;
-    if (!this.pw) this.pw = wave(ctx, p.SHAPE);
-    // SWARM detunes every saw: 80 is about a fifth up and down, FF an octave (Dirtywave
-    // meetup, firmware 3.0). The curve between is unknown. A straight line put SWARM 08 at
-    // ±44 cents, the two saws nearly a semitone apart, and the pad sounded out of tune
-    // (2026-11-18). A squared curve keeps both ends and his "30 is already a lot" (±98 c),
-    // with the small values a chorus: 08 is ±2.7 c, 10 is ±11 c, 20 is ±44 c.
-    const sw = hex(p.SWARM ?? '00');
-    const detune = sw <= 0x80 ? 700 * (sw / 0x80) ** 2 : 700 + (sw - 0x80) / 0x7f * 500;
-    const width = hex(p.WIDTH ?? '00') / 255;
-    while (this.oscs.length < 6) {
-      const pair = [-1, 1].map((side) => {
-        const o = ctx.createOscillator();
-        o.setPeriodicWave(this.pw);
-        o.detune.value = side * detune;
-        const g = ctx.createGain(); g.gain.value = 0;
-        const pan = ctx.createStereoPanner();
-        o.connect(g).connect(pan).connect(this.filter);
-        o.start(t);
-        o._g = g; o._pan = pan;
-        return o;
-      });
-      this.oscs.push(pair);
-    }
-    const level = 0.14 * vel;
-    this.oscs.forEach((pair, i) => {
-      const n = notes[i];
-      pair.forEach((o, side) => {
-        if (n != null) this.pitch(o.frequency, hz(n), t, glide);
-        // A chord change on a held note (CRD) slides the level, so it doesn't click.
-        o._g.gain.setTargetAtTime(n != null ? level : 0, t, ev?.change ? 0.03 : 0.01);
-        const spread = notes.length > 1 ? (i / (notes.length - 1)) * 2 - 1 : 0;
-        o._pan.pan.setValueAtTime(Math.max(-1, Math.min(1, (spread * 0.7 + (side ? 0.3 : -0.3)) * width)), t);
-      });
-    });
-    const sub = hex(p.SUBOSC ?? '80');
-    const amount = Math.abs(sub - 0x80) / 0x80;
-    if (amount > 0.01) {
-      if (!this.sub) {
-        this.sub = ctx.createOscillator(); this.sub.type = 'square';
-        this.subG = ctx.createGain(); this.sub.connect(this.subG).connect(this.filter); this.sub.start(t);
-      }
-      this.pitch(this.sub.frequency, hz((ev?.note ?? notes[0]) - (sub > 0x80 ? 12 : 24)), t, glide);
-      this.subG.gain.setTargetAtTime(0.12 * vel * amount, t, 0.01);
-    }
+// One oscillator per note of the chord (one for a single note), each on the family's wave.
+// Notes below C3 use the bass wave whatever the family.
+class PlainVoice extends Voice {
+  constructor(engine, inst) {
+    super(engine, inst);
+    this.tone = toneOf(inst);
   }
-}
-
-// Every other instrument plays on one plain stand-in: a sine and a triangle (balance on
-// COLOR) into a wavefolder (strength on TIMBRE). It is the Macrosynth SINE TRIANGLE model in
-// spirit, and only the notes for anything else.
-// A chord (a paraphonic shape) gets one such pair per note, each quieter, so four notes
-// sound about as loud as one. A single note plays exactly as it always has.
-class MacroVoice extends Voice {
   setNotes(notes, t, vel, ev, glide) {
     const { ctx } = this.engine;
-    const p = this.inst.params;
     while (this.oscs.length < notes.length) {
-      const mix = isHex(p.COLOR) && !this.inst.shapes ? hex(p.COLOR) / 255 : 0.3;
-      const fold = ctx.createWaveShaper();
-      // The fold only brightens: the played pitch must stay the loudest partial. It used to
-      // reach k = 7, and at TIMBRE 45 the third harmonic came out 10 dB over the fundamental,
-      // so every note sounded an octave and a fifth up and chords smeared into two keys
-      // (2026-11-18). Capped at k = 1.4 the third stays 13 dB or more below the note.
-      // A bass (below C3) keeps more, up to 1.6: its overtones are what a phone speaker
-      // plays, and they sit on its own root. A chord shape's TIMBRE moves a wavetable on the
-      // M8, not a fold, so a chord gets none.
-      const tb = isHex(p.TIMBRE) ? hex(p.TIMBRE) : 0x18;
-      const low = notes[0] != null && notes[0] < 48;
-      const k = this.inst.shapes ? 1 : low ? Math.min(1.6, 1 + tb / 255 * 6) : 1 + tb / 255 * 0.4;
-      const curve = new Float32Array(1024);
-      for (let i = 0; i < curve.length; i++) curve[i] = Math.sin((i / 511.5 - 1) * k * Math.PI / 2);
-      fold.curve = curve;
-      const pre = ctx.createGain(); pre.gain.value = 0.9;
-      const s = ctx.createOscillator(); s.type = 'sine';
-      const tr = ctx.createOscillator(); tr.type = 'triangle';
-      const gs = ctx.createGain(); gs.gain.value = 1 - mix;
-      const gt = ctx.createGain(); gt.gain.value = mix;
-      const lvl = ctx.createGain(); lvl.gain.value = 1;
-      s.connect(gs).connect(pre); tr.connect(gt).connect(pre);
-      pre.connect(fold).connect(lvl).connect(this.filter);
-      s.start(t); tr.start(t);
-      s._lvl = lvl;
-      this.oscs.push([s, tr]);
-      this.out.gain.value = 0.5;
+      const o = ctx.createOscillator();
+      const g = ctx.createGain(); g.gain.value = 0;
+      o.connect(g).connect(this.filter);
+      o.start(t);
+      o._g = g;
+      this.oscs.push([o]);
     }
     const each = 1 / Math.sqrt(notes.length);
-    this.oscs.forEach((pair, i) => {
+    this.oscs.forEach(([o], i) => {
       const n = notes[i];
-      if (n != null) for (const o of pair) this.pitch(o.frequency, hz(n), t, glide);
-      pair[0]._lvl.gain.setTargetAtTime(n != null ? each : 0, t, 0.005);
+      if (n != null) {
+        const fam = n < 48 ? 'bass' : this.tone;
+        if (o._fam !== fam) { o.setPeriodicWave(wave(ctx, TONES[fam].h)); o._fam = fam; }
+        this.pitch(o.frequency, hz(n), t, glide);
+      }
+      // A chord change on a held note (CRD) slides the level, so it doesn't click.
+      o._g.gain.setTargetAtTime(n != null ? each : 0, t, ev?.change ? 0.03 : 0.005);
     });
-    this.out.gain.setTargetAtTime(0.55 * vel, t, 0.005);
+    this.out.gain.setTargetAtTime(0.45 * vel, t, 0.005);
   }
+}
+
+// Drums: a thump, a snap, a clap and a tick, made fresh for every hit. They only say where
+// the hits land and how hard; they are not the M8's drum models or anyone's samples.
+let noiseBuf = null;
+function noise(ctx) {
+  if (noiseBuf?.sampleRate !== ctx.sampleRate || noiseBuf._ctx !== ctx) {
+    noiseBuf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+    noiseBuf._ctx = ctx;
+    const d = noiseBuf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  }
+  return noiseBuf;
+}
+
+class DrumVoice {
+  constructor(engine, inst) {
+    this.engine = engine; this.inst = inst;
+    this.kind = drumOf(inst);
+    this.out = engine.ctx.createGain();
+    engine.route(this.out, inst.params);
+    this.ducks = []; this.oscs = []; this.nodes = [];
+  }
+  trigger(ev, notes, t) {
+    const { ctx } = this.engine;
+    const vel = ev.v / 0x7f;
+    const env = (node, peak, len) => {
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(peak * vel, t + 0.002);
+      g.gain.exponentialRampToValueAtTime(0.0005, t + len);
+      node.connect(g).connect(this.out);
+      return g;
+    };
+    const hiss = (type, f, q, peak, len, at = t) => {
+      const s = ctx.createBufferSource(); s.buffer = noise(ctx);
+      const flt = ctx.createBiquadFilter(); flt.type = type; flt.frequency.value = f; flt.Q.value = q;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0, at);
+      g.gain.linearRampToValueAtTime(peak * vel, at + 0.002);
+      g.gain.exponentialRampToValueAtTime(0.0005, at + len);
+      s.connect(flt).connect(g).connect(this.out);
+      s.start(at); s.stop(at + len + 0.02);
+    };
+    if (this.kind === 'kick') {
+      const o = ctx.createOscillator(); o.type = 'sine';
+      o.frequency.setValueAtTime(140, t);
+      o.frequency.exponentialRampToValueAtTime(48, t + 0.12);
+      env(o, 0.8, 0.4);
+      o.start(t); o.stop(t + 0.45);
+      hiss('lowpass', 3000, 0.7, 0.15, 0.01); // the beater's click, so a phone hears it
+    } else if (this.kind === 'snare') {
+      const o = ctx.createOscillator(); o.type = 'triangle';
+      o.frequency.setValueAtTime(190, t);
+      env(o, 0.5, 0.1);
+      o.start(t); o.stop(t + 0.12);
+      hiss('bandpass', 2600, 0.6, 1.1, 0.18);
+    } else if (this.kind === 'clap') {
+      for (const dt of [0, 0.011, 0.022]) hiss('bandpass', 1300, 1.2, 1, 0.03, t + dt);
+      hiss('bandpass', 1300, 1.2, 0.9, 0.16, t + 0.033);
+    } else if (this.kind === 'hat') {
+      hiss('highpass', 7000, 0.7, 0.75, 0.05);
+    }
+  }
+  setNotes() {}
+  release() {}
+  fireDuck() {}
+  stop() {}
+  levelAt() { return 0; }
+  duckAt() { return 1; }
+  cutoffAt() { return 20000; }
 }
 
 // ---------------------------------------------------------------- engine
@@ -532,9 +580,16 @@ function impulse(ctx, seconds, decay) {
   return buf;
 }
 
+const BEHIND = 0.16; // the level of tracks outside a page's focus (about -16 dB)
+
 class Engine {
-  constructor(model) {
+  // opts.focus: tracks heard up front; the others play quietly behind them.
+  // opts.build: instrument ids that come in one at a time, every opts.buildBars bars, from the
+  // first bar any of them plays; once all are in, everything loops as usual.
+  constructor(model, opts = {}) {
     this.model = model;
+    this.focus = opts.focus?.length ? new Set(opts.focus) : null;
+    this.build = opts.build?.length ? { ids: opts.build, bars: opts.buildBars || 2, s0: null } : null;
     this.tempo = model.spec.tempo;
     this.stepDur = 60 / this.tempo / 4;
     this.voices = new Map();   // "track:inst" -> voice
@@ -575,7 +630,9 @@ class Engine {
       g.connect(a); g.connect(master);
       const rev = ctx.createGain(); rev.connect(this.reverb); // sends, also muted with the track
       const del = ctx.createGain(); del.connect(this.delay);
-      this.trackOut.set(tr.n, { gain: g, rev, del, analyser: a, muted: false });
+      const level = this.focus && !this.focus.has(tr.n) ? BEHIND : 1;
+      for (const x of [g, rev, del]) x.gain.value = level;
+      this.trackOut.set(tr.n, { gain: g, rev, del, analyser: a, muted: false, level });
     }
     // Make every voice up front, so trig envelopes hear the first hit and LFOs share t0.
     for (const tr of this.model.tracks) for (const ev of tr.events) if (ev.inst) this.voiceFor(tr, ev.inst);
@@ -602,9 +659,9 @@ class Engine {
     let v = this.voices.get(key);
     if (!v) {
       const inst = this.model.insts[instId];
-      if (!inst || inst.demo === false) return null;
+      if (!sounds(inst)) return null;
       this._routing = this.trackOut.get(track.n);
-      v = new (inst.type === 'HYPERSYNTH' ? HyperVoice : MacroVoice)(this, inst);
+      v = new (drumOf(inst) ? DrumVoice : PlainVoice)(this, inst);
       v.track = track.n;
       this.voices.set(key, v);
     }
@@ -622,11 +679,27 @@ class Engine {
     while (this.next < ctx.currentTime + 0.3) {
       for (const tr of this.model.tracks) {
         const local = this.stepIndex % tr.len;
-        for (const ev of this.byStep.get(tr.n)[local]) this.fire(tr, ev, this.next + (ev.t - local) * this.stepDur);
+        for (const ev of this.byStep.get(tr.n)[local]) {
+          if (this.build && !this.entered(ev.inst)) continue;
+          this.fire(tr, ev, this.next + (ev.t - local) * this.stepDur);
+        }
       }
       this.next += this.stepDur;
       this.stepIndex++;
     }
+  }
+  // Build-up: has this instrument come in yet, at the step being scheduled?
+  entered(inst) {
+    const b = this.build, k = b.ids.indexOf(inst);
+    if (k < 0) return true;
+    if (b.s0 == null) b.s0 = this.stepIndex - (this.stepIndex % 16);
+    return this.stepIndex >= b.s0 + k * b.bars * 16;
+  }
+  // How many build layers are in at song step `step` (for the readout).
+  layersAt(step) {
+    const b = this.build;
+    if (!b || b.s0 == null) return 0;
+    return Math.min(b.ids.length, Math.floor((step - b.s0) / (b.bars * 16)) + 1);
   }
   fire(tr, ev, when) {
     for (const f of ev.fx ?? []) if (f.cmd === 'DJC') this.djf.frequency.setTargetAtTime(djHz(hex(f.val)), when, 0.08);
@@ -668,7 +741,7 @@ class Engine {
     const t = this.trackOut.get(n);
     if (!t) return;
     t.muted = on;
-    for (const g of [t.gain, t.rev, t.del]) g.gain.setTargetAtTime(on ? 0 : 1, this.ctx.currentTime, 0.02);
+    for (const g of [t.gain, t.rev, t.del]) g.gain.setTargetAtTime(on ? 0 : t.level, this.ctx.currentTime, 0.02);
   }
   // Stop sends every voice an OFF, then lets the release ring before closing.
   async stop() {
@@ -739,7 +812,18 @@ class M8Player extends HTMLElement {
     this.model = build(spec, this.step);
     const label = this.getAttribute('label');
     const where = this.querySelector('.m8-where');
-    this.idle = `${spec.tempo} BPM · ${this.model.len / 16} bar${this.model.len > 16 ? 's' : ''}`;
+    // focus="2" puts track 2 up front and the rest behind it; build="06,07,08" brings those
+    // instruments in one at a time, every build-bars bars (default 2).
+    const list = (a) => (this.getAttribute(a) ?? '').split(/[\s,]+/).filter(Boolean);
+    this.opts = {
+      focus: list('focus').map(Number),
+      build: list('build').filter((id) => this.model.insts[id]),
+      buildBars: Number(this.getAttribute('build-bars')) || 2,
+    };
+    const front = this.opts.focus.filter((n) => this.model.tracks.some((t) => t.n === n && t.audible));
+    this.idle = `${spec.tempo} BPM · ${this.model.len / 16} bar${this.model.len > 16 ? 's' : ''}`
+      + (front.length ? ` · ${front.map((n) => `T${n}`).join(' ')} up front` : '')
+      + (this.opts.build.length ? ` · built up ${this.opts.buildBars} bars a layer` : '');
     where.textContent = this.idle;
     if (label) { where.title = label; this.querySelector('.m8-play').setAttribute('aria-label', `Play: ${label}`); }
     // Mute buttons only for tracks the demo makes a sound on.
@@ -771,7 +855,7 @@ class M8Player extends HTMLElement {
       btn.textContent = 'Play'; btn.setAttribute('aria-pressed', 'false');
       return;
     }
-    this.engine = new Engine(this.model);
+    this.engine = new Engine(this.model, this.opts);
     btn.disabled = true;
     try { await this.engine.start(); } finally { btn.disabled = false; }
     for (const [n, on] of Object.entries(this.muted)) if (on) this.engine.mute(Number(n), true);
@@ -797,6 +881,12 @@ class M8Player extends HTMLElement {
           const at = locate(tr, p);
           where.textContent = `Song ${at.seg.songRow} · bar ${at.chainRow + 1} · row ${hx1(at.row)}`;
         } else where.textContent = `Bar ${Math.floor(p / 16) + 1} · row ${hx1(p % 16)}`;
+        // During a build-up, say what's in so far: "kick + snare (2 of 3)".
+        const b = s.engine.build, k = s.engine.layersAt(Math.floor(s.pos));
+        if (b && k && k <= b.ids.length && Math.floor(s.pos) < b.s0 + b.ids.length * b.bars * 16) {
+          const names = b.ids.slice(0, k).map((id) => (this.model.insts[id]?.name ?? id).toLowerCase());
+          where.textContent += ` · ${names.join(' + ')} (${k} of ${b.ids.length})`;
+        }
       } else if (s.engine) {
         where.textContent = 'Stopped · release ringing';
       } else if (this.idle && where.textContent !== this.idle && this.model) {
