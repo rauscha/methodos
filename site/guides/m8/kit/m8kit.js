@@ -423,9 +423,12 @@ class HyperVoice extends Voice {
     const p = this.inst.params;
     if (!this.pw) this.pw = wave(ctx, p.SHAPE);
     // SWARM detunes every saw: 80 is about a fifth up and down, FF an octave (Dirtywave
-    // meetup, firmware 3.0). The curve between is unknown; the demo draws a straight line.
+    // meetup, firmware 3.0). The curve between is unknown. A straight line put SWARM 08 at
+    // ±44 cents, the two saws nearly a semitone apart, and the pad sounded out of tune
+    // (2026-11-18). A squared curve keeps both ends and his "30 is already a lot" (±98 c),
+    // with the small values a chorus: 08 is ±2.7 c, 10 is ±11 c, 20 is ±44 c.
     const sw = hex(p.SWARM ?? '00');
-    const detune = sw <= 0x80 ? sw / 0x80 * 700 : 700 + (sw - 0x80) / 0x7f * 500;
+    const detune = sw <= 0x80 ? 700 * (sw / 0x80) ** 2 : 700 + (sw - 0x80) / 0x7f * 500;
     const width = hex(p.WIDTH ?? '00') / 255;
     while (this.oscs.length < 6) {
       const pair = [-1, 1].map((side) => {
@@ -477,7 +480,16 @@ class MacroVoice extends Voice {
     while (this.oscs.length < notes.length) {
       const mix = isHex(p.COLOR) && !this.inst.shapes ? hex(p.COLOR) / 255 : 0.3;
       const fold = ctx.createWaveShaper();
-      const k = 1 + (isHex(p.TIMBRE) ? hex(p.TIMBRE) : 0x18) / 255 * 6;
+      // The fold only brightens: the played pitch must stay the loudest partial. It used to
+      // reach k = 7, and at TIMBRE 45 the third harmonic came out 10 dB over the fundamental,
+      // so every note sounded an octave and a fifth up and chords smeared into two keys
+      // (2026-11-18). Capped at k = 1.4 the third stays 13 dB or more below the note.
+      // A bass (below C3) keeps more, up to 1.6: its overtones are what a phone speaker
+      // plays, and they sit on its own root. A chord shape's TIMBRE moves a wavetable on the
+      // M8, not a fold, so a chord gets none.
+      const tb = isHex(p.TIMBRE) ? hex(p.TIMBRE) : 0x18;
+      const low = notes[0] != null && notes[0] < 48;
+      const k = this.inst.shapes ? 1 : low ? Math.min(1.6, 1 + tb / 255 * 6) : 1 + tb / 255 * 0.4;
       const curve = new Float32Array(1024);
       for (let i = 0; i < curve.length; i++) curve[i] = Math.sin((i / 511.5 - 1) * k * Math.PI / 2);
       fold.curve = curve;
