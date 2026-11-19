@@ -3,7 +3,8 @@
 // A page loads this module once and declares what it wants to show:
 //
 //   <m8-player src="../songs/low-tide.json" step="3"></m8-player>   transport (one per page)
-//     focus="2"            track 2 up front, the others quiet behind it (a bassline page)
+//     focus="2"            track 2 alone; the others start muted, and a tap on one brings it
+//                          in quietly behind (a bassline page)
 //     build="06,07,08"     those instruments come in one at a time, every build-bars bars
 //     build-bars="2"       (a drum page: kick, then snare, then hats)
 //   <m8-song></m8-song>                        the song view: chains per track, per row
@@ -834,7 +835,7 @@ class M8Player extends HTMLElement {
     };
     const front = this.opts.focus.filter((n) => this.model.tracks.some((t) => t.n === n && t.audible));
     this.idle = `${spec.tempo} BPM · ${this.model.len / 16} bar${this.model.len > 16 ? 's' : ''}`
-      + (front.length ? ` · ${front.map((n) => `T${n}`).join(' ')} up front` : '')
+      + (front.length ? ` · ${front.map((n) => `T${n}`).join(' ')} alone` : '')
       + (this.opts.build.length ? ` · built up ${this.opts.buildBars} bars a layer` : '');
     where.textContent = this.idle;
     if (label) { where.title = label; this.querySelector('.m8-play').setAttribute('aria-label', `Play: ${label}`); }
@@ -855,6 +856,14 @@ class M8Player extends HTMLElement {
       mutes.append(b);
     }
     this.muted = {};
+    // A page about one part plays it alone (Andrew, 2026-11-18: "play me just the bassline").
+    // The other tracks start muted; tapping one brings it in, quietly behind.
+    if (this.opts.focus.length) {
+      this.model.tracks.filter((t) => t.audible && !this.opts.focus.includes(t.n)).forEach((t) => {
+        this.muted[t.n] = true;
+        mutes.querySelector(`[aria-label^="Mute track ${t.n},"]`)?.setAttribute('aria-pressed', 'true');
+      });
+    }
     this.querySelector('.m8-play').addEventListener('click', () => this.toggle());
     pages.resolve(this);
     this.loop();
