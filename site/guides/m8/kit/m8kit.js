@@ -320,7 +320,10 @@ const TONES = {
   keys: { h: [1, 0.25, 0.06, 0.04], decay: 1.1 },
   bell: { h: [1, 0.08, 0.02, 0.22, 0, 0, 0, 0.06], decay: 0.9 },
   voice: { h: [1, 0.35, 0.12, 0.05], attack: 0.03 },
-  bass: { h: [1, 0.5, 0.22, 0.08] },
+  // A bass sits at 40 to 100 Hz, where a phone speaker plays almost nothing. Overtones up
+  // to the 16th put it in the speaker's range, and the ear still hears the low note (the
+  // "missing fundamental"); with four, the pad behind it drowned it on the Pixel (2026-11-18).
+  bass: { h: Array.from({ length: 16 }, (_, i) => 1 / (i + 1) ** 0.6) },
 };
 
 // Which family an instrument gets: the spec's `tone`, or a loose guess from its type.
@@ -360,8 +363,9 @@ class Voice {
     this.filter = ctx.createBiquadFilter();
     this.filter.type = p.FILTER === 'HIGHPASS' ? 'highpass' : 'lowpass';
     // The cutoff still moves where the M8's would, but never so low the notes vanish, and
-    // with no resonance peak.
-    this.filter.frequency.value = this.filter.type === 'lowpass' ? Math.max(500, cutoffHz(hex(p.CUTOFF ?? 'FF'))) : Math.min(2000, cutoffHz(hex(p.CUTOFF ?? '00')));
+    // with no resonance peak. A bass instrument keeps its overtones (see TONES.bass).
+    const low = engine.model.tracks.some((tr) => tr.events.some((e) => e.inst === inst.id && e.note != null && e.note < 48));
+    this.filter.frequency.value = this.filter.type === 'lowpass' ? Math.max(low ? 2500 : 500, cutoffHz(hex(p.CUTOFF ?? 'FF'))) : Math.min(2000, cutoffHz(hex(p.CUTOFF ?? '00')));
     this.filter.Q.value = 0.7;
     this.vca = ctx.createGain();
     this.vca.gain.value = 0;
@@ -541,7 +545,13 @@ class DrumVoice {
       o.frequency.exponentialRampToValueAtTime(48, t + 0.12);
       env(o, 0.8, 0.4);
       o.start(t); o.stop(t + 0.45);
-      hiss('lowpass', 3000, 0.7, 0.15, 0.01); // the beater's click, so a phone hears it
+      // A knock and the beater's click, in the range a phone speaker plays.
+      const k = ctx.createOscillator(); k.type = 'triangle';
+      k.frequency.setValueAtTime(420, t);
+      k.frequency.exponentialRampToValueAtTime(160, t + 0.04);
+      env(k, 0.45, 0.06);
+      k.start(t); k.stop(t + 0.08);
+      hiss('lowpass', 4000, 0.7, 0.4, 0.015);
     } else if (this.kind === 'snare') {
       const o = ctx.createOscillator(); o.type = 'triangle';
       o.frequency.setValueAtTime(190, t);
@@ -580,7 +590,9 @@ function impulse(ctx, seconds, decay) {
   return buf;
 }
 
-const BEHIND = 0.16; // the level of tracks outside a page's focus (about -16 dB)
+// Track levels on a page with a focus: the tracks it's about up front, the rest behind.
+const FRONT = 1.6;   // +4 dB
+const BEHIND = 0.1;  // -20 dB
 
 class Engine {
   // opts.focus: tracks heard up front; the others play quietly behind them.
@@ -630,7 +642,7 @@ class Engine {
       g.connect(a); g.connect(master);
       const rev = ctx.createGain(); rev.connect(this.reverb); // sends, also muted with the track
       const del = ctx.createGain(); del.connect(this.delay);
-      const level = this.focus && !this.focus.has(tr.n) ? BEHIND : 1;
+      const level = !this.focus ? 1 : this.focus.has(tr.n) ? FRONT : BEHIND;
       for (const x of [g, rev, del]) x.gain.value = level;
       this.trackOut.set(tr.n, { gain: g, rev, del, analyser: a, muted: false, level });
     }
